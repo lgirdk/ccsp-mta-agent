@@ -207,13 +207,72 @@ CosaDmlMTADectGetEnable
 }
         
 ANSC_STATUS
+CosaDmlMTADectSetEnable
+    (
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     bBool
+    )
+{
+     if (mta_hal_DectSetEnable(bBool) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+
+}
+
+ANSC_STATUS
 CosaDmlMTADectGetRegistrationMode
     (
         ANSC_HANDLE                 hContext,
         BOOLEAN                     *pBool
     )
 {
+     if (mta_hal_DectGetRegistrationMode(pBool) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+
+}
+
+ANSC_STATUS
+CosaDmlMTADectSetRegistrationMode
+    (
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     bBool
+    )
+{
+     if (mta_hal_DectSetRegistrationMode(bBool) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+
+}
+
+ANSC_STATUS
+CosaDmlMTADectRegisterDectHandset
+    (
+        ANSC_HANDLE                 hContext,
+        ULONG                       uValue    
+    )
+{
+    fprintf(stderr, "%s is not implemented!\n", __FUNCTION__);
+
     return ANSC_STATUS_SUCCESS;
+}
+
+CosaDmlMTADectDeregisterDectHandset
+    (
+        ANSC_HANDLE                 hContext,
+        ULONG                       uValue
+    )
+{
+
+     if (mta_hal_DectDeregisterDectHandset(uValue) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+
+
 }
 
 ANSC_STATUS
@@ -223,37 +282,83 @@ CosaDmlMTAGetDect
         PCOSA_MTA_DECT              pDect
     )
 {
-    return ANSC_STATUS_SUCCESS;
+
+
+     if (mta_hal_GetDect(pDect) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+
+
 }
 
 ANSC_STATUS
-CosaDmlMTASetDect
+CosaDmlMTAGetDectPIN
     (
         ANSC_HANDLE                 hContext,
-        PCOSA_MTA_DECT              pDect
+        char                        *pPINString
     )
 {
-    return ANSC_STATUS_SUCCESS;
-}
 
-ULONG
-CosaDmlMTAHandsetsGetNumberOfEntries
-    (
-        ANSC_HANDLE                 hContext
-    )
-{
-    return ANSC_STATUS_SUCCESS;
+     if (mta_hal_GetDectPIN(pPINString) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+
+
 }
 
 ANSC_STATUS
-CosaDmlMTAHandsetsGetEntry
+CosaDmlMTASetDectPIN
     (
         ANSC_HANDLE                 hContext,
-        ULONG                       ulIndex,
-        PCOSA_MTA_HANDSETS_INFO     pEntry
+        char                        *pPINString
     )
 {
+
+
+     if (mta_hal_SetDectPIN(pPINString) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+
+}
+
+ANSC_STATUS
+CosaDmlMTAGetHandsets
+    (
+        ANSC_HANDLE                 hContext,
+        PULONG                      pulCount,
+        PCOSA_MTA_HANDSETS_INFO     *ppHandsets
+    )
+{
+    PMTAMGMT_MTA_HANDSETS_INFO pInfo = NULL;
+    if ( mta_hal_GetHandsets( pulCount, &pInfo) != RETURN_OK )
+        return ANSC_STATUS_FAILURE;
+
+    if (*pulCount > 0) {
+        if( (*ppHandsets = AnscAllocateMemory(DECT_MAX_HANDSETS * sizeof(MTAMGMT_MTA_HANDSETS_INFO))) == NULL )
+        {
+            AnscTraceWarning(("AllocateMemory error %s, %d\n", __FUNCTION__, __LINE__));
+            return ANSC_STATUS_FAILURE;  
+        }
+        AnscCopyMemory(*ppHandsets, pInfo, sizeof(MTAMGMT_MTA_HANDSETS_INFO)*DECT_MAX_HANDSETS);
+        free(pInfo);
+    }
     return ANSC_STATUS_SUCCESS;
+
+}
+
+ANSC_STATUS
+CosaDmlMTASetHandsets
+    (
+        ANSC_HANDLE                 hContext,
+        PCOSA_MTA_HANDSETS_INFO     pHandsets
+    )
+{
+   fprintf(stderr, "%s is not implemented!\n", __FUNCTION__);
+
+   return ANSC_STATUS_SUCCESS;
 }
 
 ANSC_STATUS

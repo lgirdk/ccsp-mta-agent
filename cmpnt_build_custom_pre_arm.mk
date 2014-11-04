@@ -32,14 +32,12 @@ DOCSIS_API_PREFIX := $(TI_API_PREFIX)/docsis
 
 include $(TI_API_PREFIX)/lib/docsis_ext_interface.make
 
-TI_ARM_INC_DIR = -I$(SDK_PATH)/ti/netdk/src/ti_udhcp -I$(SDK_PATH)/ti/netdk/src/ti_dhcpv6 -I$(SDK_PATH)/ti/include -I$(SDK_PATH)/ti/ncsdk/src/inc/iface
+TI_ARM_INC_DIR = -I$(SDK_PATH)/ti/netdk/src/ti_dhcpv6 -I$(SDK_PATH)/ti/include -I$(SDK_PATH)/ti/ncsdk/src/inc/iface
 CFLAGS += $(TI_ARM_INC_DIR)
 
 LDFLAGS += -L$(SDK_PATH)/ti/netdk/src/uipc
-LDFLAGS += -L$(SDK_PATH)/ti/netdk/src/ti_udhcp
-LDFLAGS += -L$(SDK_PATH)/ti/netdk/src/ti_dhcpv6
 
-LDFLAGS += $(ldflags-y) -luipc -lpthread -ldhcp4cApi -ldhcp6cApi -lswctl # -llmapi 
+LDFLAGS += $(ldflags-y) -luipc -lpthread -lapi_dhcpv4c # -llmapi 
 
 ifeq ($(CONFIG_TI_PACM), y) 
   CFLAGS += -DCONFIG_TI_PACM

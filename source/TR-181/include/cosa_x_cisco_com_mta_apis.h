@@ -133,6 +133,7 @@ _COSA_MTA_DECT
     char                            HardwareVersion[64];
     char                            RFPI[64];
     char                            SoftwareVersion[64];
+    char                            PIN[64];
 }
 COSA_MTA_DECT,  *PCOSA_MTA_DECT;
 
@@ -144,6 +145,8 @@ _COSA_MTA_HANDSETS_INFO
     char                            LastActiveTime[64];
     char                            HandsetName[64];
     char                            HandsetFirmware[64];
+    char                            OperatingTN[64];
+    char                            SupportedTN[64];
 }
 COSA_MTA_HANDSETS_INFO,  *PCOSA_MTA_HANDSETS_INFO;
 
@@ -154,68 +157,68 @@ _COSA_MTA_CALLS
     char                            RemoteCodec[64];
     char                            CallStartTime[64];
     char                            CallEndTime[64];
-    char                            CWErrorRate[64];
-    char                            PktLossConcealment[64];
+    char                            CWErrorRate[16];
+    char                            PktLossConcealment[16];
     BOOLEAN                         JitterBufferAdaptive;
     BOOLEAN                         Originator;
     ANSC_IPV4_ADDRESS               RemoteIPAddress;
     ULONG                           CallDuration;
-    ULONG                           CWErrors;
-    ULONG                           SNR;
-    ULONG                           MicroReflections;
-    ULONG                           DownstreamPower;
-    ULONG                           UpstreamPower;
-    ULONG                           EQIAverage;
-    ULONG                           EQIMinimum;
-    ULONG                           EQIMaximum;
-    ULONG                           EQIInstantaneous;
-    ULONG                           MOS_LQ;
-    ULONG                           MOS_CQ;
-    ULONG                           EchoReturnLoss;
-    ULONG                           SignalLevel;
-    ULONG                           NoiseLevel;
-    ULONG                           LossRate;
-    ULONG                           DiscardRate;
-    ULONG                           BurstDensity;
-    ULONG                           GapDensity;
-    ULONG                           BurstDuration;
-    ULONG                           GapDuration;
-    ULONG                           RoundTripDelay;
-    ULONG                           Gmin;
-    ULONG                           RFactor;
-    ULONG                           ExternalRFactor;
-    ULONG                           JitterBufRate;
-    ULONG                           JBNominalDelay;
-    ULONG                           JBMaxDelay;
-    ULONG                           JBAbsMaxDelay;
-    ULONG                           TxPackets;
-    ULONG                           TxOctets;
-    ULONG                           RxPackets;
-    ULONG                           RxOctets;
-    ULONG                           PacketLoss;
-    ULONG                           IntervalJitter;
-    ULONG                           RemoteIntervalJitter;
-    ULONG                           RemoteMOS_LQ;
-    ULONG                           RemoteMOS_CQ;
-    ULONG                           RemoteEchoReturnLoss;
-    ULONG                           RemoteSignalLevel;
-    ULONG                           RemoteNoiseLevel;
-    ULONG                           RemoteLossRate;
-    char                            RemotePktLossConcealment[64];
-    ULONG                           RemoteDiscardRate;
-    ULONG                           RemoteBurstDensity;
-    ULONG                           RemoteGapDensity;
-    ULONG                           RemoteBurstDuration;
-    ULONG                           RemoteGapDuration;
-    ULONG                           RemoteRoundTripDelay;
-    ULONG                           RemoteGmin;
-    ULONG                           RemoteRFactor;
-    ULONG                           RemoteExternalRFactor;
-    BOOLEAN                         RemoteJitterBufferAdaptive;
-    ULONG                           RemoteJitterBufRate;
-    ULONG                           RemoteJBNominalDelay;
-    ULONG                           RemoteJBMaxDelay;
-    ULONG                           RemoteJBAbsMaxDelay;
+    CHAR                            CWErrors[16];                     /* code word errors on this channel */
+    CHAR                            SNR[16];                          /* signal to noise ratio * 256 */
+    CHAR                            MicroReflections[16];             /* return loss measurement */
+    CHAR                            DownstreamPower[16];              /* downstream power in dbmv */
+    CHAR                            UpstreamPower[16];                /* upstream power in dbmv */
+    CHAR                            EQIAverage[16];                   /* EQI average */    
+    CHAR                            EQIMinimum[16];                   /* EQI minimum */
+    CHAR                            EQIMaximum[16];                   /* EQI maximum */
+    CHAR                            EQIInstantaneous[16];             /* EQI instantaneous */
+    CHAR                            MOS_LQ[16];                       /* mean opinion score of listening quality, 10-50 */
+    CHAR                            MOS_CQ[16];                       /* mean opinion score of conversational quality, 10-50 */
+    CHAR                            EchoReturnLoss[16];               /* residual echo return loss, in db */
+    CHAR                            SignalLevel[16];                  /* voice signal relative level, in db */
+    CHAR                            NoiseLevel[16];                   /* noise relative level, in db */
+    CHAR                            LossRate[16];                     /* fraction of RTP data packet loss * 256 */
+    CHAR                            DiscardRate[16];                  /* fraction of RTP data packet discarded * 256 */
+    CHAR                            BurstDensity[16];                 /* fraction of bursting data packet * 256 */
+    CHAR                            GapDensity[16];                   /* fraction of packets within inter-burst gap * 256 */
+    CHAR                            BurstDuration[16];                /* mean duration of bursts, in milliseconds */
+    CHAR                            GapDuration[16];                  /* mean duration of gaps, in milliseconds */
+    CHAR                            RoundTripDelay[16];               /* most recent measured RTD, in milliseconds */
+    CHAR                            Gmin[16];                         /* local gap threshold */
+    CHAR                            RFactor[16];                      /* voice quality evaluation for this RTP session */
+    CHAR                            ExternalRFactor[16];              /* voice quality evaluation for segment on network external to this RTP session */
+    CHAR                            JitterBufRate[16];                /* adjustment rate of jitter buffer, in milliseconds */
+    CHAR                            JBNominalDelay[16];               /* nominal jitter buffer length, in milliseconds */
+    CHAR                            JBMaxDelay[16];                   /* maximum jitter buffer length, in milliseconds */
+    CHAR                            JBAbsMaxDelay[16];                /* absolute maximum delay, in milliseconds */
+    CHAR                            TxPackets[16];                    /* count of transmitted packets */
+    CHAR                            TxOctets[16];                     /* count of transmitted octet packets */
+    CHAR                            RxPackets[16];                    /* count of received packets */
+    CHAR                            RxOctets[16];                     /* count of received octet packets */
+    CHAR                            PacketLoss[16];                   /* count of lost packets */
+    CHAR                            IntervalJitter[16];               /* stat variance of packet interarrival time, in milliseconds */
+    CHAR                            RemoteIntervalJitter[16];         /* remote sie IntervalJitter (see local side) */
+    CHAR                            RemoteMOS_LQ[16];                 /* remote side MOS_LQ (see local side) */
+    CHAR                            RemoteMOS_CQ[16];                 /* remote side MOS_CQ (see local side) */
+    CHAR                            RemoteEchoReturnLoss[16];         /* remote side EchoReturnLoss (see local side) */
+    CHAR                            RemoteSignalLevel[16];            /* remote side SignalLevel (see local side) */
+    CHAR                            RemoteNoiseLevel[16];             /* remote side NoiseLevel (see local side) */
+    CHAR                            RemoteLossRate[16];               /* remote side LossRate (see local side) */
+    CHAR                            RemotePktLossConcealment[16];     /* remote side PktLossConcealment (see local side) */
+    CHAR                            RemoteDiscardRate[16];            /* remote side DiscardRate (see local side) */
+    CHAR                            RemoteBurstDensity[16];           /* remote side BurstDensity (see local side) */
+    CHAR                            RemoteGapDensity[16];             /* remote side GapDensity (see local side) */
+    CHAR                            RemoteBurstDuration[16];          /* remote side BurstDuration (see local side) */
+    CHAR                            RemoteGapDuration[16];            /* remote side GapDuration (see local side) */
+    CHAR                            RemoteRoundTripDelay[16];         /* remote side RoundTripDelay (see local side) */
+    CHAR                            RemoteGmin[16];                   /* remote side Gmin (see local side) */
+    CHAR                            RemoteRFactor[16];                /* remote side RFactore (see local side) */
+    CHAR                            RemoteExternalRFactor[16];        /* remote side ExternalRFactor (see local side) */
+    BOOLEAN                         RemoteJitterBufferAdaptive;   	  /* remote side JitterBufferAdaptive (see local side) */
+    CHAR                            RemoteJitterBufRate[16];          /* remote side JitterBufRate (see local side) */
+    CHAR                            RemoteJBNominalDelay[16];         /* remote side JBNominalDelay (see local side) */
+    CHAR                            RemoteJBMaxDelay[16];             /* remote side JBMaxDelay (see local side) */
+    CHAR                            RemoteJBAbsMaxDelay[16];          /* remote side JBAbsMaxDelay (see local side) */
 }
 COSA_MTA_CALLS, *PCOSA_MTA_CALLS;
 
@@ -336,10 +339,24 @@ CosaDmlMTADectGetEnable
     );
         
 ANSC_STATUS
+CosaDmlMTADectSetEnable
+    (
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     bBool
+    );
+
+ANSC_STATUS
 CosaDmlMTADectGetRegistrationMode
     (
         ANSC_HANDLE                 hContext,
         BOOLEAN                     *pBool
+    );
+
+ANSC_STATUS
+CosaDmlMTADectSetRegistrationMode
+    (
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     bBool
     );
 
 ANSC_STATUS
@@ -363,11 +380,32 @@ CosaDmlMTAHandsetsGetNumberOfEntries
     );
 
 ANSC_STATUS
-CosaDmlMTAHandsetsGetEntry
+CosaDmlMTAGetDectPIN
     (
         ANSC_HANDLE                 hContext,
-        ULONG                       ulIndex,
-        PCOSA_MTA_HANDSETS_INFO     pEntry
+        char                        *pPINString
+    );
+
+ANSC_STATUS
+CosaDmlMTASetDectPIN
+    (
+        ANSC_HANDLE                 hContext,
+        char                        *pPINString
+    );
+
+ANSC_STATUS
+CosaDmlMTAGetHandsets
+    (
+        ANSC_HANDLE                 hContext,
+        PULONG                      pulCount,
+        PCOSA_MTA_HANDSETS_INFO     *ppHandsets
+    );
+
+ANSC_STATUS
+CosaDmlMTASetHandsets
+    (
+        ANSC_HANDLE                 hContext,
+        PCOSA_MTA_HANDSETS_INFO     pHandsets
     );
 
 ANSC_STATUS

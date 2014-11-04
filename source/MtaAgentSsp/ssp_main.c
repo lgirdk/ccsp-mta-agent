@@ -132,14 +132,26 @@ int  cmd_dispatch(int  command)
 static void _print_stack_backtrace(void)
 {
 #ifdef __GNUC__
-#if (!defined _BUILD_ANDROID) && (!defined _NO_EXECINFO_H_)
+#if (!defined _BUILD_ANDROID) && (!defined _NO_EXECINFO_H_) && (!defined _COSA_SIM_)
         void* tracePtrs[100];
         char** funcNames = NULL;
         int i, count = 0;
 
-        count = backtrace( tracePtrs, 100 );
-        backtrace_symbols_fd( tracePtrs, count, 2 );
+        int fd;
+        const char* path = "/nvram/MTaAgentSsp_backtrace";
+        fd = open(path, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+        if (fd < 0)
+        {
+            fprintf(stderr, "failed to open backtrace file: %s", path);
+            return;
+        }
 
+        count = backtrace( tracePtrs, 100 );
+
+        backtrace_symbols_fd( tracePtrs, count, fd);
+   
+        close(fd);
+ 
         funcNames = backtrace_symbols( tracePtrs, count );
 
         if ( funcNames ) {
@@ -276,6 +288,19 @@ static int is_core_dump_opened(void)
     return 0;
 }
 
+int write_pid_file(const char *file)
+{
+    FILE *fp;
+    pid_t pid;
+
+    if ((fp = fopen(file, "w")) == NULL)
+        return -1;
+
+    pid = getpid();
+    fprintf(fp, "%d\n", pid);
+    fclose(fp);
+}
+
 #endif
 
 int main(int argc, char* argv[])
@@ -346,15 +371,8 @@ int main(int argc, char* argv[])
         daemonize();
 
     /*This is used for ccsp recovery manager */
-    fd = fopen("/var/tmp/CcspMtaAgentSsp.pid", "w+");
-    if ( !fd )
-    {
-        CcspTraceWarning(("Create /var/tmp/CcspMtaAgentSsp.pid error. \n"));
-        return 1;
-    }
-    sprintf(cmd, "%d", getpid());
-    fputs(cmd, fd);
-    fclose(fd);
+    if (write_pid_file("/var/tmp/CcspPandMSsp.pid") != 0)
+        fprintf(stderr, "%s: fail to write PID file\n", argv[0]);
 
     if (is_core_dump_opened())
     {

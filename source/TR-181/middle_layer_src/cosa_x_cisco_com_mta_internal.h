@@ -58,6 +58,7 @@
 
 #define COSA_IFSTACK_ALIAS_LENGTH              64
 #define MTA_REFRESH_INTERVAL                    120
+#define HANDSETS_REFRESH_INTERVAL               10
 #define TIME_NO_NEGATIVE(x) ((long)(x) < 0 ? 0 : (x))
 
 #define  COSA_DATAMODEL_MTA_CLASS_CONTENT                                   \
@@ -72,6 +73,8 @@
     PCOSA_MTA_SERVICE_FLOW                      pServiceFlow;               \
     ULONG                                       ServiceFlowUpdateTime;      \
     PCOSA_MTA_HANDSETS_INFO                     pHandsets;                  \
+    ULONG                                       HandsetsNumber;             \
+    ULONG                                       HandsetsUpdateTime;         \
     COSA_MTA_PKTC                               Pktc;                       \
     COSA_MTA_DECT                               Dect;                       \
     ULONG                                       DSXLogNumber;               \

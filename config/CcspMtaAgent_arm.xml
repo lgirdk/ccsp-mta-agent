@@ -811,7 +811,7 @@
 
 					  <name>CWErrorRate</name>
 
-					  <type>string(64)</type>
+					  <type>string(16)</type>
 
 					  <syntax>string</syntax>
 
@@ -821,7 +821,7 @@
 
 					  <name>PktLossConcealment</name>
 
-					  <type>string(64)</type>
+					  <type>string(16)</type>
 
 					  <syntax>string</syntax>
 
@@ -871,9 +871,9 @@
 
 					  <name>CWErrors</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -881,9 +881,9 @@
 
 					  <name>SNR</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -891,9 +891,9 @@
 
 					  <name>MicroReflections</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -901,9 +901,9 @@
 
 					  <name>DownstreamPower</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -911,9 +911,9 @@
 
 					  <name>UpstreamPower</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -921,9 +921,9 @@
 
 					  <name>EQIAverage</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -931,9 +931,9 @@
 
 					  <name>EQIMinimum</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -941,9 +941,9 @@
 
 					  <name>EQIMaximum</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -951,9 +951,9 @@
 
 					  <name>EQIInstantaneous</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -961,9 +961,9 @@
 
 					  <name>MOS-LQ</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -971,9 +971,9 @@
 
 					  <name>MOS-CQ</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -981,9 +981,9 @@
 
 					  <name>EchoReturnLoss</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -991,9 +991,9 @@
 
 					  <name>SignalLevel</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1001,9 +1001,9 @@
 
 					  <name>NoiseLevel</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1011,9 +1011,9 @@
 
 					  <name>LossRate</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1021,9 +1021,9 @@
 
 					  <name>DiscardRate</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1031,9 +1031,9 @@
 
 					  <name>BurstDensity</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1041,9 +1041,9 @@
 
 					  <name>GapDensity</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1051,9 +1051,9 @@
 
 					  <name>BurstDuration</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1061,9 +1061,9 @@
 
 					  <name>GapDuration</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1071,9 +1071,9 @@
 
 					  <name>RoundTripDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1081,9 +1081,9 @@
 
 					  <name>Gmin</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1091,9 +1091,9 @@
 
 					  <name>RFactor</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1101,9 +1101,9 @@
 
 					  <name>ExternalRFactor</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1111,9 +1111,9 @@
 
 					  <name>JitterBufRate</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1121,9 +1121,9 @@
 
 					  <name>JBNominalDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1131,9 +1131,9 @@
 
 					  <name>JBMaxDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1141,9 +1141,9 @@
 
 					  <name>JBAbsMaxDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1151,9 +1151,9 @@
 
 					  <name>RemoteMOS-LQ</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1161,9 +1161,9 @@
 
 					  <name>RemoteMOS-CQ</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1171,9 +1171,9 @@
 
 					  <name>RemoteEchoReturnLoss</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1181,9 +1181,9 @@
 
 					  <name>RemoteSignalLevel</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1191,9 +1191,9 @@
 
 					  <name>RemoteNoiseLevel</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1201,9 +1201,9 @@
 
 					  <name>RemoteLossRate</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1211,7 +1211,7 @@
 
 					  <name>RemotePktLossConcealment</name>
 
-					  <type>string(64)</type>
+					  <type>string(16)</type>
 
 					  <syntax>string</syntax>
 
@@ -1221,9 +1221,9 @@
 
 					  <name>RemoteDiscardRate</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1231,9 +1231,9 @@
 
 					  <name>RemoteBurstDensity</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1241,9 +1241,9 @@
 
 					  <name>RemoteGapDensity</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1251,9 +1251,9 @@
 
 					  <name>RemoteBurstDuration</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1261,9 +1261,9 @@
 
 					  <name>RemoteGapDuration</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1271,9 +1271,9 @@
 
 					  <name>RemoteRoundTripDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1281,9 +1281,9 @@
 
 					  <name>RemoteGmin</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1291,9 +1291,9 @@
 
 					  <name>RemoteRFactor</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1301,9 +1301,9 @@
 
 					  <name>RemoteExternalRFactor</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1321,9 +1321,9 @@
 
 					  <name>RemoteJitterBufRate</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1331,9 +1331,9 @@
 
 					  <name>RemoteJBNominalDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1341,9 +1341,9 @@
 
 					  <name>RemoteJBMaxDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1351,9 +1351,9 @@
 
 					  <name>RemoteJBAbsMaxDelay</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1361,9 +1361,9 @@
 
 					  <name>TxPackets</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1371,9 +1371,9 @@
 
 					  <name>TxOctets</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1381,9 +1381,9 @@
 
 					  <name>RxPackets</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1391,9 +1391,9 @@
 
 					  <name>RxOctets</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1401,9 +1401,9 @@
 
 					  <name>PacketLoss</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1411,9 +1411,9 @@
 
 					  <name>IntervalJitter</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1421,9 +1421,9 @@
 
 					  <name>RemoteIntervalJitter</name>
 
-					  <type>unsignedInt</type>
+					  <type>string(16)</type>
 
-					  <syntax>uint32</syntax>
+					  <syntax>string</syntax>
 
 					</parameter>
 
@@ -1671,14 +1671,16 @@
 
             <func_GetParamBoolValue>Dect_GetParamBoolValue</func_GetParamBoolValue>
 
-            <func_GetParamIntValue>Dect_GetParamIntValue</func_GetParamIntValue>
-
             <func_GetParamUlongValue>Dect_GetParamUlongValue</func_GetParamUlongValue>
 
             <func_GetParamStringValue>Dect_GetParamStringValue</func_GetParamStringValue>
 
+			<func_SetParamBoolValue>Dect_SetParamBoolValue</func_SetParamBoolValue>
+		    
 			<func_SetParamUlongValue>Dect_SetParamUlongValue</func_SetParamUlongValue>
 		    
+			<func_SetParamStringValue>Dect_SetParamStringValue</func_SetParamStringValue>
+
 			<func_Validate>Dect_Validate</func_Validate>
 
 			<func_Commit>Dect_Commit</func_Commit>
@@ -1727,6 +1729,8 @@
 		  
 		      <syntax>bool</syntax>
 
+		      <writable>true</writable>
+
 		    </parameter>
 
 		    <parameter>
@@ -1761,8 +1765,22 @@
 		  
 		      <syntax>bool</syntax>
 
+		      <writable>true</writable>
+
 		    </parameter>
 		    
+            <parameter>
+
+                      <name>PIN</name>
+
+                      <type>string(64)</type>
+
+                      <syntax>string</syntax>
+
+                      <writable>true</writable>
+
+                    </parameter>
+
           </parameters>
 
 		  <objects>
@@ -1771,7 +1789,7 @@
 
             <name>Handsets</name>
 
-            <objectType>staticTable</objectType>
+            <objectType>dynamicTable</objectType>
 
             <maxInstance>128</maxInstance>
 
@@ -1781,19 +1799,13 @@
 
               <func_GetEntry>Handsets_GetEntry</func_GetEntry>
 
+              <func_IsUpdated>Handsets_IsUpdated</func_IsUpdated>
+
+              <func_Synchronize>Handsets_Synchronize</func_Synchronize>
+
               <func_GetParamBoolValue>Handsets_GetParamBoolValue</func_GetParamBoolValue>
 
-              <func_GetParamIntValue>Handsets_GetParamIntValue</func_GetParamIntValue>
-
-              <func_GetParamUlongValue>Handsets_GetParamUlongValue</func_GetParamUlongValue>
-
               <func_GetParamStringValue>Handsets_GetParamStringValue</func_GetParamStringValue>
-
-              <func_SetParamBoolValue>Handsets_SetParamBoolValue</func_SetParamBoolValue>
-
-              <func_SetParamIntValue>Handsets_SetParamIntValue</func_SetParamIntValue>
-
-              <func_SetParamUlongValue>Handsets_SetParamUlongValue</func_SetParamUlongValue>
 
               <func_SetParamStringValue>Handsets_SetParamStringValue</func_SetParamStringValue>
 
@@ -1837,6 +1849,28 @@
 
             </parameter>
             
+            <parameter>
+
+              <name>OperatingTN</name>
+
+              <type>string(64)</type>
+
+              <syntax>string</syntax>
+
+              <writable>true</writable>
+
+            </parameter>
+
+            <parameter>
+
+              <name>SupportedTN</name>
+
+              <type>string(64)</type>
+
+              <syntax>string</syntax>
+
+            </parameter>
+
             <parameter>
 
               <name>HandsetFirmware</name>

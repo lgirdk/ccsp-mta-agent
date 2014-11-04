@@ -2296,439 +2296,6 @@ Calls_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "CWErrors", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->CWErrors; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "SNR", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->SNR; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "MicroReflections", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->MicroReflections; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "DownstreamPower", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->DownstreamPower; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "UpstreamPower", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->UpstreamPower; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "EQIAverage", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->EQIAverage; 
-
-        return TRUE;
-
-    }
-    if( AnscEqualString(ParamName, "EQIMinimum", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->EQIMinimum; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "EQIMaximum", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->EQIMaximum; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "EQIInstantaneous", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->EQIInstantaneous; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "MOS-LQ", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->MOS_LQ; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "MOS-CQ", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->MOS_CQ; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "EchoReturnLoss", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->EchoReturnLoss; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "SignalLevel", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->SignalLevel; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "NoiseLevel", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->NoiseLevel; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "LossRate", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->LossRate; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "DiscardRate", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->DiscardRate; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "BurstDensity", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->BurstDensity; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "GapDensity", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->GapDensity; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "BurstDuration", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->BurstDuration; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "GapDuration", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->GapDuration; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RoundTripDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RoundTripDelay; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "Gmin", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->Gmin; 
-
-        return TRUE;
-
-    }
-
-    if( AnscEqualString(ParamName, "RFactor", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RFactor; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "ExternalRFactor", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->ExternalRFactor; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "JitterBufRate", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->JitterBufRate; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "JBNominalDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->JBNominalDelay; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "JBMaxDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->JBMaxDelay; 
-
-        return TRUE;
-
-    }
-
-    if( AnscEqualString(ParamName, "JBAbsMaxDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->JBAbsMaxDelay; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "TxPackets", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->TxPackets; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "TxOctets", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->TxOctets; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RxPackets", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RxPackets; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RxOctets", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RxOctets; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "PacketLoss", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->PacketLoss; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "IntervalJitter", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->IntervalJitter; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteIntervalJitter", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteIntervalJitter; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteMOS-LQ", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteMOS_LQ; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteMOS-CQ", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteMOS_CQ; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteEchoReturnLoss", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteEchoReturnLoss;
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteSignalLevel", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteSignalLevel; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteNoiseLevel", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteNoiseLevel; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteLossRate", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteLossRate; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteDiscardRate", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteDiscardRate; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteBurstDensity", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteBurstDensity; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteGapDensity", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteGapDensity; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteBurstDuration", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteBurstDuration; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteGapDuration", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteGapDuration; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteRoundTripDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteRoundTripDelay; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteGmin", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteGmin; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteRFactor", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteRFactor; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteExternalRFactor", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteExternalRFactor; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteJitterBufRate", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteJitterBufRate; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteJBNominalDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteJBNominalDelay; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteJBMaxDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteJBMaxDelay; 
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "RemoteJBAbsMaxDelay", TRUE))
-    {
-        /* collect value */
-        *puLong = pCalls->RemoteJBAbsMaxDelay; 
-
-        return TRUE;
-    }
-
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
 }
@@ -2835,6 +2402,439 @@ Calls_GetParamStringValue
     {
         /* collect value */
         AnscCopyString(pValue, pCalls->RemotePktLossConcealment);
+
+        return 0;
+    }
+
+	if( AnscEqualString(ParamName, "CWErrors", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->CWErrors); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "SNR", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->SNR); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "MicroReflections", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->MicroReflections); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "DownstreamPower", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->DownstreamPower); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "UpstreamPower", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->UpstreamPower); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "EQIAverage", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->EQIAverage); 
+
+        return 0;
+
+    }
+    if( AnscEqualString(ParamName, "EQIMinimum", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->EQIMinimum); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "EQIMaximum", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->EQIMaximum); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "EQIInstantaneous", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->EQIInstantaneous); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "MOS-LQ", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->MOS_LQ); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "MOS-CQ", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->MOS_CQ); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "EchoReturnLoss", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->EchoReturnLoss); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "SignalLevel", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->SignalLevel); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "NoiseLevel", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->NoiseLevel); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "LossRate", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->LossRate); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "DiscardRate", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->DiscardRate); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "BurstDensity", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->BurstDensity); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "GapDensity", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->GapDensity); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "BurstDuration", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->BurstDuration); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "GapDuration", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->GapDuration); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RoundTripDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RoundTripDelay); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "Gmin", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->Gmin); 
+
+        return 0;
+
+    }
+
+    if( AnscEqualString(ParamName, "RFactor", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RFactor); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "ExternalRFactor", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->ExternalRFactor); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "JitterBufRate", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->JitterBufRate); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "JBNominalDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->JBNominalDelay); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "JBMaxDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->JBMaxDelay); 
+
+        return 0;
+
+    }
+
+    if( AnscEqualString(ParamName, "JBAbsMaxDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->JBAbsMaxDelay); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "TxPackets", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->TxPackets); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "TxOctets", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->TxOctets); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RxPackets", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RxPackets); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RxOctets", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RxOctets); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "PacketLoss", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->PacketLoss); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "IntervalJitter", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->IntervalJitter); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteIntervalJitter", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteIntervalJitter); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteMOS-LQ", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteMOS_LQ); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteMOS-CQ", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteMOS_CQ); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteEchoReturnLoss", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteEchoReturnLoss);
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteSignalLevel", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteSignalLevel); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteNoiseLevel", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteNoiseLevel); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteLossRate", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteLossRate); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteDiscardRate", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteDiscardRate); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteBurstDensity", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteBurstDensity); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteGapDensity", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteGapDensity); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteBurstDuration", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteBurstDuration); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteGapDuration", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteGapDuration); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteRoundTripDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteRoundTripDelay); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteGmin", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteGmin); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteRFactor", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteRFactor); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteExternalRFactor", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteExternalRFactor); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteJitterBufRate", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteJitterBufRate); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteJBNominalDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteJBNominalDelay); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteJBMaxDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteJBMaxDelay); 
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RemoteJBAbsMaxDelay", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pCalls->RemoteJBAbsMaxDelay); 
 
         return 0;
     }
@@ -3646,50 +3646,6 @@ Dect_GetParamBoolValue
     prototype: 
 
         BOOL
-        Dect_GetParamIntValue
-            (
-                ANSC_HANDLE                 hInsContext,
-                char*                       ParamName,
-                int*                        pInt
-            );
-
-    description:
-
-        This function is called to retrieve integer parameter value; 
-
-    argument:   ANSC_HANDLE                 hInsContext,
-                The instance handle;
-
-                char*                       ParamName,
-                The parameter name;
-
-                int*                        pInt
-                The buffer of returned integer value;
-
-    return:     TRUE if succeeded.
-
-**********************************************************************/
-BOOL
-Dect_GetParamIntValue
-    (
-        ANSC_HANDLE                 hInsContext,
-        char*                       ParamName,
-        int*                        pInt
-    )
-{
-    /* check the parameter name and return the corresponding value */
-
-    /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
-    return FALSE;
-}
-
-/**********************************************************************  
-
-    caller:     owner of this object 
-
-    prototype: 
-
-        BOOL
         Dect_GetParamUlongValue
             (
                 ANSC_HANDLE                 hInsContext,
@@ -3729,16 +3685,14 @@ Dect_GetParamUlongValue
     if( AnscEqualString(ParamName, "RegisterDectHandset", TRUE))
     {
         /* collect value */
-        CosaDmlMTAGetDect(hInsContext, pDect);
-        *puLong = pDect->RegisterDectHandset;
+        *puLong = 0;
         return TRUE;
     }
 
     if( AnscEqualString(ParamName, "DeregisterDectHandset", TRUE))
     {
         /* collect value */
-        CosaDmlMTAGetDect(hInsContext, pDect);
-        *puLong = pDect->DeregisterDectHandset;
+        *puLong = 0;
         return TRUE;
     }
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
@@ -3823,8 +3777,44 @@ Dect_GetParamStringValue
         return 0;
     }
     
+    if( AnscEqualString(ParamName, "PIN", TRUE))
+    {
+        /* collect value */
+        CosaDmlMTAGetDectPIN(hInsContext, pDect->PIN);
+        AnscCopyString(pValue, pDect->PIN);
+
+        return 0;
+    }
+
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return -1;
+}
+
+BOOL
+Dect_SetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL                        bValue
+    )
+{
+    /* check the parameter name and set the corresponding value */
+    if( AnscEqualString(ParamName, "Enable", TRUE))
+    {
+        /* collect value */
+        CosaDmlMTADectSetEnable(hInsContext, bValue);
+        return TRUE;
+    }
+
+    if( AnscEqualString(ParamName, "RegistrationMode", TRUE))
+    {
+        /* collect value */
+        CosaDmlMTADectSetRegistrationMode(hInsContext, bValue);
+        return TRUE;
+    }
+
+    /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return FALSE;
 }
 
 /**********************************************************************  
@@ -3865,24 +3855,44 @@ Dect_SetParamUlongValue
         ULONG                       uValue
     )
 {
-    PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
-    PCOSA_MTA_DECT                  pDect         = (PCOSA_MTA_DECT      )&pMyObject->Dect;
+    PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     /* check the parameter name and return the corresponding value */
 
     if( AnscEqualString(ParamName, "RegisterDectHandset", TRUE))
     {
-        pDect->RegisterDectHandset = uValue;
+        CosaDmlMTADectRegisterDectHandset(hInsContext, uValue);
         return TRUE;
     }
 
     if( AnscEqualString(ParamName, "DeregisterDectHandset", TRUE))
     {
-        pDect->DeregisterDectHandset = uValue;
+        if ( ANSC_STATUS_SUCCESS == CosaDmlMTADectDeregisterDectHandset(hInsContext, uValue) )
+        {
+            pMyObject->HandsetsUpdateTime = 0;
+        }
         return TRUE;
     }
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return FALSE;
+}
+
+BOOL
+Dect_SetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pString
+    )
+{
+    /* check the parameter name and set the corresponding value */
+    if( AnscEqualString(ParamName, "PIN", TRUE))
+    {
+        CosaDmlMTASetDectPIN(hInsContext, pString);
+        return TRUE;
+    }
+
     return FALSE;
 }
 
@@ -3955,11 +3965,6 @@ Dect_Commit
         ANSC_HANDLE                 hInsContext
     )
 {
-    PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
-    PCOSA_MTA_DECT                  pDect         = (PCOSA_MTA_DECT      )&pMyObject->Dect;
-
-    CosaDmlMTASetDect(NULL, pDect);
-
     return 0;
 }
 
@@ -3992,11 +3997,6 @@ Dect_Rollback
         ANSC_HANDLE                 hInsContext
     )
 {
-    PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
-    PCOSA_MTA_DECT                  pDect         = (PCOSA_MTA_DECT      )&pMyObject->Dect;
-
-    CosaDmlMTAGetDect(NULL, pDect);
-
     return 0;
 }
 
@@ -4050,21 +4050,7 @@ Handsets_GetEntryCount
     )
 {
     PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA    )g_pCosaBEManager->hMTA;
-    PCOSA_MTA_HANDSETS_INFO         pHandsets    = (PCOSA_MTA_HANDSETS_INFO)pMyObject->pHandsets;
-    ULONG                           ulCount;
-    
-    ulCount = CosaDmlMTAHandsetsGetNumberOfEntries(NULL);
-
-    if ( ulCount != 0 )
-    {
-        pHandsets = AnscAllocateMemory(ulCount * sizeof(COSA_MTA_HANDSETS_INFO));
-
-        memset( pHandsets, 0, ulCount * sizeof(COSA_MTA_HANDSETS_INFO));
-
-        pMyObject->pHandsets = pHandsets;
-    }
-
-    return ulCount;
+    return pMyObject->HandsetsNumber;
 }
 
 /**********************************************************************  
@@ -4105,16 +4091,77 @@ Handsets_GetEntry
         ULONG*                      pInsNumber
     )
 {
-    PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA    )g_pCosaBEManager->hMTA;
-    PCOSA_MTA_HANDSETS_INFO         pHandsets    = (PCOSA_MTA_HANDSETS_INFO)pMyObject->pHandsets;
+    PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
-    CosaDmlMTAHandsetsGetEntry(NULL, nIndex, &(pHandsets[nIndex]));
+    if (nIndex < pMyObject->HandsetsNumber)
+    {
+        *pInsNumber  = nIndex + 1;
 
-    pHandsets[nIndex].InstanceNumber = nIndex + 1;
+        return &pMyObject->pHandsets[nIndex];
+    }
 
-    *pInsNumber = nIndex + 1;
+    return NULL;
 
-    return &(pHandsets[nIndex]); /* return the handle */
+}
+
+BOOL
+Handsets_IsUpdated
+    (
+        ANSC_HANDLE                 hInsContext
+    )
+{
+    PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
+
+    if ( !pMyObject->HandsetsUpdateTime ) 
+    {
+        pMyObject->HandsetsUpdateTime = AnscGetTickInSeconds();
+
+        return TRUE;
+    }
+    
+    if ( pMyObject->HandsetsUpdateTime >= TIME_NO_NEGATIVE(AnscGetTickInSeconds() - HANDSETS_REFRESH_INTERVAL) )
+    {
+        return FALSE;
+    }
+    else 
+    {
+        pMyObject->HandsetsUpdateTime = AnscGetTickInSeconds();
+
+        return TRUE;
+    }
+}
+
+ULONG
+Handsets_Synchronize
+    (
+        ANSC_HANDLE                 hInsContext
+    )
+{
+    PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
+    ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+
+    if ( pMyObject->pHandsets )
+    {
+        AnscFreeMemory(pMyObject->pHandsets);
+        pMyObject->pHandsets = NULL;
+    }
+    
+    pMyObject->HandsetsNumber = 0;
+    
+    returnStatus = CosaDmlMTAGetHandsets
+        (
+            (ANSC_HANDLE)NULL, 
+            &pMyObject->HandsetsNumber,
+            &pMyObject->pHandsets
+        );
+
+    if ( returnStatus != ANSC_STATUS_SUCCESS )
+    {
+        pMyObject->pHandsets = NULL;
+        pMyObject->HandsetsNumber = 0;
+    }
+    
+    return 0;
 }
 
 /**********************************************************************  
@@ -4156,10 +4203,6 @@ Handsets_GetParamBoolValue
     )
 {
     PCOSA_MTA_HANDSETS_INFO         pInfo = (PCOSA_MTA_HANDSETS_INFO)hInsContext;
-
-    ULONG                           nIndex = pInfo->InstanceNumber - 1;
-
-    CosaDmlMTAHandsetsGetEntry(NULL, nIndex, pInfo);
 
     /* check the parameter name and return the corresponding value */
     if( AnscEqualString(ParamName, "Status", TRUE))
@@ -4311,10 +4354,6 @@ Handsets_GetParamStringValue
 {
     PCOSA_MTA_HANDSETS_INFO         pInfo = (PCOSA_MTA_HANDSETS_INFO)hInsContext;
 
-    ULONG                           nIndex = pInfo->InstanceNumber - 1;
-
-    CosaDmlMTAHandsetsGetEntry(NULL, nIndex, pInfo);
-
     /* check the parameter name and return the corresponding value */
     if( AnscEqualString(ParamName, "LastActiveTime", TRUE))
     {
@@ -4336,6 +4375,24 @@ Handsets_GetParamStringValue
     {
         /* collect value */
         AnscCopyString(pValue, pInfo->HandsetFirmware);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "OperatingTN", TRUE))
+    {
+        /* collect value */
+        // At present only TN1 will be assigned to DECT phones
+        //AnscCopyString(pValue, pInfo->OperatingTN);
+        AnscCopyString(pValue, "TN1");
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "SupportedTN", TRUE))
+    {
+        /* collect value */
+        AnscCopyString(pValue, pInfo->SupportedTN);
 
         return 0;
     }
@@ -4514,7 +4571,15 @@ Handsets_SetParamStringValue
         char*                       pString
     )
 {
+    PCOSA_MTA_HANDSETS_INFO         pInfo = (PCOSA_MTA_HANDSETS_INFO)hInsContext;
+
     /* check the parameter name and set the corresponding value */
+    if(AnscEqualString(ParamName, "OperatingTN", TRUE))
+    {
+        AnscCopyString(pInfo->OperatingTN, pString);
+
+        return TRUE;
+    }
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
@@ -4589,6 +4654,10 @@ Handsets_Commit
         ANSC_HANDLE                 hInsContext
     )
 {
+    PCOSA_MTA_HANDSETS_INFO         pInfo = (PCOSA_MTA_HANDSETS_INFO)hInsContext;
+
+    CosaDmlMTASetHandsets(NULL, pInfo);
+
     return 0;
 }
 
