@@ -139,7 +139,7 @@ static void _print_stack_backtrace(void)
 
         int fd;
         const char* path = "/nvram/MTaAgentSsp_backtrace";
-        fd = open(path, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+        fd = open(path, O_RDWR | O_CREAT);
         if (fd < 0)
         {
             fprintf(stderr, "failed to open backtrace file: %s", path);
@@ -371,7 +371,7 @@ int main(int argc, char* argv[])
         daemonize();
 
     /*This is used for ccsp recovery manager */
-    if (write_pid_file("/var/tmp/CcspPandMSsp.pid") != 0)
+    if (write_pid_file("/var/tmp/CcspMtaAgent.pid") != 0)
         fprintf(stderr, "%s: fail to write PID file\n", argv[0]);
 
     if (is_core_dump_opened())
