@@ -1022,13 +1022,17 @@ LineTable_GetEntryCount
     ULONG                           ulCount;
     
     ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
-
+fprintf(stderr, "### %s %d  ulCount=%ld\n", __func__, __LINE__, ulCount);
     if ( ulCount != 0 )
     {
         pLineTable = AnscAllocateMemory(ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
 
         memset( pLineTable, 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
 
+ULONG ul=0;
+for (ul=0; ul<ulCount; ul++) {
+pLineTable[ul].InstanceNumber = ul + 1;
+}
         pMyObject->pLineTable = pLineTable;
     }    
 
@@ -3425,10 +3429,10 @@ ServiceFlow_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "ServiceClass", TRUE))
+    if( AnscEqualString(ParamName, "ServiceClassName", TRUE))
     {
         /* collect value */
-        AnscCopyString(pValue, pFlow->ServiceClass);
+        AnscCopyString(pValue, pFlow->ServiceClassName);
 
         return 0;
     }

@@ -56,6 +56,14 @@
 #include "../middle_layer_src/cosa_apis.h"
 #include "../middle_layer_src/plugin_main_apis.h"
 
+#ifndef MTA_HAL_SHORT_VALUE_LEN
+#define  MTA_HAL_SHORT_VALUE_LEN   16
+#endif
+
+#ifndef MTA_HAL_LONG_VALUE_LEN
+#define  MTA_HAL_LONG_VALUE_LEN   64
+#endif
+
 /**********************************************************************
                 STRUCTURE AND CONSTANT DEFINITIONS
 **********************************************************************/
@@ -108,7 +116,7 @@ typedef  struct
 _COSA_MTA_SERVICE_FLOW
 {
     ULONG                           SFID;
-    char                            ServiceClass[256];
+    char                            ServiceClassName[256];
     char                            Direction[16];
     ULONG                           ScheduleType;
     BOOLEAN                         DefaultFlow;
@@ -153,12 +161,12 @@ COSA_MTA_HANDSETS_INFO,  *PCOSA_MTA_HANDSETS_INFO;
 typedef  struct
 _COSA_MTA_CALLS
 {
-    char                            Codec[64];
-    char                            RemoteCodec[64];
-    char                            CallStartTime[64];
-    char                            CallEndTime[64];
-    char                            CWErrorRate[16];
-    char                            PktLossConcealment[16];
+    CHAR                            Codec[64];
+    CHAR                            RemoteCodec[64];
+    CHAR                            CallStartTime[64];
+    CHAR                            CallEndTime[64];
+    CHAR                            CWErrorRate[MTA_HAL_SHORT_VALUE_LEN];
+    CHAR                            PktLossConcealment[MTA_HAL_SHORT_VALUE_LEN];
     BOOLEAN                         JitterBufferAdaptive;
     BOOLEAN                         Originator;
     ANSC_IPV4_ADDRESS               RemoteIPAddress;
@@ -215,10 +223,10 @@ _COSA_MTA_CALLS
     CHAR                            RemoteRFactor[16];                /* remote side RFactore (see local side) */
     CHAR                            RemoteExternalRFactor[16];        /* remote side ExternalRFactor (see local side) */
     BOOLEAN                         RemoteJitterBufferAdaptive;   	  /* remote side JitterBufferAdaptive (see local side) */
-    CHAR                            RemoteJitterBufRate[16];          /* remote side JitterBufRate (see local side) */
-    CHAR                            RemoteJBNominalDelay[16];         /* remote side JBNominalDelay (see local side) */
-    CHAR                            RemoteJBMaxDelay[16];             /* remote side JBMaxDelay (see local side) */
-    CHAR                            RemoteJBAbsMaxDelay[16];          /* remote side JBAbsMaxDelay (see local side) */
+    CHAR                            RemoteJitterBufRate[MTA_HAL_SHORT_VALUE_LEN];          /* remote side JitterBufRate (see local side) */
+    CHAR                            RemoteJBNominalDelay[MTA_HAL_SHORT_VALUE_LEN];         /* remote side JBNominalDelay (see local side) */
+    CHAR                            RemoteJBMaxDelay[MTA_HAL_SHORT_VALUE_LEN];             /* remote side JBMaxDelay (see local side) */
+    CHAR                            RemoteJBAbsMaxDelay[MTA_HAL_SHORT_VALUE_LEN];          /* remote side JBAbsMaxDelay (see local side) */
 }
 COSA_MTA_CALLS, *PCOSA_MTA_CALLS;
 

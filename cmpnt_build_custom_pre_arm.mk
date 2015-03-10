@@ -37,6 +37,16 @@ CFLAGS += $(TI_ARM_INC_DIR)
 
 LDFLAGS += -L$(SDK_PATH)/ti/netdk/src/uipc
 
+# SDK_VERSION comes from intel_usg
+ifeq ($(SDK_VERSION),)
+$(info *** SDK_VERSION not defined, set to 4.2 ***)
+SDK_VERSION = 4.2
+endif
+
+sdk_version := v$(SDK_VERSION)
+ifneq (,$(findstring v4.2,$(sdk_version)))
+# intel SDK v4.2 and below
+$(info *** SDK_VERSION is $(SDK_VERSION) ***)
 LDFLAGS += $(ldflags-y) -luipc -lpthread -lapi_dhcpv4c # -llmapi 
 
 ifeq ($(CONFIG_TI_PACM), y) 
@@ -44,25 +54,7 @@ ifeq ($(CONFIG_TI_PACM), y)
   LDFLAGS += -lkerb -lcertlib -lpacm_util -lpacm_mtacontrol_util -lpacm_sec_util -lpacm_prov_util -lpacm_snmp_util -lpacm_voim
 endif
 
-ifeq ($(CONFIG_TI_BBU), y)
-  CFLAGS += -DCONFIG_TI_BBU
-  LDFLAGS += -lbbu
-endif
 
-LDFLAGS += -lcurl -lcrypto
-
-ifeq ($(SDK_VERSION), 4.3.0.37)
-	CM_LDFLAGS = -L$(SDK_PATH)/ti/lib
-	CM_LDFLAGS += -lcm_mgnt
-	CM_LDFLAGS += -lall_docsis
-	CM_LDFLAGS += -lgetnextfreq
-	CM_LDFLAGS += -lticc
-	CM_LDFLAGS += -lti_sme
-	CM_LDFLAGS += -lsme
-	CM_LDFLAGS += -lhal_mxl_hrcls_srv
-	CM_LDFLAGS += -lhal_FST_srv
-	CM_LDFLAGS += -lm
-else
 	CM_LDFLAGS += -L$(SDK_PATH)/ti/lib
 	CM_LDFLAGS += -lcm_mgnt
 	CM_LDFLAGS += -ldschannellistfreqdb
@@ -119,13 +111,49 @@ else
 	CM_LDFLAGS += -lticc
 	CM_LDFLAGS += -lti_sme
 	CM_LDFLAGS += -lsme
+
+else
+# v4.3 and above
+$(info *** SDK_VERSION is $(SDK_VERSION) ***)
+LDFLAGS += -L$(SDK_PATH)/ti/netdk/src/ti_udhcp
+LDFLAGS += -L$(SDK_PATH)/ti/netdk/src/ti_dhcpv6
+LDFLAGS += $(ldflags-y) -luipc -lpthread -lapi_dhcpv4c -ldhcp4cApi # -llmapi 
+
+ifeq ($(CONFIG_TI_PACM), y) 
+  CFLAGS += -DCONFIG_TI_PACM
+  LDFLAGS += -lcertlib -lpacm_util
 endif
+
+# RDKB MOD, removed obsolete Intel libraries for SDK 4.3
+	CM_LDFLAGS += -L$(SDK_PATH)/ti/lib
+	CM_LDFLAGS += -lgetnextfreq
+	CM_LDFLAGS += -lticc 
+	CM_LDFLAGS += -lti_sme
+	CM_LDFLAGS += -lsme
+	CM_LDFLAGS += -lhal_mxl_hrcls_srv
+	CM_LDFLAGS += -lhal_FST_srv
+	CM_LDFLAGS += -lm
+	CM_LDFLAGS += -lticc
+	CM_LDFLAGS += -lti_sme
+	CM_LDFLAGS += -lsme
+# RDKB MOD END
+
+endif
+
+
 
 ifeq ($(CONFIG_SYSTEM_MOCA), y)
 	MOCA_LDFLAGS += -lmoca_mgnt
-	MOCA_LDFLAGS += -lmoca_api
+#	MOCA_LDFLAGS += -lmoca_api
 	CFLAGS += -DCONFIG_SYSTEM_MOCA
 endif
+
+ifeq ($(CONFIG_TI_BBU), y)
+  CFLAGS += -DCONFIG_TI_BBU
+  LDFLAGS += -lbbu
+endif
+
+LDFLAGS += -lcurl -lcrypto
 
 LDFLAGS += $(CM_LDFLAGS) $(MOCA_LDFLAGS)
 
