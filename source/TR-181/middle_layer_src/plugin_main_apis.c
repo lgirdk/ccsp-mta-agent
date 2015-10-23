@@ -192,13 +192,14 @@ CosaBackEndManagerInitialize
 
     AnscTraceWarning(("%s...\n", __FUNCTION__));
     printf("MTA DM initialize...\n");
-
+    CcspTraceWarning(("RDKB_SYSTEM_BOOT_UP_LOG : MTA DM initialize...\n"));
     /* Create all object */
 
     pMyObject->hMTA           = (ANSC_HANDLE)CosaMTACreate();
     AnscTraceWarning(("  CosaMTACreate done!\n"));
 
     printf("MTA DM initialization done!\n");
+    CcspTraceWarning(("RDKB_SYSTEM_BOOT_UP_LOG : MTA DM initialization done!\n"));
     return returnStatus;
 }
 

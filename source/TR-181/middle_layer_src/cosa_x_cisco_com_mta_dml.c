@@ -173,7 +173,8 @@ X_CISCO_COM_MTA_GetParamBoolValue
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     PCOSA_DML_MTA_LOG               pCfg          = (PCOSA_DML_MTA_LOG   )&pMyObject->MtaLog;
-
+	BOOL                       btemp;
+	
     /* check the parameter name and return the corresponding value */
     if( AnscEqualString(ParamName, "pktcMtaDevEnabled", TRUE))
     {
@@ -186,11 +187,27 @@ X_CISCO_COM_MTA_GetParamBoolValue
     if( AnscEqualString(ParamName, "DSXLogEnable", TRUE))
     {
         /* collect value */
-        CosaDmlMTAGetDSXLogEnable(NULL, pBool);
+        CosaDmlMTAGetDSXLogEnable(NULL, &btemp);
+		*pBool = btemp;
         return TRUE;
     }
 
     if( AnscEqualString(ParamName, "ClearDSXLog", TRUE))
+    {
+        /* collect value */
+        *pBool = FALSE;
+        return TRUE;
+    }
+
+	if( AnscEqualString(ParamName, "CallSignallingLogEnable", TRUE))
+    {
+        /* collect value */
+		CosaDmlMTAGetCallSignallingLogEnable(NULL, &btemp);
+		*pBool = btemp;
+        return TRUE;
+    }
+
+    if( AnscEqualString(ParamName, "ClearCallSignallingLog", TRUE))
     {
         /* collect value */
         *pBool = FALSE;
@@ -471,6 +488,22 @@ X_CISCO_COM_MTA_GetParamUlongValue
         return TRUE;
     }
 
+	if( AnscEqualString(ParamName, "MTAResetCount", TRUE) )
+	{
+		if (CosaDmlMtaGetResetCount(NULL,MTA_RESET,puLong) != ANSC_STATUS_SUCCESS)
+			return FALSE;
+
+		return TRUE;
+	}
+
+	if( AnscEqualString(ParamName, "LineResetCount", TRUE) )
+	{
+		if (CosaDmlMtaGetResetCount(NULL,LINE_RESET,puLong) != ANSC_STATUS_SUCCESS)
+			return FALSE;
+
+		return TRUE;
+	}
+
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
 }
@@ -693,7 +726,7 @@ X_CISCO_COM_MTA_SetParamBoolValue
     if( AnscEqualString(ParamName, "ClearDSXLog", TRUE))
     {
         /* collect value */
-        CosaDmlMTAClearDSXLog(NULL);
+        CosaDmlMTAClearDSXLog(NULL,bValue);
         return TRUE;
     }
 
@@ -702,6 +735,18 @@ X_CISCO_COM_MTA_SetParamBoolValue
         /* collect value */
         CosaDmlMTASetDSXLogEnable(NULL, bValue);
         return TRUE;
+    }
+
+	if( AnscEqualString(ParamName, "CallSignallingLogEnable", TRUE))
+    {
+		CosaDmlMTASetCallSignallingLogEnable(NULL, bValue);
+        return TRUE;
+    }
+
+    if( AnscEqualString(ParamName, "ClearCallSignallingLog", TRUE))
+    {
+         CosaDmlMTAClearCallSignallingLog(NULL,bValue);
+         return TRUE;
     }
 
     if( AnscEqualString(ParamName, "EnableDECTLog", TRUE))
@@ -1740,6 +1785,10 @@ CALLP_GetParamStringValue
     )
 {
     COSA_MTA_CAPPL                  CALLP = {0};
+    PCOSA_MTA_LINETABLE_INFO        pInfo = (PCOSA_MTA_LINETABLE_INFO)hInsContext;
+    ULONG                           nIndex = pInfo->InstanceNumber - 1;
+
+    CosaDmlMTALineTableGetEntry(NULL, nIndex, pInfo);
 
     /* check the parameter name and return the corresponding value */
     if( AnscEqualString(ParamName, "LCState", TRUE))
@@ -2319,6 +2368,8 @@ Calls_GetParamUlongValue
         return TRUE;
     }
 
+    
+
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
 }
@@ -2428,7 +2479,7 @@ Calls_GetParamStringValue
 
         return 0;
     }
-
+	/********************zqiu >>**********************************************/
 	if( AnscEqualString(ParamName, "CWErrors", TRUE))
     {
         /* collect value */
@@ -2861,7 +2912,7 @@ Calls_GetParamStringValue
 
         return 0;
     }
-
+	/********************zqiu <<**********************************************/
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return -1;
 }
@@ -3657,6 +3708,50 @@ Dect_GetParamBoolValue
         CosaDmlMTADectGetRegistrationMode(hInsContext, pBool);
         return TRUE;
     }
+
+    /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return FALSE;
+}
+
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        BOOL
+        Dect_GetParamIntValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                int*                        pInt
+            );
+
+    description:
+
+        This function is called to retrieve integer parameter value; 
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                int*                        pInt
+                The buffer of returned integer value;
+
+    return:     TRUE if succeeded.
+
+**********************************************************************/
+BOOL
+Dect_GetParamIntValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        int*                        pInt
+    )
+{
+    /* check the parameter name and return the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
