@@ -498,11 +498,58 @@ CosaDmlMTASetDSXLogEnable
 ANSC_STATUS
 CosaDmlMTAClearDSXLog
     (
-        ANSC_HANDLE                 hContext
+        ANSC_HANDLE                 hContext,
+		BOOLEAN                     ClearLog
     )
 {
-    return ANSC_STATUS_SUCCESS;
+	
+	if ( mta_hal_ClearDSXLog(ClearLog) == RETURN_OK ) 
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
 }
+
+// CallSignalling apis
+ANSC_STATUS
+CosaDmlMTAGetCallSignallingLogEnable
+	(
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     *pBool
+    )
+{
+	if ( mta_hal_GetCallSignallingLogEnable(pBool) == RETURN_OK ) 
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+}
+
+ANSC_STATUS
+CosaDmlMTASetCallSignallingLogEnable
+    (
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     Bool
+    )
+{
+    if ( mta_hal_SetCallSignallingLogEnable(Bool) == RETURN_OK ) 
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+}
+
+ANSC_STATUS
+CosaDmlMTAClearCallSignallingLog
+    (
+        ANSC_HANDLE                 hContext,
+		BOOLEAN                     ClearLog
+    )
+{
+    if ( mta_hal_ClearCallSignallingLog(ClearLog) == RETURN_OK ) 
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+}
+
+// CallSignalling apis ends
 
 ANSC_STATUS
 CosaDmlMtaBatteryGetInstalled
@@ -708,6 +755,31 @@ CosaDmlMtaGetDectLog
 
     //AnscCopyMemory(*ppConf, &DectLog, sizeof(DectLog) );
 
+    return ANSC_STATUS_SUCCESS;
+}
+
+ANSC_STATUS
+CosaDmlMtaGetResetCount
+    (
+        ANSC_HANDLE                 hContext,
+		MTA_RESET_TYPE              type,
+        ULONG                       *pValue
+    )
+{
+	switch(type)
+	{
+		case MTA_RESET:{
+				mta_hal_Get_MTAResetCount(pValue);
+			 }
+			break;
+		case LINE_RESET:{
+				mta_hal_Get_LineResetCount(pValue);
+			}
+			break;
+		default:{
+			 AnscTraceWarning(("Invalide type %s, %d\n", __FUNCTION__, __LINE__));
+			}
+	}
     return ANSC_STATUS_SUCCESS;
 }
 

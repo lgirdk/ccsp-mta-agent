@@ -190,57 +190,57 @@ _COSA_MTA_CALLS
     BOOLEAN                         Originator;
     ANSC_IPV4_ADDRESS               RemoteIPAddress;
     ULONG                           CallDuration;
-    CHAR                            CWErrors[16];                     /* code word errors on this channel */
-    CHAR                            SNR[16];                          /* signal to noise ratio * 256 */
-    CHAR                            MicroReflections[16];             /* return loss measurement */
-    CHAR                            DownstreamPower[16];              /* downstream power in dbmv */
-    CHAR                            UpstreamPower[16];                /* upstream power in dbmv */
-    CHAR                            EQIAverage[16];                   /* EQI average */    
-    CHAR                            EQIMinimum[16];                   /* EQI minimum */
-    CHAR                            EQIMaximum[16];                   /* EQI maximum */
-    CHAR                            EQIInstantaneous[16];             /* EQI instantaneous */
-    CHAR                            MOS_LQ[16];                       /* mean opinion score of listening quality, 10-50 */
-    CHAR                            MOS_CQ[16];                       /* mean opinion score of conversational quality, 10-50 */
-    CHAR                            EchoReturnLoss[16];               /* residual echo return loss, in db */
-    CHAR                            SignalLevel[16];                  /* voice signal relative level, in db */
-    CHAR                            NoiseLevel[16];                   /* noise relative level, in db */
-    CHAR                            LossRate[16];                     /* fraction of RTP data packet loss * 256 */
-    CHAR                            DiscardRate[16];                  /* fraction of RTP data packet discarded * 256 */
-    CHAR                            BurstDensity[16];                 /* fraction of bursting data packet * 256 */
-    CHAR                            GapDensity[16];                   /* fraction of packets within inter-burst gap * 256 */
-    CHAR                            BurstDuration[16];                /* mean duration of bursts, in milliseconds */
-    CHAR                            GapDuration[16];                  /* mean duration of gaps, in milliseconds */
-    CHAR                            RoundTripDelay[16];               /* most recent measured RTD, in milliseconds */
-    CHAR                            Gmin[16];                         /* local gap threshold */
-    CHAR                            RFactor[16];                      /* voice quality evaluation for this RTP session */
-    CHAR                            ExternalRFactor[16];              /* voice quality evaluation for segment on network external to this RTP session */
-    CHAR                            JitterBufRate[16];                /* adjustment rate of jitter buffer, in milliseconds */
-    CHAR                            JBNominalDelay[16];               /* nominal jitter buffer length, in milliseconds */
-    CHAR                            JBMaxDelay[16];                   /* maximum jitter buffer length, in milliseconds */
-    CHAR                            JBAbsMaxDelay[16];                /* absolute maximum delay, in milliseconds */
-    CHAR                            TxPackets[16];                    /* count of transmitted packets */
-    CHAR                            TxOctets[16];                     /* count of transmitted octet packets */
-    CHAR                            RxPackets[16];                    /* count of received packets */
-    CHAR                            RxOctets[16];                     /* count of received octet packets */
-    CHAR                            PacketLoss[16];                   /* count of lost packets */
-    CHAR                            IntervalJitter[16];               /* stat variance of packet interarrival time, in milliseconds */
-    CHAR                            RemoteIntervalJitter[16];         /* remote sie IntervalJitter (see local side) */
-    CHAR                            RemoteMOS_LQ[16];                 /* remote side MOS_LQ (see local side) */
-    CHAR                            RemoteMOS_CQ[16];                 /* remote side MOS_CQ (see local side) */
-    CHAR                            RemoteEchoReturnLoss[16];         /* remote side EchoReturnLoss (see local side) */
-    CHAR                            RemoteSignalLevel[16];            /* remote side SignalLevel (see local side) */
-    CHAR                            RemoteNoiseLevel[16];             /* remote side NoiseLevel (see local side) */
-    CHAR                            RemoteLossRate[16];               /* remote side LossRate (see local side) */
-    CHAR                            RemotePktLossConcealment[16];     /* remote side PktLossConcealment (see local side) */
-    CHAR                            RemoteDiscardRate[16];            /* remote side DiscardRate (see local side) */
-    CHAR                            RemoteBurstDensity[16];           /* remote side BurstDensity (see local side) */
-    CHAR                            RemoteGapDensity[16];             /* remote side GapDensity (see local side) */
-    CHAR                            RemoteBurstDuration[16];          /* remote side BurstDuration (see local side) */
-    CHAR                            RemoteGapDuration[16];            /* remote side GapDuration (see local side) */
-    CHAR                            RemoteRoundTripDelay[16];         /* remote side RoundTripDelay (see local side) */
-    CHAR                            RemoteGmin[16];                   /* remote side Gmin (see local side) */
-    CHAR                            RemoteRFactor[16];                /* remote side RFactore (see local side) */
-    CHAR                            RemoteExternalRFactor[16];        /* remote side ExternalRFactor (see local side) */
+    CHAR                            CWErrors[MTA_HAL_SHORT_VALUE_LEN];                     /* code word errors on this channel */
+    CHAR                            SNR[MTA_HAL_SHORT_VALUE_LEN];                          /* signal to noise ratio * 256 */
+    CHAR                            MicroReflections[MTA_HAL_SHORT_VALUE_LEN];             /* return loss measurement */
+    CHAR                            DownstreamPower[MTA_HAL_SHORT_VALUE_LEN];              /* downstream power in dbmv */
+    CHAR                            UpstreamPower[MTA_HAL_SHORT_VALUE_LEN];                /* upstream power in dbmv */
+    CHAR                            EQIAverage[MTA_HAL_SHORT_VALUE_LEN];                   /* EQI average */    
+    CHAR                            EQIMinimum[MTA_HAL_SHORT_VALUE_LEN];                   /* EQI minimum */
+    CHAR                            EQIMaximum[MTA_HAL_SHORT_VALUE_LEN];                   /* EQI maximum */
+    CHAR                            EQIInstantaneous[MTA_HAL_SHORT_VALUE_LEN];             /* EQI instantaneous */
+    CHAR                            MOS_LQ[MTA_HAL_SHORT_VALUE_LEN];                       /* mean opinion score of listening quality, 10-50 */
+    CHAR                            MOS_CQ[MTA_HAL_SHORT_VALUE_LEN];                       /* mean opinion score of conversational quality, 10-50 */
+    CHAR                            EchoReturnLoss[MTA_HAL_SHORT_VALUE_LEN];               /* residual echo return loss, in db */
+    CHAR                            SignalLevel[MTA_HAL_SHORT_VALUE_LEN];                  /* voice signal relative level, in db */
+    CHAR                            NoiseLevel[MTA_HAL_SHORT_VALUE_LEN];                   /* noise relative level, in db */
+    CHAR                            LossRate[MTA_HAL_SHORT_VALUE_LEN];                     /* fraction of RTP data packet loss * 256 */
+    CHAR                            DiscardRate[MTA_HAL_SHORT_VALUE_LEN];                  /* fraction of RTP data packet discarded * 256 */
+    CHAR                            BurstDensity[MTA_HAL_SHORT_VALUE_LEN];                 /* fraction of bursting data packet * 256 */
+    CHAR                            GapDensity[MTA_HAL_SHORT_VALUE_LEN];                   /* fraction of packets within inter-burst gap * 256 */
+    CHAR                            BurstDuration[MTA_HAL_SHORT_VALUE_LEN];                /* mean duration of bursts, in milliseconds */
+    CHAR                            GapDuration[MTA_HAL_SHORT_VALUE_LEN];                  /* mean duration of gaps, in milliseconds */
+    CHAR                            RoundTripDelay[MTA_HAL_SHORT_VALUE_LEN];               /* most recent measured RTD, in milliseconds */
+    CHAR                            Gmin[MTA_HAL_SHORT_VALUE_LEN];                         /* local gap threshold */
+    CHAR                            RFactor[MTA_HAL_SHORT_VALUE_LEN];                      /* voice quality evaluation for this RTP session */
+    CHAR                            ExternalRFactor[MTA_HAL_SHORT_VALUE_LEN];              /* voice quality evaluation for segment on network external to this RTP session */
+    CHAR                            JitterBufRate[MTA_HAL_SHORT_VALUE_LEN];                /* adjustment rate of jitter buffer, in milliseconds */
+    CHAR                            JBNominalDelay[MTA_HAL_SHORT_VALUE_LEN];               /* nominal jitter buffer length, in milliseconds */
+    CHAR                            JBMaxDelay[MTA_HAL_SHORT_VALUE_LEN];                   /* maximum jitter buffer length, in milliseconds */
+    CHAR                            JBAbsMaxDelay[MTA_HAL_SHORT_VALUE_LEN];                /* absolute maximum delay, in milliseconds */
+    CHAR                            TxPackets[MTA_HAL_SHORT_VALUE_LEN];                    /* count of transmitted packets */
+    CHAR                            TxOctets[MTA_HAL_SHORT_VALUE_LEN];                     /* count of transmitted octet packets */
+    CHAR                            RxPackets[MTA_HAL_SHORT_VALUE_LEN];                    /* count of received packets */
+    CHAR                            RxOctets[MTA_HAL_SHORT_VALUE_LEN];                     /* count of received octet packets */
+    CHAR                            PacketLoss[MTA_HAL_SHORT_VALUE_LEN];                   /* count of lost packets */
+    CHAR                            IntervalJitter[MTA_HAL_SHORT_VALUE_LEN];               /* stat variance of packet interarrival time, in milliseconds */
+    CHAR                            RemoteIntervalJitter[MTA_HAL_SHORT_VALUE_LEN];         /* remote sie IntervalJitter (see local side) */
+    CHAR                            RemoteMOS_LQ[MTA_HAL_SHORT_VALUE_LEN];                 /* remote side MOS_LQ (see local side) */
+    CHAR                            RemoteMOS_CQ[MTA_HAL_SHORT_VALUE_LEN];                 /* remote side MOS_CQ (see local side) */
+    CHAR                            RemoteEchoReturnLoss[MTA_HAL_SHORT_VALUE_LEN];         /* remote side EchoReturnLoss (see local side) */
+    CHAR                            RemoteSignalLevel[MTA_HAL_SHORT_VALUE_LEN];            /* remote side SignalLevel (see local side) */
+    CHAR                            RemoteNoiseLevel[MTA_HAL_SHORT_VALUE_LEN];             /* remote side NoiseLevel (see local side) */
+    CHAR                            RemoteLossRate[MTA_HAL_SHORT_VALUE_LEN];               /* remote side LossRate (see local side) */
+    CHAR                            RemotePktLossConcealment[MTA_HAL_SHORT_VALUE_LEN];     /* remote side PktLossConcealment (see local side) */
+    CHAR                            RemoteDiscardRate[MTA_HAL_SHORT_VALUE_LEN];            /* remote side DiscardRate (see local side) */
+    CHAR                            RemoteBurstDensity[MTA_HAL_SHORT_VALUE_LEN];           /* remote side BurstDensity (see local side) */
+    CHAR                            RemoteGapDensity[MTA_HAL_SHORT_VALUE_LEN];             /* remote side GapDensity (see local side) */
+    CHAR                            RemoteBurstDuration[MTA_HAL_SHORT_VALUE_LEN];          /* remote side BurstDuration (see local side) */
+    CHAR                            RemoteGapDuration[MTA_HAL_SHORT_VALUE_LEN];            /* remote side GapDuration (see local side) */
+    CHAR                            RemoteRoundTripDelay[MTA_HAL_SHORT_VALUE_LEN];         /* remote side RoundTripDelay (see local side) */
+    CHAR                            RemoteGmin[MTA_HAL_SHORT_VALUE_LEN];                   /* remote side Gmin (see local side) */
+    CHAR                            RemoteRFactor[MTA_HAL_SHORT_VALUE_LEN];                /* remote side RFactore (see local side) */
+    CHAR                            RemoteExternalRFactor[MTA_HAL_SHORT_VALUE_LEN];        /* remote side ExternalRFactor (see local side) */
     BOOLEAN                         RemoteJitterBufferAdaptive;   	  /* remote side JitterBufferAdaptive (see local side) */
     CHAR                            RemoteJitterBufRate[MTA_HAL_SHORT_VALUE_LEN];          /* remote side JitterBufRate (see local side) */
     CHAR                            RemoteJBNominalDelay[MTA_HAL_SHORT_VALUE_LEN];         /* remote side JBNominalDelay (see local side) */
@@ -256,10 +256,10 @@ _COSA_MTA_LINETABLE_INFO
 
     ULONG                           LineNumber;
     ULONG                           Status; /* 1 = OnHook; 2 = OffHook */
-    char                            HazardousPotential[64];
-    char                            ForeignEMF[64];
+    char                            HazardousPotential[128];
+    char                            ForeignEMF[128];
     char                            ResistiveFaults[128];
-    char                            ReceiverOffHook[64];
+    char                            ReceiverOffHook[128];
     char                            RingerEquivalency[64];
     char                            CAName[64];
     ULONG                           CAPort;
@@ -288,6 +288,12 @@ _COSA_MTA_DSXLOG
     ULONG                           Level;
 }
 COSA_MTA_DSXLOG,  *PCOSA_MTA_DSXLOG;
+
+typedef enum _MTA_RESET_TYPE
+{
+	MTA_RESET=1,
+	LINE_RESET
+}MTA_RESET_TYPE;
 
 /**********************************************************************
                 FUNCTION PROTOTYPES
@@ -482,7 +488,37 @@ CosaDmlMTASetDSXLogEnable
 ANSC_STATUS
 CosaDmlMTAClearDSXLog
     (
-        ANSC_HANDLE                 hContext
+        ANSC_HANDLE                 hContext,
+		BOOLEAN                     ClearLog
+    );
+
+ANSC_STATUS
+CosaDmlMTAGetCallSignallingLogEnable
+	(
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     *pBool
+    );
+
+ANSC_STATUS
+CosaDmlMTASetCallSignallingLogEnable
+    (
+        ANSC_HANDLE                 hContext,
+        BOOLEAN                     Bool
+    );
+
+ANSC_STATUS
+CosaDmlMTAClearCallSignallingLog
+    (
+        ANSC_HANDLE                 hContext,
+		BOOLEAN                     ClearLog
+    );
+
+ANSC_STATUS
+CosaDmlMtaGetResetCount
+    (
+        ANSC_HANDLE                 hContext,
+		MTA_RESET_TYPE              type,
+        ULONG                       *pValue
     );
 
 typedef  struct
