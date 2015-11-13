@@ -44,6 +44,7 @@
 #include "ccsp_dm_api.h"
 #include "pcdapi.h"
 //#include <docsis_ext_interface.h>
+#define DEBUG_INI_NAME  "/etc/debug.ini"
 
 PDSLH_CPE_CONTROLLER_OBJECT     pDslhCpeController      = NULL;
 PCOMPONENT_COMMON_DM            g_pComponent_Common_Dm  = NULL;
@@ -345,7 +346,7 @@ int main(int argc, char* argv[])
     extern ANSC_HANDLE bus_handle;
 	
 	#ifdef FEATURE_SUPPORT_RDKLOG
-	rdk_logger_init("/fss/gw/lib/debug.ini");
+	rdk_logger_init(DEBUG_INI_NAME);
 	#endif
 
     /*
