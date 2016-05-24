@@ -454,6 +454,17 @@
 
         </parameter>
 
+	  <parameter>
+	  
+		<name>ClearLineStats</name>
+	  
+		<type>unsignedInt</type>
+	  
+		<syntax>uint32</syntax>
+
+	    <writable>true</writable>
+	   
+	  </parameter>
         
       </parameters>
       
