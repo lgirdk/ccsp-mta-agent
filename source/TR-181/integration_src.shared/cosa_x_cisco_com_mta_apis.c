@@ -779,6 +779,16 @@ CosaDmlMtaGetResetCount
     return ANSC_STATUS_SUCCESS;
 }
 
+ANSC_STATUS
+CosaDmlMtaClearCalls
+    (
+		ULONG InstanceNumber
+    )
+{
+	mta_hal_ClearCalls( InstanceNumber );
+
+    return ANSC_STATUS_SUCCESS;
+}
 // #endif /* CONFIG_TI_PACM */
 
 ANSC_STATUS
