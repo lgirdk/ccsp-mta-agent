@@ -521,6 +521,12 @@ CosaDmlMtaGetResetCount
         ULONG                       *pValue
     );
 
+ANSC_STATUS
+CosaDmlMtaClearCalls
+    (
+		ULONG InstanceNumber
+    );
+
 typedef  struct
 _COSA_DML_MTA_LOG
 {

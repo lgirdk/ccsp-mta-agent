@@ -504,6 +504,13 @@ X_CISCO_COM_MTA_GetParamUlongValue
 		return TRUE;
 	}
 
+	if( AnscEqualString(ParamName, "ClearLineStats", TRUE) )
+	{
+        *puLong = 0;
+
+		return TRUE;
+	}
+
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
 }
@@ -864,6 +871,13 @@ X_CISCO_COM_MTA_SetParamUlongValue
     if( AnscEqualString(ParamName, "pktcSigDefMediaStreamTos", TRUE) )
     {
         pPktc->pktcSigDefMediaStreamTos = uValue;
+
+        return TRUE;
+    }
+
+    if( AnscEqualString(ParamName, "ClearLineStats", TRUE) )
+    {
+		CosaDmlMtaClearCalls( uValue );
 
         return TRUE;
     }
