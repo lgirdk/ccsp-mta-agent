@@ -434,6 +434,37 @@
           <syntax>uint32</syntax>
 
         </parameter>
+		<parameter>
+
+          <name>MTAResetCount</name>
+
+          <type>unsignedInt</type>
+
+          <syntax>uint32</syntax>
+
+        </parameter>
+
+		<parameter>
+
+          <name>LineResetCount</name>
+
+          <type>unsignedInt</type>
+
+          <syntax>uint32</syntax>
+
+        </parameter>
+
+	  <parameter>
+	  
+		<name>ClearLineStats</name>
+	  
+		<type>unsignedInt</type>
+	  
+		<syntax>uint32</syntax>
+
+	    <writable>true</writable>
+	   
+	  </parameter>
         
       </parameters>
       
@@ -1695,6 +1726,8 @@
 
             <func_GetParamBoolValue>Dect_GetParamBoolValue</func_GetParamBoolValue>
 
+            <func_GetParamIntValue>Dect_GetParamIntValue</func_GetParamIntValue>
+
             <func_GetParamUlongValue>Dect_GetParamUlongValue</func_GetParamUlongValue>
 
             <func_GetParamStringValue>Dect_GetParamStringValue</func_GetParamStringValue>
@@ -1829,7 +1862,17 @@
 
               <func_GetParamBoolValue>Handsets_GetParamBoolValue</func_GetParamBoolValue>
 
+              <func_GetParamIntValue>Handsets_GetParamIntValue</func_GetParamIntValue>
+
+              <func_GetParamUlongValue>Handsets_GetParamUlongValue</func_GetParamUlongValue>
+
               <func_GetParamStringValue>Handsets_GetParamStringValue</func_GetParamStringValue>
+
+              <func_SetParamBoolValue>Handsets_SetParamBoolValue</func_SetParamBoolValue>
+
+              <func_SetParamIntValue>Handsets_SetParamIntValue</func_SetParamIntValue>
+
+              <func_SetParamUlongValue>Handsets_SetParamUlongValue</func_SetParamUlongValue>
 
               <func_SetParamStringValue>Handsets_SetParamStringValue</func_SetParamStringValue>
 
