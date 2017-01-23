@@ -72,8 +72,8 @@
 #ifndef  _COSA_MTA_APIS_H
 #define  _COSA_MTA_APIS_H
 
-#include "../middle_layer_src/cosa_apis.h"
-#include "../middle_layer_src/plugin_main_apis.h"
+#include "cosa_apis.h"
+#include "plugin_main_apis.h"
 
 #ifndef MTA_HAL_SHORT_VALUE_LEN
 #define  MTA_HAL_SHORT_VALUE_LEN   16
