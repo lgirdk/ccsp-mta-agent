@@ -41,6 +41,9 @@
 
 #include "ssp_global.h"
 #include "stdlib.h"
+#ifdef INCLUDE_BREAKPAD
+#include "breakpad_wrapper.h"
+#endif
 #include "ccsp_dm_api.h"
 #ifdef USE_PCD_API_EXCEPTION_HANDLING
 #include "pcdapi.h"
@@ -409,7 +412,9 @@ int main(int argc, char* argv[])
     /*This is used for ccsp recovery manager */
     if (write_pid_file("/var/tmp/CcspMtaAgent.pid") != 0)
         fprintf(stderr, "%s: fail to write PID file\n", argv[0]);
-
+#ifdef INCLUDE_BREAKPAD
+    breakpad_ExceptionHandler();
+#else
     if (is_core_dump_opened())
     {
         signal(SIGUSR1, sig_handler);
@@ -432,6 +437,7 @@ int main(int argc, char* argv[])
     signal(SIGHUP, sig_handler);
 	signal(SIGALRM, sig_handler);
     }
+#endif
 
 #ifdef USE_PCD_API_EXCEPTION_HANDLING
     printf("Registering PCD exception handler CcspMTAAgent\n");
