@@ -334,6 +334,7 @@ int write_pid_file(const char *file)
     pid = getpid();
     fprintf(fp, "%d\n", pid);
     fclose(fp);
+    return 0;
 }
 
 #endif
