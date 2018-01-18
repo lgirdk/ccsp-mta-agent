@@ -6222,3 +6222,156 @@ Battery_GetParamStringValue
 // #endif /* CONFIG_TI_BBU */
 
 // #endif /* CONFIG_TI_PACM */
+
+/***********************************************************************
+
+ APIs for Object:
+
+    X_RDKCENTRAL_COM_MTA.
+
+    *  X_RDKCENTRAL_COM_MTA_GetParamUlongValue
+    *  X_RDKCENTRAL_COM_MTA_GetParamStringValue
+
+***********************************************************************/
+
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        BOOL
+        X_RDKCENTRAL_COM_MTA_GetParamUlongValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                ULONG*                      puLong
+            );
+
+    description:
+
+        This function is called to retrieve ULONG parameter value; 
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                ULONG*                      puLong
+                The buffer of returned ULONG value;
+
+    return:     TRUE if succeeded.
+
+**********************************************************************/
+BOOL
+X_RDKCENTRAL_COM_MTA_GetParamUlongValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        ULONG*                      puLong
+    )
+{
+	/* check the parameter name and return the corresponding value */
+
+	if( AnscEqualString(ParamName, "Ipv4DhcpStatus", TRUE) )
+	{
+		ULONG Ipv4DhcpStatus = 0, 
+		      Ipv6DhcpStatus = 0;
+		
+        CosaDmlMtaGetDhcpStatus( &Ipv4DhcpStatus, &Ipv6DhcpStatus );
+		*puLong = Ipv4DhcpStatus;
+		return TRUE;
+	}
+
+	if( AnscEqualString(ParamName, "Ipv6DhcpStatus", TRUE) )
+	{
+		ULONG Ipv4DhcpStatus = 0, 
+		      Ipv6DhcpStatus = 0;
+		
+        CosaDmlMtaGetDhcpStatus( &Ipv4DhcpStatus, &Ipv6DhcpStatus );
+		*puLong = Ipv6DhcpStatus;
+		return TRUE;
+	}
+
+	if( AnscEqualString(ParamName, "ConfigFileStatus", TRUE) )
+	{
+        CosaDmlMtaGetConfigFileStatus( puLong );
+		return TRUE;
+	}
+
+    /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return FALSE;
+}
+
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        ULONG
+        X_RDKCENTRAL_COM_MTA_GetParamStringValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                char*                       pValue,
+                ULONG*                      pUlSize
+            );
+
+    description:
+
+        This function is called to retrieve string parameter value; 
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                char*                       pValue,
+                The string value buffer;
+
+                ULONG*                      pUlSize
+                The buffer of length of string value;
+                Usually size of 1023 will be used.
+                If it's not big enough, put required size here and return 1;
+
+    return:     0 if succeeded;
+                1 if short of buffer size; (*pUlSize = required size)
+                -1 if not supported.
+
+**********************************************************************/
+ULONG
+X_RDKCENTRAL_COM_MTA_GetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pValue,
+        ULONG*                      pUlSize
+    )
+{
+	/* check the parameter name and return the corresponding value */
+
+    if( AnscEqualString(ParamName, "LineRegisterStatus", TRUE) )
+    {
+		CHAR acLineRegisterStatus[ 128 ] = { 0 };
+
+        /* collect value */
+
+		CosaDmlMtaGetLineRegisterStatus( acLineRegisterStatus );
+        if ( AnscSizeOfString( acLineRegisterStatus ) < *pUlSize)
+        {
+            AnscCopyString(pValue, acLineRegisterStatus );
+		    return 0;
+        }
+        else
+        {
+            *pUlSize = AnscSizeOfString( acLineRegisterStatus )+1;
+            return 1;
+        }
+    }
+
+    /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return -1;
+}

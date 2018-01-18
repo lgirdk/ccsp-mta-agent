@@ -669,6 +669,24 @@ CosaDmlMtaBatteryGetInfo
 
 // #endif /* CONFIG_TI_BBU */
 
+ANSC_STATUS
+CosaDmlMtaGetDhcpStatus
+    (
+		PULONG pIpv4DhcpStatus,
+		PULONG pIpv6DhcpStatus
+    );
+
+ANSC_STATUS
+CosaDmlMtaGetConfigFileStatus
+    (
+		PULONG pConfigFileStatus
+    );
+
+ANSC_STATUS
+CosaDmlMtaGetLineRegisterStatus
+    (
+		PCHAR pcLineRegisterStatus
+    );
 #endif /* _COSA_MTA_APIS_H */
 
 //#endif /* CONFIG_TI_PACM */

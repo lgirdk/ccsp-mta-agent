@@ -2284,6 +2284,66 @@
       
     </object>
 
+    <object>
+      
+      <name>X_RDKCENTRAL-COM_MTA</name>
+
+      <objectType>object</objectType>
+
+      <functions>
+
+        <func_GetParamUlongValue>X_RDKCENTRAL_COM_MTA_GetParamUlongValue</func_GetParamUlongValue>
+
+        <func_GetParamStringValue>X_RDKCENTRAL_COM_MTA_GetParamStringValue</func_GetParamStringValue>
+
+      </functions>
+      
+      <parameters>
+
+		    <parameter>
+
+		      <name>Ipv4DhcpStatus</name>
+
+	          <type>string: Init(0),Start(1),Complete(2),Error(3)</type>
+
+	          <syntax>uint32/mapped</syntax>
+
+		    </parameter>
+
+		    <parameter>
+
+		      <name>Ipv6DhcpStatus</name>
+
+	          <type>string: Init(0),Start(1),Complete(2),Error(3)</type>
+	          
+	          <syntax>uint32/mapped</syntax>
+
+		    </parameter>
+
+		    <parameter>
+
+		      <name>ConfigFileStatus</name>
+
+	          <type>string: Init(0),Start(1),Complete(2),Error(3)</type>
+	          
+	          <syntax>uint32/mapped</syntax>
+
+		    </parameter>
+	        
+		    <parameter>
+
+		      <name>LineRegisterStatus</name>
+
+	          <type>string</type>
+	          
+	          <syntax>string</syntax>
+
+		    </parameter>
+
+        </parameters>
+
+    </object>
+
   </objects>
 
   </dataModelInfo>

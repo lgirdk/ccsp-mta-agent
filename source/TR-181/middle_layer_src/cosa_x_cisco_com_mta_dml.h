@@ -338,6 +338,23 @@ Battery_GetParamStringValue
     );
 #endif /* CONFIG_TI_BBU */
 
+BOOL
+X_RDKCENTRAL_COM_MTA_GetParamUlongValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        ULONG*                      puLong
+    );
+
+ULONG
+X_RDKCENTRAL_COM_MTA_GetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pValue,
+        ULONG*                      pUlSize
+    );
+
 #endif /* _COSA_MTA_DML_H */
 
 // #endif /* CONFIG_TI_PACM */

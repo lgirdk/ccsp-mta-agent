@@ -793,4 +793,78 @@ CosaDmlMtaClearCalls
 
     return ANSC_STATUS_SUCCESS;
 }
-// #endif /* CONFIG_TI_PACM */
+
+ANSC_STATUS
+CosaDmlMtaGetDhcpStatus
+    (
+		PULONG pIpv4DhcpStatus,
+		PULONG pIpv6DhcpStatus
+    )
+{
+	MTAMGMT_MTA_STATUS output_pIpv4status = MTA_ERROR;
+	MTAMGMT_MTA_STATUS output_pIpv6status = MTA_ERROR;
+
+	*pIpv4DhcpStatus = MTA_ERROR;
+	*pIpv6DhcpStatus = MTA_ERROR;
+
+#ifdef _CBR_PRODUCT_REQ_
+	if ( RETURN_OK == mta_hal_getDhcpStatus( &output_pIpv4status, &output_pIpv6status ) )
+	{
+		*pIpv4DhcpStatus = output_pIpv4status;
+		*pIpv6DhcpStatus = output_pIpv6status;
+	}
+#endif /* _CBR_PRODUCT_REQ_ */
+
+    return ANSC_STATUS_SUCCESS;
+}
+
+ANSC_STATUS
+CosaDmlMtaGetConfigFileStatus
+    (
+		PULONG pConfigFileStatus
+    )
+{
+	MTAMGMT_MTA_STATUS output_status = MTA_ERROR;
+
+	*pConfigFileStatus = MTA_ERROR;
+
+#ifdef _CBR_PRODUCT_REQ_
+	if ( RETURN_OK == mta_hal_getConfigFileStatus( &output_status))
+	{
+		*pConfigFileStatus = output_status;
+	}
+#endif /* _CBR_PRODUCT_REQ_ */
+
+    return ANSC_STATUS_SUCCESS;
+}
+
+ANSC_STATUS
+CosaDmlMtaGetLineRegisterStatus
+    (
+		PCHAR pcLineRegisterStatus
+    )
+{
+#ifdef _CBR_PRODUCT_REQ_
+#define max_number_of_line 8
+	MTAMGMT_MTA_STATUS output_status_array[ max_number_of_line ] = { 0 };
+	char 			   aoutput_status_array_string [ 4 ][ 32 ] = { "Init", "Start", "Complete", "Error" };
+
+	if ( RETURN_OK == mta_hal_getLineRegisterStatus( output_status_array, max_number_of_line ) )
+	{
+		sprintf( pcLineRegisterStatus, "%s,%s,%s,%s,%s,%s,%s,%s", aoutput_status_array_string[ output_status_array[ 0 ] ],
+																  aoutput_status_array_string[ output_status_array[ 1 ] ],
+																  aoutput_status_array_string[ output_status_array[ 2 ] ],
+																  aoutput_status_array_string[ output_status_array[ 3 ] ],
+																  aoutput_status_array_string[ output_status_array[ 4 ] ],
+																  aoutput_status_array_string[ output_status_array[ 5 ] ],
+																  aoutput_status_array_string[ output_status_array[ 6 ] ],
+																  aoutput_status_array_string[ output_status_array[ 7 ] ] );
+	}
+	else
+#endif /* _CBR_PRODUCT_REQ_ */
+	{	
+		sprintf( pcLineRegisterStatus,"" );
+	}
+
+    return ANSC_STATUS_SUCCESS;
+}
