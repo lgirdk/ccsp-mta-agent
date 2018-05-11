@@ -59,6 +59,7 @@ PCCSP_FC_CONTEXT                pPnmFcContext           = (PCCSP_FC_CONTEXT     
 PCCSP_CCD_INTERFACE             pPnmCcdIf               = (PCCSP_CCD_INTERFACE        )NULL;
 PCCC_MBI_INTERFACE              pPnmMbiIf               = (PCCC_MBI_INTERFACE         )NULL;
 BOOL                            g_bActive               = FALSE;
+static BOOL                     g_running               = TRUE;
 
 int  cmd_dispatch(int  command)
 {
@@ -245,9 +246,13 @@ void sig_handler(int sig)
     CcspBaseIf_deadlock_detection_log_print(sig);
 	extern ANSC_HANDLE bus_handle;
     if ( sig == SIGINT ) {
+#ifdef INCLUDE_GPERFTOOLS
+        g_running = FALSE;
+#else
     	signal(SIGINT, sig_handler); /* reset it to this function */
     	CcspTraceInfo(("SIGINT received!\n"));
         exit(0);
+#endif
     }
     else if ( sig == SIGUSR1 ) {
     	signal(SIGUSR1, sig_handler); /* reset it to this function */
@@ -266,8 +271,12 @@ void sig_handler(int sig)
     }
     else if ( sig == SIGTERM )
     {
+#ifdef INCLUDE_GPERFTOOLS
+        g_running = FALSE;
+#else
         CcspTraceInfo(("SIGTERM received!\n"));
         exit(0);
+#endif
     }
     else if ( sig == SIGKILL )
     {
@@ -415,7 +424,12 @@ int main(int argc, char* argv[])
         fprintf(stderr, "%s: fail to write PID file\n", argv[0]);
 #ifdef INCLUDE_BREAKPAD
     breakpad_ExceptionHandler();
-#else
+#endif
+    
+#if defined(INCLUDE_GPERFTOOLS)
+    signal(SIGINT, sig_handler);
+    signal(SIGTERM, sig_handler);
+#elif !defined(INCLUDE_BREAKPAD)
     if (is_core_dump_opened())
     {
         signal(SIGUSR1, sig_handler);
@@ -475,14 +489,14 @@ int main(int argc, char* argv[])
 
     if ( bRunAsDaemon )
     {
-        while(1)
+        while(g_running)
         {
             sleep(30);
         }
     }
     else
     {
-        while ( cmdChar != 'q' )
+        while ( cmdChar != 'q' && g_running)
         {
             cmdChar = getchar();
 
