@@ -267,6 +267,7 @@ _COSA_MTA_LINETABLE_INFO
     ULONG                           CallsNumber;
     PCOSA_MTA_CALLS                 pCalls;
     ULONG                           CallsUpdateTime;
+    ULONG                           OverCurrentFault; /* 1 = Normal,2 = Fault */	
 }
 COSA_MTA_LINETABLE_INFO, *PCOSA_MTA_LINETABLE_INFO;
 
