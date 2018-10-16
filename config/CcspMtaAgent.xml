@@ -681,6 +681,16 @@
 
             </parameter>
 
+            <parameter>
+
+              <name>OverCurrentFault</name>
+
+              <type>string: Normal(1),Fault(2)</type>
+
+              <syntax>uint32/mapped</syntax>
+
+            </parameter>
+            
           </parameters>
 
 		  <objects>

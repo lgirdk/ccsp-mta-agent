@@ -1324,6 +1324,14 @@ LineTable_GetParamUlongValue
         return TRUE;
     }
 
+    if( AnscEqualString(ParamName, "OverCurrentFault", TRUE))
+    {
+        /* collect value */
+        *puLong = pInfo->OverCurrentFault;
+
+        return TRUE;
+    }
+
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
 }
