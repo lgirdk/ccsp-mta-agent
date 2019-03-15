@@ -853,3 +853,49 @@ CosaDmlMtaGetLineRegisterStatus
     return ANSC_STATUS_SUCCESS;
 }
 
+
+ANSC_STATUS
+CosaDmlMTASetStartUpIpMode
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro, 
+        INT                         bInt
+    )
+{
+     pmtaethpro->StartupIPMode =bInt;
+     return ANSC_STATUS_SUCCESS;
+}
+
+ANSC_STATUS
+CosaDmlMTASetPrimaryDhcpServerOptions
+    (
+       PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,       
+       CHAR                        buf[64],
+       MTA_IP_TYPE_TR              type
+    )
+{
+    if(type == MTA_IPV4_TR)
+        {
+           AnscCopyMemory(pmtaethpro->IPv4PrimaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv4PrimaryDhcpServerOptions));
+        } else if(type == MTA_IPV6_TR) {
+           AnscCopyMemory(pmtaethpro->IPv6PrimaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv6PrimaryDhcpServerOptions));         
+        } 
+  return ANSC_STATUS_SUCCESS;
+}
+
+ANSC_STATUS
+CosaDmlMTASetSecondaryDhcpServerOptions
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,  
+        CHAR                        buf[64],
+        MTA_IP_TYPE_TR                 type
+    )
+{
+    if(type == MTA_IPV4_TR)
+        {
+            AnscCopyMemory(pmtaethpro->IPv4SecondaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv4SecondaryDhcpServerOptions));
+        }  else if (type == MTA_IPV6_TR) {
+            AnscCopyMemory(pmtaethpro->IPv6SecondaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv6SecondaryDhcpServerOptions));  
+        }
+     return ANSC_STATUS_SUCCESS;
+}
+

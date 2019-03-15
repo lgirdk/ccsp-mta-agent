@@ -675,6 +675,50 @@ CosaDmlMtaGetLineRegisterStatus
     (
 		PCHAR pcLineRegisterStatus
     );
+
+
+typedef  struct
+_COSA_MTA_ETHWAN_PROV_INFO
+{
+    INT 			    StartupIPMode;
+    CHAR                            IPv4PrimaryDhcpServerOptions[64];
+    CHAR			    IPv4SecondaryDhcpServerOptions[64];	
+    CHAR                            IPv6PrimaryDhcpServerOptions[64];
+    CHAR                            IPv6SecondaryDhcpServerOptions[64];
+}
+COSA_MTA_ETHWAN_PROV_INFO,  *PCOSA_MTA_ETHWAN_PROV_INFO;
+
+typedef enum _MTA_IP_TYPE
+{
+        MTA_IPV4_TR=0,
+        MTA_IPV6_TR,
+        MTA_DUAL_STACK_TR
+}MTA_IP_TYPE_TR;
+
+
+ANSC_STATUS
+CosaDmlMTASetStartUpIpMode
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,
+        INT                         bInt
+    );
+
+ANSC_STATUS
+CosaDmlMTASetPrimaryDhcpServerOptions
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,
+        CHAR          		    buf[64],
+        MTA_IP_TYPE_TR                 type			    
+    );
+
+ANSC_STATUS
+CosaDmlMTASetSecondaryDhcpServerOptions
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,
+        CHAR                        buf[64],
+        MTA_IP_TYPE_TR                 type         
+    );
+
 #endif /* _COSA_MTA_APIS_H */
 
 //#endif /* CONFIG_TI_PACM */

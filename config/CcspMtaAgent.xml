@@ -2342,6 +2342,50 @@
         </parameters>
 
     </object>
+    <object>
+            <name>X_RDKCENTRAL-COM_EthernetWAN_MTA</name>
+            <objectType>object</objectType>
+            <functions>
+                <func_GetParamIntValue>EthernetWAN_MTA_GetParamIntValue</func_GetParamIntValue>
+                <func_SetParamIntValue>EthernetWAN_MTA_SetParamIntValue</func_SetParamIntValue>
+                <func_GetParamStringValue>EthernetWAN_MTA_GetParamStringValue</func_GetParamStringValue>
+                <func_SetParamStringValue>EthernetWAN_MTA_SetParamStringValue</func_SetParamStringValue>
+            </functions>
+            <parameters>
+                <parameter>
+                    <name>StartupIPMode</name>
+                    <type>int</type>
+                    <syntax>int</syntax>
+          	    <writable>true</writable>
+                </parameter>
+                 <parameter>
+                    <name>IPv4PrimaryDhcpServerOptions</name>
+                    <type>string</type>
+                    <syntax>string</syntax>
+          	    <writable>true</writable>
+                </parameter>
+                <parameter>
+                    <name>IPv4SecondaryDhcpServerOptions</name>
+                    <type>string</type>
+                    <syntax>string</syntax>
+          	    <writable>true</writable>
+                </parameter>
+                <parameter>
+                    <name>IPv6PrimaryDhcpServerOptions</name>
+                    <type>string</type>
+                    <syntax>string</syntax>
+          	    <writable>true</writable>
+                </parameter>
+                <parameter>
+                    <name>IPv6SecondaryDhcpServerOptions</name>
+                    <type>string</type>
+                    <syntax>string</syntax>
+          	    <writable>true</writable>
+                </parameter>
+
+
+            </parameters>
+      </object>
 
   </objects>
 

@@ -21,6 +21,7 @@ AM_CFLAGS += -D_ANSC_USER
 AM_CFLAGS += -D_ANSC_LITTLE_ENDIAN_
 AM_LDFLAGS = -lccsp_common
 AM_LDFLAGS += -lhal_mta
+AM_LDFLAGS += -lsysevent -lutapi -lutctx -lulog -lsyscfg
 
 AM_CPPFLAGS = -Wall -Werror
 ACLOCAL_AMFLAGS = -I m4

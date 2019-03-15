@@ -6362,3 +6362,200 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return -1;
 }
+
+/********************
+X_RDKCENTRAL-COM_EthernetWAN_MTA
+***************/
+BOOL EthernetWAN_MTA_SetParamIntValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        int                         pInt
+    )
+{
+        PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+        if( AnscEqualString(ParamName, "StartupIPMode", TRUE))
+        {
+
+           char isEthEnabled[64]={'\0'};
+	   char buff[8] = {'\0'};
+
+          if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
+                      ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
+            {
+		       snprintf(buff,sizeof(buff),"%d",pInt);
+               if (syscfg_set(NULL, "StartupIPMode", buff) != 0) {
+                   AnscTraceWarning(("syscfg_set failed\n"));
+               } else {
+                   if (syscfg_commit() != 0) {
+                      AnscTraceWarning(("syscfg_commit failed\n"));
+                   }
+               }
+               CosaDmlMTASetStartUpIpMode(pMyObject->pmtaprovinfo, pInt);
+            // set startup ip mode
+				CosaSetMTAHal(pMyObject->pmtaprovinfo);
+               return TRUE;
+            } 
+        }
+    return FALSE;
+}
+
+BOOL
+EthernetWAN_MTA_GetParamIntValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        int*                        pInt
+    )
+{
+    /* check the parameter name and return the corresponding value */
+    PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+    if( AnscEqualString(ParamName, "StartupIPMode", TRUE))
+    {
+        /* collect value */
+            char isEthEnabled[64]={'\0'};
+
+          if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
+                      ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
+            {
+               *pInt = pMyObject->pmtaprovinfo->StartupIPMode;
+                return TRUE;
+            } else {
+                AnscTraceWarning(("Eth_wan not enabled : Invalid request\n"));
+                return FALSE;
+             }
+    }
+    /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return FALSE;
+}
+
+ULONG
+EthernetWAN_MTA_GetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pValue,
+        ULONG*                      pUlSize
+    )
+{
+  /* check the parameter name and return the corresponding value */
+    PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+    char isEthEnabled[64]={'\0'};
+    if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
+                      ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))   
+    {         
+           if( AnscEqualString(ParamName, "IPv4PrimaryDhcpServerOptions", TRUE))
+            {
+                AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions);
+                return 0;
+            }
+
+            if( AnscEqualString(ParamName, "IPv4SecondaryDhcpServerOptions", TRUE))
+            {
+               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions);
+                return 0;
+            }
+            if( AnscEqualString(ParamName, "IPv6PrimaryDhcpServerOptions", TRUE))
+            {
+               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions);
+                return 0;
+            }
+
+            if( AnscEqualString(ParamName, "IPv6SecondaryDhcpServerOptions", TRUE))
+            {
+               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions);
+                return 0;
+            }
+ 
+   } else {
+                AnscTraceWarning(("Eth_wan not enabled : Invalid request\n"));
+                return -1;
+    }
+    /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return -1;
+}
+
+
+BOOL
+EthernetWAN_MTA_SetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pString
+    )
+{
+MTA_IP_TYPE_TR ip_type;
+PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+char isEthEnabled[64]={'\0'};
+
+          if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
+                      ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
+            {
+               ip_type = MTA_IPV4_TR;
+               if( AnscEqualString(ParamName, "IPv4PrimaryDhcpServerOptions", TRUE))
+                  {
+                      if (syscfg_set(NULL, "IPv4PrimaryDhcpServerOptions", pString) != 0) 
+                          {
+                              AnscTraceWarning(("syscfg_set failed\n"));
+                          } else {
+                             if (syscfg_commit() != 0) 
+                                {
+                                   AnscTraceWarning(("syscfg_commit failed\n"));
+                                }
+                          }
+                      CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+                      return TRUE;
+                  }
+              if( AnscEqualString(ParamName, "IPv4SecondaryDhcpServerOptions", TRUE))
+                  {
+                      if (syscfg_set(NULL, "IPv4SecondaryDhcpServerOptions", pString) != 0) 
+                          {
+                              AnscTraceWarning(("syscfg_set failed\n"));
+                          } else {
+                             if (syscfg_commit() != 0) 
+                                {
+                                   AnscTraceWarning(("syscfg_commit failed\n"));
+                                }
+                          }
+                      CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+                      return TRUE;
+                  }
+
+              ip_type = MTA_IPV6_TR;
+
+              if( AnscEqualString(ParamName, "IPv6PrimaryDhcpServerOptions", TRUE))
+                  {
+                      if (syscfg_set(NULL, "IPv6PrimaryDhcpServerOptions", pString) != 0)
+                          {
+                              AnscTraceWarning(("syscfg_set failed\n"));
+                          } else {
+                             if (syscfg_commit() != 0)
+                                {
+                                   AnscTraceWarning(("syscfg_commit failed\n"));
+                                }
+                          }
+                      CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+                      return TRUE;
+                  }
+               if( AnscEqualString(ParamName, "IPv6SecondaryDhcpServerOptions", TRUE))
+                  {
+                      if (syscfg_set(NULL, "IPv6SecondaryDhcpServerOptions", pString) != 0)
+                          {
+                              AnscTraceWarning(("syscfg_set failed\n"));
+                          } else {
+                             if (syscfg_commit() != 0)
+                                {
+                                   AnscTraceWarning(("syscfg_commit failed\n"));
+                                }
+                          }
+                      CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+                      return TRUE;
+                  }
+
+           } else {
+                AnscTraceWarning(("Eth_wan not enabled : Invalid request\n"));
+                return FALSE;
+           }
+
+}
+
