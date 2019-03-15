@@ -100,6 +100,7 @@
     ULONG                           DectLogUpdateTime;                                   \
     PCOSA_DML_DECTLOG_FULL          pDectLog;                                            \
     COSA_DML_BATTERY_INFO           MtaBatteryInfo;                                      \
+    PCOSA_MTA_ETHWAN_PROV_INFO      pmtaprovinfo;                                      \
 
 
 typedef  struct
