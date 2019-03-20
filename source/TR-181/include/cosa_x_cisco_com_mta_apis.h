@@ -289,6 +289,16 @@ typedef enum _MTA_RESET_TYPE
 	LINE_RESET
 }MTA_RESET_TYPE;
 
+
+typedef enum
+{
+    COSA_MTA_INIT = 0,
+    COSA_MTA_START,
+    COSA_MTA_COMPLETE,
+    COSA_MTA_ERROR,
+}COSA_MTA_STATUS;
+
+
 /**********************************************************************
                 FUNCTION PROTOTYPES
 **********************************************************************/
@@ -718,6 +728,15 @@ CosaDmlMTASetSecondaryDhcpServerOptions
         CHAR                        buf[64],
         MTA_IP_TYPE_TR                 type         
     );
+
+ANSC_STATUS
+CosaDmlMtaResetNow
+    (
+		BOOLEAN	*pBool
+    );
+
+void 
+CosaDmlMtaProvisioningStatusGet();
 
 #endif /* _COSA_MTA_APIS_H */
 
