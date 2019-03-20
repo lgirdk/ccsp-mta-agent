@@ -348,6 +348,24 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
         ULONG*                      pUlSize
     );
 
+BOOL
+X_RDKCENTRAL_COM_MTA_GetParamBoolValue
+
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL*                       pBool
+    );
+
+BOOL
+X_RDKCENTRAL_COM_MTA_SetParamBoolValue
+
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL*                       pBool
+    );
+
 #endif /* _COSA_MTA_DML_H */
 
 // #endif /* CONFIG_TI_PACM */

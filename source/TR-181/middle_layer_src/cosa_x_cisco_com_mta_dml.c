@@ -6559,3 +6559,55 @@ char isEthEnabled[64]={'\0'};
 
 }
 
+BOOL
+X_RDKCENTRAL_COM_MTA_GetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL*                       pBool
+    )
+{
+	if( AnscEqualString(ParamName, "pktcMtaDevResetNow", TRUE) )
+	{
+		*pBool = false;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+BOOL
+X_RDKCENTRAL_COM_MTA_SetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL*                       pBool
+    )
+{
+
+	if( AnscEqualString(ParamName, "pktcMtaDevResetNow", TRUE) )
+	{
+		if(pBool == true)
+		{
+			if(	ANSC_STATUS_SUCCESS == CosaDmlMtaResetNow(pBool)	)
+			{
+				AnscTraceWarning(("MTA Module is Reset ParamName: '%s'  Value: '%d' \n",ParamName,pBool));
+				CosaDmlMtaProvisioningStatusGet();
+				return TRUE;
+			}
+			else
+			{
+				AnscTraceWarning(("MTA Module is not Reset ParamName: '%s'  Value: '%d' \n",ParamName,pBool));
+				return FALSE;
+			}
+		}
+		else
+		{
+			AnscTraceWarning(("parameter '%s' value: '%d' \n", ParamName,pBool));
+			return TRUE;
+		}
+	}
+	return FALSE;
+
+}
+

@@ -899,3 +899,93 @@ CosaDmlMTASetSecondaryDhcpServerOptions
      return ANSC_STATUS_SUCCESS;
 }
 
+ANSC_STATUS
+CosaDmlMtaResetNow
+    (
+		BOOLEAN	*pBool
+    )
+{
+
+#ifdef _CBR_PRODUCT_REQ_
+	if( RETURN_OK == mta_hal_devResetNow(pBool) )
+#else
+	if( /*RETURN_OK == mta_hal_devResetNow(pBool)*/ 1 )
+#endif /* _CBR_PRODUCT_REQ_ */
+	{
+		AnscTraceWarning(("MTA reset is successful \n"));
+		return ANSC_STATUS_SUCCESS;
+	}
+
+	return ANSC_STATUS_FAILURE;
+
+}
+
+void MtaProvisioningStatusGetFunc()
+{
+	unsigned int ProvisioningStatus;
+	char counter=0;
+	pthread_detach(pthread_self());
+
+#ifdef _CBR_PRODUCT_REQ_
+	while(1)
+	{
+		if(	RETURN_OK != mta_hal_getMtaOperationalStatus(&ProvisioningStatus) )
+		{
+			AnscTraceWarning(("mta_hal_getMtaOperationalStatus Fail \n"));
+			return;
+		}
+
+		switch(ProvisioningStatus)
+		{
+			case COSA_MTA_INIT:
+				AnscTraceWarning(("MTA provisioning init after reset  \n"));
+				break;
+
+			case COSA_MTA_START:
+				AnscTraceWarning(("MTA provisioning is in progress after reset \n"));
+				break;
+
+			case COSA_MTA_COMPLETE:
+				AnscTraceWarning(("MTA is operational after reset \n"));
+				pthread_exit(NULL);
+				return;
+
+			case COSA_MTA_ERROR:
+				AnscTraceWarning(("MTA provisioning failed after reset"));
+				break;
+
+			default :
+					break;
+		}
+		sleep(5);
+		counter = counter+5;
+
+		/*This thread is run for 180Sec*/
+		if(counter == 180)
+		{
+			counter = 0;
+			pthread_exit(NULL);
+			return;
+		}
+	}
+	pthread_exit(NULL);
+#endif /* _CBR_PRODUCT_REQ_ */
+}
+
+
+
+void CosaDmlMtaProvisioningStatusGet()
+{
+	int res;
+	pthread_t MtaProvisioningStatusGetThread;
+
+	res = pthread_create(&MtaProvisioningStatusGetThread, NULL, MtaProvisioningStatusGetFunc, "MtaProvisioningStatusGetFunc");
+	if(res != 0)
+	{
+		CcspTraceError(("Create MtaProvisioningStatusGetThread error %d\n", res));
+		return;
+	}
+
+}
+
+
