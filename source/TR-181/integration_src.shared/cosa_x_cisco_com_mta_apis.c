@@ -107,6 +107,20 @@ CosaDmlMTAGetDHCPInfo
 }
 
 ANSC_STATUS
+CosaDmlMTAGetDHCPV6Info
+    (
+        ANSC_HANDLE                 hContext,
+        PCOSA_MTA_DHCPv6_INFO       pInfo
+    )
+{
+
+    if ( mta_hal_GetDHCPV6Info((PMTAMGMT_MTA_DHCPv6_INFO)pInfo) == RETURN_OK )
+        return ANSC_STATUS_SUCCESS;
+    else
+        return ANSC_STATUS_FAILURE;
+}
+
+ANSC_STATUS
 CosaDmlMTAGetPktc
     (
         ANSC_HANDLE                 hContext,

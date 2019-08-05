@@ -132,6 +132,352 @@ extern ULONG g_currentBsUpdate;
 
  APIs for Object:
 
+    X_CISCO_COM_MTA_V6.
+
+    *  X_CISCO_COM_MTA_V6_GetParamUlongValue
+    *  X_CISCO_COM_MTA_V6_GetParamStringValue
+    *  X_CISCO_COM_MTA_V6_Validate
+    *  X_CISCO_COM_MTA_V6_Commit
+    *  X_CISCO_COM_MTA_V6_Rollback
+
+***********************************************************************/
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        BOOL
+        X_CISCO_COM_MTA_V6_GetParamUlongValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                ULONG*                      puLong
+            );
+
+    description:
+
+        This function is called to retrieve ULONG parameter value; 
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                ULONG*                      puLong
+                The buffer of returned ULONG value;
+
+    return:     TRUE if succeeded.
+
+**********************************************************************/
+BOOL
+X_CISCO_COM_MTA_V6_GetParamUlongValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        ULONG*                      puLong
+    )
+{
+    COSA_MTA_DHCPv6_INFO              Info = {0};
+
+    /* collect value */
+    if (CosaDmlMTAGetDHCPV6Info(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        return FALSE;
+
+    if( AnscEqualString(ParamName, "LeaseTimeRemaining", TRUE) )
+    {
+        *puLong = Info.LeaseTimeRemaining;
+
+        return TRUE;
+    }
+}
+
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        ULONG
+        X_CISCO_COM_MTA_V6_GetParamStringValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                char*                       pValue,
+                ULONG*                      pUlSize
+            );
+
+    description:
+
+        This function is called to retrieve string parameter value; 
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                char*                       pValue,
+                The string value buffer;
+
+                ULONG*                      pUlSize
+                The buffer of length of string value;
+                Usually size of 1023 will be used.
+                If it's not big enough, put required size here and return 1;
+
+    return:     0 if succeeded;
+                1 if short of buffer size; (*pUlSize = required size)
+                -1 if not supported.
+
+**********************************************************************/
+ULONG
+X_CISCO_COM_MTA_V6_GetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pValue,
+        ULONG*                      pUlSize
+    )
+{
+    COSA_MTA_DHCPv6_INFO              Info = {0};
+
+    /* collect value */
+    if (CosaDmlMTAGetDHCPV6Info(NULL, &Info) != ANSC_STATUS_SUCCESS)
+         return -1;
+
+    /* check the parameter name and return the corresponding value */
+    if( AnscEqualString(ParamName, "IPV6Address", TRUE) )
+    {
+        AnscCopyString(pValue, Info.IPV6Address);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "Prefix", TRUE) )
+    {
+        AnscCopyString(pValue, Info.Prefix);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "BootFileName", TRUE) )
+    {
+        AnscCopyString(pValue, Info.BootFileName);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "FQDN", TRUE) )
+    {
+        AnscCopyString(pValue, Info.FQDN);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "Gateway", TRUE) )
+    {
+        AnscCopyString(pValue, Info.Gateway);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RebindTimeRemaining", TRUE) )
+    {
+        AnscCopyString(pValue, Info.RebindTimeRemaining);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "RenewTimeRemaining", TRUE) )
+    {
+        AnscCopyString(pValue, Info.RenewTimeRemaining);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "PrimaryDNS", TRUE) )
+    {
+        AnscCopyString(pValue, Info.PrimaryDNS);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "SecondaryDNS", TRUE) )
+    {
+        AnscCopyString(pValue, Info.SecondaryDNS);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "DHCPOption3", TRUE) )
+    {
+        AnscCopyString(pValue, Info.DHCPOption3);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "DHCPOption6", TRUE) )
+    {
+        AnscCopyString(pValue, Info.DHCPOption6);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "DHCPOption7", TRUE) )
+    {
+        AnscCopyString(pValue, Info.DHCPOption7);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "DHCPOption8", TRUE) )
+    {
+        AnscCopyString(pValue, Info.DHCPOption8);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "PCVersion", TRUE) )
+    {
+        AnscCopyString(pValue, Info.PCVersion);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "MACAddress", TRUE) )
+    {
+        AnscCopyString(pValue, Info.MACAddress);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "PrimaryDHCPv6Server", TRUE) )
+    {
+        AnscCopyString(pValue, Info.PrimaryDHCPv6Server);
+
+        return 0;
+    }
+
+    if( AnscEqualString(ParamName, "SecondaryDHCPv6Server", TRUE) )
+    {
+        AnscCopyString(pValue, Info.SecondaryDHCPv6Server);
+
+        return 0;
+    }
+
+    /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return -1;
+}
+
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        BOOL
+        X_CISCO_COM_MTA_V6_Validate
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       pReturnParamName,
+                ULONG*                      puLength
+            );
+
+    description:
+
+        This function is called to finally commit all the update.
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       pReturnParamName,
+                The buffer (128 bytes) of parameter name if there's a validation. 
+
+                ULONG*                      puLength
+                The output length of the param name. 
+
+    return:     TRUE if there's no validation.
+
+**********************************************************************/
+BOOL
+X_CISCO_COM_MTA_V6_Validate
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       pReturnParamName,
+        ULONG*                      puLength
+    )
+{
+    return TRUE;
+}
+
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        ULONG
+        X_CISCO_COM_MTA_V6_Commit
+            (
+                ANSC_HANDLE                 hInsContext
+            );
+
+    description:
+
+        This function is called to finally commit all the update.
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+    return:     The status of the operation.
+
+**********************************************************************/
+ULONG
+X_CISCO_COM_MTA_V6_Commit
+    (
+        ANSC_HANDLE                 hInsContext
+    )
+{
+    return 0;
+}
+
+/**********************************************************************  
+
+    caller:     owner of this object 
+
+    prototype: 
+
+        ULONG
+        X_CISCO_COM_MTA_V6_Rollback
+            (
+                ANSC_HANDLE                 hInsContext
+            );
+
+    description:
+
+        This function is called to roll back the update whenever there's a 
+        validation found.
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+    return:     The status of the operation.
+
+**********************************************************************/
+ULONG
+X_CISCO_COM_MTA_V6_Rollback
+    (
+        ANSC_HANDLE                 hInsContext
+    )
+{
+    return 0;
+}
+
+/***********************************************************************
+
+ APIs for Object:
+
     X_CISCO_COM_MTA.
 
     *  X_CISCO_COM_MTA_GetParamBoolValue

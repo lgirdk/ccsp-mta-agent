@@ -67,6 +67,7 @@
 
 #include "cosa_apis.h"
 #include "plugin_main_apis.h"
+#include <netinet/in.h>
 
 #ifndef MTA_HAL_SHORT_VALUE_LEN
 #define  MTA_HAL_SHORT_VALUE_LEN   16
@@ -104,6 +105,30 @@ _COSA_MTA_DHCP_INFO
     ANSC_IPV4_ADDRESS               SecondaryDHCPServer;
 }
 COSA_MTA_DHCP_INFO, *PCOSA_MTA_DHCP_INFO;
+
+typedef  struct
+_COSA_MTA_DHCPv6_INFO
+{
+    CHAR                            IPV6Address[INET6_ADDRSTRLEN];
+    CHAR                            BootFileName[40];
+    CHAR                            FQDN[64];
+    CHAR                            Prefix[INET6_ADDRSTRLEN];
+    CHAR                            Gateway[INET6_ADDRSTRLEN];
+    ULONG                           LeaseTimeRemaining;
+    CHAR                            RebindTimeRemaining[64];
+    CHAR                            RenewTimeRemaining[64];
+    CHAR                            PrimaryDNS[INET6_ADDRSTRLEN];
+    CHAR                            SecondaryDNS[INET6_ADDRSTRLEN];
+    CHAR                            DHCPOption3[64];
+    CHAR                            DHCPOption6[64];
+    CHAR                            DHCPOption7[64];
+    CHAR                            DHCPOption8[64];
+    CHAR                            PCVersion[64];
+    CHAR                            MACAddress[64];
+    CHAR                            PrimaryDHCPv6Server[INET6_ADDRSTRLEN];
+    CHAR                            SecondaryDHCPv6Server[INET6_ADDRSTRLEN];
+}
+COSA_MTA_DHCPv6_INFO, *PCOSA_MTA_DHCPv6_INFO;
 
 typedef  struct
 _COSA_MTA_PKTC
@@ -317,6 +342,13 @@ CosaDmlMTAGetDHCPInfo
     (
         ANSC_HANDLE                 hContext,
         PCOSA_MTA_DHCP_INFO         pInfo
+    );
+
+ANSC_STATUS
+CosaDmlMTAGetDHCPV6Info
+    (
+        ANSC_HANDLE                 hContext,
+        PCOSA_MTA_DHCPv6_INFO       pInfo
     );
 
 ANSC_STATUS
