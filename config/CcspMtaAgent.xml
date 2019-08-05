@@ -35,6 +35,200 @@
   <objects>
     <object>
       
+      <name>X_CISCO_COM_MTA_V6</name>
+
+      <objectType>object</objectType>
+
+      <functions>
+
+        <func_GetParamUlongValue>X_CISCO_COM_MTA_V6_GetParamUlongValue</func_GetParamUlongValue>
+
+        <func_GetParamStringValue>X_CISCO_COM_MTA_V6_GetParamStringValue</func_GetParamStringValue>
+
+        <func_Validate>X_CISCO_COM_MTA_V6_Validate</func_Validate>
+
+        <func_Commit>X_CISCO_COM_MTA_V6_Commit</func_Commit>
+
+        <func_Rollback>X_CISCO_COM_MTA_V6_Rollback</func_Rollback>
+
+      </functions>
+      
+      <parameters>
+
+        <parameter>
+
+          <name>PrimaryDHCPv6Server</name>
+
+          <type>string</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>SecondaryDHCPv6Server</name>
+
+          <type>string</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>IPV6Address</name>
+
+          <type>string</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>Prefix</name>
+
+          <type>string</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>BootFileName</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>FQDN</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>Gateway</name>
+
+          <type>string</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>LeaseTimeRemaining</name>
+
+          <type>unsignedInt</type>
+
+          <syntax>uint32</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>RebindTimeRemaining</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>RenewTimeRemaining</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>PrimaryDNS</name>
+
+          <type>string</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        
+        <parameter>
+
+          <name>SecondaryDNS</name>
+
+          <type>string</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        <parameter>
+
+          <name>DHCPOption3</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        
+        <parameter>
+
+          <name>DHCPOption6</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        
+        <parameter>
+
+          <name>DHCPOption7</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        
+        <parameter>
+
+          <name>DHCPOption8</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        
+        <parameter>
+
+          <name>PCVersion</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+        
+        <parameter>
+
+          <name>MACAddress</name>
+
+          <type>string(64)</type>
+
+          <syntax>string</syntax>
+
+        </parameter>
+      
+      </parameters>
+    </object>
+
+    <object>
+      
       <name>X_CISCO_COM_MTA</name>
 
       <objectType>object</objectType>

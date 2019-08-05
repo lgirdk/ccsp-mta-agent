@@ -173,6 +173,57 @@ X_CISCO_COM_MTA_Rollback
 
  APIs for Object:
 
+    X_CISCO_COM_MTA_V6.
+
+    *  X_CISCO_COM_MTA_V6_GetParamUlongValue
+    *  X_CISCO_COM_MTA_V6_GetParamStringValue
+    *  X_CISCO_COM_MTA_V6_Validate
+    *  X_CISCO_COM_MTA_V6_Commit
+    *  X_CISCO_COM_MTA_V6_Rollback
+
+***********************************************************************/
+
+BOOL
+X_CISCO_COM_MTA_V6_GetParamUlongValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        ULONG*                      pUlong
+    );
+
+ULONG
+X_CISCO_COM_MTA_V6_GetParamStringValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        char*                       pValue,
+        ULONG*                      pUlSize
+    );
+
+BOOL
+X_CISCO_COM_MTA_V6_Validate
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       pReturnParamName,
+        ULONG*                      puLength
+    );
+
+ULONG
+X_CISCO_COM_MTA_V6_Commit
+    (
+        ANSC_HANDLE                 hInsContext
+    );
+
+ULONG
+X_CISCO_COM_MTA_V6_Rollback
+    (
+        ANSC_HANDLE                 hInsContext
+    );
+
+/***********************************************************************
+
+ APIs for Object:
+
     X_CISCO_COM_MLD.Group.{i}.
 
     *  MTALog_GetEntryCount
