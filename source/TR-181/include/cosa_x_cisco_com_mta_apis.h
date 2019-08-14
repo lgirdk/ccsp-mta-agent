@@ -76,6 +76,8 @@
 #define  MTA_HAL_LONG_VALUE_LEN   64
 #endif
 
+#include "cJSON.h"
+
 /**********************************************************************
                 STRUCTURE AND CONSTANT DEFINITIONS
 **********************************************************************/
@@ -688,13 +690,29 @@ CosaDmlMtaGetLineRegisterStatus
 
 
 typedef  struct
+_COSA_BOOTSTRAP_STR
+{
+    CHAR                    ActiveValue[64];
+    CHAR		    UpdateSource[16];
+}
+COSA_BOOTSTRAP_STR;
+
+typedef  struct
+_COSA_BOOTSTRAP_INT
+{
+    INT                     ActiveValue;
+    CHAR		    UpdateSource[16];
+}
+COSA_BOOTSTRAP_INT;
+
+typedef  struct
 _COSA_MTA_ETHWAN_PROV_INFO
 {
-    INT 			    StartupIPMode;
-    CHAR                            IPv4PrimaryDhcpServerOptions[64];
-    CHAR			    IPv4SecondaryDhcpServerOptions[64];	
-    CHAR                            IPv6PrimaryDhcpServerOptions[64];
-    CHAR                            IPv6SecondaryDhcpServerOptions[64];
+    COSA_BOOTSTRAP_INT	 			  StartupIPMode;
+    COSA_BOOTSTRAP_STR                            IPv4PrimaryDhcpServerOptions;
+    COSA_BOOTSTRAP_STR	        		  IPv4SecondaryDhcpServerOptions;	
+    COSA_BOOTSTRAP_STR                            IPv6PrimaryDhcpServerOptions;
+    COSA_BOOTSTRAP_STR                            IPv6SecondaryDhcpServerOptions;
 }
 COSA_MTA_ETHWAN_PROV_INFO,  *PCOSA_MTA_ETHWAN_PROV_INFO;
 
@@ -738,6 +756,20 @@ CosaDmlMtaResetNow
 void 
 CosaDmlMtaProvisioningStatusGet();
 
+ANSC_STATUS
+CosaMTAInitializeEthWanProvJournal
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro
+    );
+
+ANSC_STATUS UpdateJsonParam
+        (
+                char*                       pKey,
+                char*                   PartnerId,
+                char*                   pValue,
+                char*                   pSource,
+                char*                   pCurrentTime
+    );
 #endif /* _COSA_MTA_APIS_H */
 
 //#endif /* CONFIG_TI_PACM */

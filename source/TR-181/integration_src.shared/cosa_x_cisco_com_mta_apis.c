@@ -74,6 +74,9 @@
 
 // #include "cosa_x_cisco_com_mta_internal.h"
 
+#define PARTNERS_INFO_FILE              "/nvram/partners_defaults.json"
+#define BOOTSTRAP_INFO_FILE             "/nvram/bootstrap.json"
+
 ANSC_STATUS
 CosaDmlMTAInit
     (
@@ -861,7 +864,7 @@ CosaDmlMTASetStartUpIpMode
         INT                         bInt
     )
 {
-     pmtaethpro->StartupIPMode =bInt;
+     pmtaethpro->StartupIPMode.ActiveValue =bInt;
      return ANSC_STATUS_SUCCESS;
 }
 
@@ -875,9 +878,9 @@ CosaDmlMTASetPrimaryDhcpServerOptions
 {
     if(type == MTA_IPV4_TR)
         {
-           AnscCopyMemory(pmtaethpro->IPv4PrimaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv4PrimaryDhcpServerOptions));
+           AnscCopyMemory(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue));
         } else if(type == MTA_IPV6_TR) {
-           AnscCopyMemory(pmtaethpro->IPv6PrimaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv6PrimaryDhcpServerOptions));         
+           AnscCopyMemory(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue));
         } 
   return ANSC_STATUS_SUCCESS;
 }
@@ -892,9 +895,9 @@ CosaDmlMTASetSecondaryDhcpServerOptions
 {
     if(type == MTA_IPV4_TR)
         {
-            AnscCopyMemory(pmtaethpro->IPv4SecondaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv4SecondaryDhcpServerOptions));
+            AnscCopyMemory(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue));
         }  else if (type == MTA_IPV6_TR) {
-            AnscCopyMemory(pmtaethpro->IPv6SecondaryDhcpServerOptions, buf, sizeof(pmtaethpro->IPv6SecondaryDhcpServerOptions));  
+            AnscCopyMemory(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue));
         }
      return ANSC_STATUS_SUCCESS;
 }
@@ -988,4 +991,397 @@ void CosaDmlMtaProvisioningStatusGet()
 
 }
 
+#define PARTNER_ID_LEN 64
+ANSC_STATUS fillCurrentPartnerId
+        (
+                char*                       pValue,
+        PULONG                      pulSize
+    )
+{
+        char buf[PARTNER_ID_LEN];
+        memset(buf, 0, sizeof(buf));
+    if(ANSC_STATUS_SUCCESS == syscfg_get( NULL, "PartnerID", buf, sizeof(buf)))
+    {
+                if( buf != NULL )
+                {
+                        strncpy(pValue ,buf,strlen(buf));
+            *pulSize = AnscSizeOfString(pValue);
+                        return ANSC_STATUS_SUCCESS;
+                }
+                else
+                        return ANSC_STATUS_FAILURE;
+    }
+        else
+                return ANSC_STATUS_FAILURE;
 
+}
+
+void FillParamUpdateSource(cJSON *partnerObj, char *key, char *paramUpdateSource)
+{
+    cJSON *paramObj = cJSON_GetObjectItem( partnerObj, key);
+    if ( paramObj != NULL )
+    {
+        char *valuestr = NULL;
+        cJSON *paramObjVal = cJSON_GetObjectItem(paramObj, "UpdateSource");
+        if (paramObjVal)
+            valuestr = paramObjVal->valuestring;
+        if (valuestr != NULL)
+        {
+            AnscCopyString(paramUpdateSource, valuestr);
+            valuestr = NULL;
+        }
+        else
+        {
+            CcspTraceWarning(("%s - %s UpdateSource is NULL\n", __FUNCTION__, key ));
+        }
+    }
+    else
+    {
+        CcspTraceWarning(("%s - %s Object is NULL\n", __FUNCTION__, key ));
+    }
+}
+
+void FillPartnerIDJournal
+    (
+        cJSON *json ,
+        char *partnerID ,
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro
+    )
+{
+                cJSON *partnerObj = cJSON_GetObjectItem( json, partnerID );
+                if( partnerObj != NULL)
+                {
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.StartupIPMode", &pmtaethpro->StartupIPMode.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4PrimaryDhcpServerOptions", &pmtaethpro->IPv4PrimaryDhcpServerOptions.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions", &pmtaethpro->IPv4SecondaryDhcpServerOptions.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions", &pmtaethpro->IPv6PrimaryDhcpServerOptions.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6SecondaryDhcpServerOptions", &pmtaethpro->IPv6SecondaryDhcpServerOptions.UpdateSource);
+                }
+                else
+                {
+                      CcspTraceWarning(("%s - PARTNER ID OBJECT Value is NULL\n", __FUNCTION__ ));
+                }
+}
+
+//Get the UpdateSource info from /nvram/bootstrap.json. This is needed to know for override precedence rules in set handlers
+ANSC_STATUS
+CosaMTAInitializeEthWanProvJournal
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro
+    )
+{
+        char *data = NULL;
+        char buf[64] = {0};
+        cJSON *json = NULL;
+        FILE *fileRead = NULL;
+        char PartnerID[PARTNER_ID_LEN] = {0};
+        char cmd[512] = {0};
+        ULONG size = PARTNER_ID_LEN - 1;
+        int len;
+        if (!pmtaethpro)
+        {
+                CcspTraceWarning(("%s-%d : NULL param\n" , __FUNCTION__, __LINE__ ));
+                return ANSC_STATUS_FAILURE;
+        }
+
+        if (access(BOOTSTRAP_INFO_FILE, F_OK) != 0)
+        {
+                return ANSC_STATUS_FAILURE;
+        }
+
+         fileRead = fopen( BOOTSTRAP_INFO_FILE, "r" );
+         if( fileRead == NULL )
+         {
+                 CcspTraceWarning(("%s-%d : Error in opening JSON file\n" , __FUNCTION__, __LINE__ ));
+                 return ANSC_STATUS_FAILURE;
+         }
+
+         fseek( fileRead, 0, SEEK_END );
+         len = ftell( fileRead );
+         fseek( fileRead, 0, SEEK_SET );
+         data = ( char* )malloc( sizeof(char) * (len + 1) );
+         if (data != NULL)
+         {
+                memset( data, 0, ( sizeof(char) * (len + 1) ));
+                fread( data, 1, len, fileRead );
+         }
+         else
+         {
+                 CcspTraceWarning(("%s-%d : Memory allocation failed \n", __FUNCTION__, __LINE__));
+                 fclose( fileRead );
+                 return ANSC_STATUS_FAILURE;
+         }
+
+         fclose( fileRead );
+
+         if ( data == NULL )
+         {
+                CcspTraceWarning(("%s-%d : fileRead failed \n", __FUNCTION__, __LINE__));
+                return ANSC_STATUS_FAILURE;
+         }
+         else if ( strlen(data) != 0)
+         {
+                 json = cJSON_Parse( data );
+                 if( !json )
+                 {
+                         CcspTraceWarning((  "%s : json file parser error : [%d]\n", __FUNCTION__,__LINE__));
+                         free(data);
+                         return ANSC_STATUS_FAILURE;
+                 }
+                 else
+                 {
+                         if(ANSC_STATUS_SUCCESS == fillCurrentPartnerId(PartnerID, &size))
+                         {
+                                if ( PartnerID[0] != '\0' )
+                                {
+                                        CcspTraceWarning(("%s : Partner = %s \n", __FUNCTION__, PartnerID));
+                                        FillPartnerIDJournal(json, PartnerID, pmtaethpro);
+                                }
+                                else
+                                {
+                                        CcspTraceWarning(( "Reading Deafult PartnerID Values \n" ));
+                                        strcpy(PartnerID, "comcast");
+                                        FillPartnerIDJournal(json, PartnerID, pmtaethpro);
+                                }
+                        }
+                        else{
+                                CcspTraceWarning(("Failed to get Partner ID\n"));
+                        }
+                        cJSON_Delete(json);
+                }
+                free(data);
+                data = NULL;
+         }
+         else
+         {
+                CcspTraceWarning(("BOOTSTRAP_INFO_FILE %s is empty\n", BOOTSTRAP_INFO_FILE));
+                return ANSC_STATUS_FAILURE;
+         }
+         return ANSC_STATUS_SUCCESS;
+}
+
+static int writeToJson(char *data, char *file)
+{
+    FILE *fp;
+    fp = fopen(file, "w");
+    if (fp == NULL)
+    {
+        CcspTraceWarning(("%s : %d Failed to open file %s\n", __FUNCTION__,__LINE__,file));
+        return -1;
+    }
+
+    fwrite(data, strlen(data), 1, fp);
+    fclose(fp);
+    return 0;
+}
+
+ANSC_STATUS UpdateJsonParamLegacy
+	(
+		char*                       pKey,
+		char*			PartnerId,
+		char*			pValue
+    )
+{
+	cJSON *partnerObj = NULL;
+	cJSON *json = NULL;
+	FILE *fileRead = NULL;
+	char * cJsonOut = NULL;
+	char* data = NULL;
+	 int len ;
+	 int configUpdateStatus = -1;
+	 fileRead = fopen( PARTNERS_INFO_FILE, "r" );
+	 if( fileRead == NULL ) 
+	 {
+		 CcspTraceWarning(("%s-%d : Error in opening JSON file\n" , __FUNCTION__, __LINE__ ));
+		 return ANSC_STATUS_FAILURE;
+	 }
+	 
+	 fseek( fileRead, 0, SEEK_END );
+	 len = ftell( fileRead );
+	 fseek( fileRead, 0, SEEK_SET );
+	 data = ( char* )malloc( sizeof(char) * (len + 1) );
+	 if (data != NULL) 
+	 {
+		memset( data, 0, ( sizeof(char) * (len + 1) ));
+	 	fread( data, 1, len, fileRead );
+	 } 
+	 else 
+	 {
+		 CcspTraceWarning(("%s-%d : Memory allocation failed \n", __FUNCTION__, __LINE__));
+		 fclose( fileRead );
+		 return ANSC_STATUS_FAILURE;
+	 }
+	 
+	 fclose( fileRead );
+	 if ( data == NULL )
+	 {
+		CcspTraceWarning(("%s-%d : fileRead failed \n", __FUNCTION__, __LINE__));
+		return ANSC_STATUS_FAILURE;
+	 }
+	 else if ( strlen(data) != 0)
+	 {
+		 json = cJSON_Parse( data );
+		 if( !json ) 
+		 {
+			 CcspTraceWarning((  "%s : json file parser error : [%d]\n", __FUNCTION__,__LINE__));
+			 free(data);
+			 return ANSC_STATUS_FAILURE;
+		 } 
+		 else
+		 {
+			 partnerObj = cJSON_GetObjectItem( json, PartnerId );
+			 if ( NULL != partnerObj)
+			 {
+				 if (NULL != cJSON_GetObjectItem( partnerObj, pKey) )
+				 {
+					 cJSON_ReplaceItemInObject(partnerObj, pKey, cJSON_CreateString(pValue));
+					 cJsonOut = cJSON_Print(json);
+					 CcspTraceWarning(( "Updated json content is %s\n", cJsonOut));
+					 configUpdateStatus = writeToJson(cJsonOut, PARTNERS_INFO_FILE);
+					 if ( !configUpdateStatus)
+					 {
+						 CcspTraceWarning(( "Updated Value for %s partner\n",PartnerId));
+						 CcspTraceWarning(( "Param:%s - Value:%s\n",pKey,pValue));
+					 }
+					 else
+				 	{
+						 CcspTraceWarning(( "Failed to update value for %s partner\n",PartnerId));
+						 CcspTraceWarning(( "Param:%s\n",pKey));
+			 			 cJSON_Delete(json);
+						 return ANSC_STATUS_FAILURE;						
+				 	}
+				 }
+				else
+			 	{
+			 		CcspTraceWarning(("%s - OBJECT  Value is NULL %s\n", pKey,__FUNCTION__ ));
+			 		cJSON_Delete(json);
+			 		return ANSC_STATUS_FAILURE;
+			 	}
+			 
+			 }
+			 else
+			 {
+			 	CcspTraceWarning(("%s - PARTNER ID OBJECT Value is NULL\n", __FUNCTION__ ));
+			 	cJSON_Delete(json);
+			 	return ANSC_STATUS_FAILURE;
+			 }
+			cJSON_Delete(json);
+		 }
+	  }
+	  else
+	  {
+		CcspTraceWarning(("PARTNERS_INFO_FILE %s is empty\n", PARTNERS_INFO_FILE));
+		return ANSC_STATUS_FAILURE;
+	  }
+	 return ANSC_STATUS_SUCCESS;
+}
+
+ANSC_STATUS UpdateJsonParam
+        (
+                char*                       pKey,
+                char*                   PartnerId,
+                char*                   pValue,
+                char*                   pSource,
+                char*                   pCurrentTime
+    )
+{
+        cJSON *partnerObj = NULL;
+        cJSON *json = NULL;
+        FILE *fileRead = NULL;
+        char * cJsonOut = NULL;
+        char* data = NULL;
+         int len ;
+         int configUpdateStatus = -1;
+         fileRead = fopen( BOOTSTRAP_INFO_FILE, "r" );
+         if( fileRead == NULL )
+         {
+                 CcspTraceWarning(("%s-%d : Error in opening JSON file\n" , __FUNCTION__, __LINE__ ));
+                 return ANSC_STATUS_FAILURE;
+         }
+
+         fseek( fileRead, 0, SEEK_END );
+         len = ftell( fileRead );
+         fseek( fileRead, 0, SEEK_SET );
+         data = ( char* )malloc( sizeof(char) * (len + 1) );
+         if (data != NULL)
+         {
+                memset( data, 0, ( sizeof(char) * (len + 1) ));
+                fread( data, 1, len, fileRead );
+         }
+         else
+         {
+                 CcspTraceWarning(("%s-%d : Memory allocation failed \n", __FUNCTION__, __LINE__));
+                 fclose( fileRead );
+                 return ANSC_STATUS_FAILURE;
+         }
+
+         fclose( fileRead );
+         if ( data == NULL )
+         {
+                CcspTraceWarning(("%s-%d : fileRead failed \n", __FUNCTION__, __LINE__));
+                return ANSC_STATUS_FAILURE;
+         }
+         else if ( strlen(data) != 0)
+         {
+                 json = cJSON_Parse( data );
+                 if( !json )
+                 {
+                         CcspTraceWarning((  "%s : json file parser error : [%d]\n", __FUNCTION__,__LINE__));
+                         free(data);
+                         return ANSC_STATUS_FAILURE;
+                 }
+                 else
+                 {
+                         partnerObj = cJSON_GetObjectItem( json, PartnerId );
+                         if ( NULL != partnerObj)
+                         {
+                                 cJSON *paramObj = cJSON_GetObjectItem( partnerObj, pKey);
+                                 if (NULL != paramObj )
+                                 {
+                                         cJSON_ReplaceItemInObject(paramObj, "ActiveValue", cJSON_CreateString(pValue));
+                                         cJSON_ReplaceItemInObject(paramObj, "UpdateTime", cJSON_CreateString(pCurrentTime));
+                                         cJSON_ReplaceItemInObject(paramObj, "UpdateSource", cJSON_CreateString(pSource));
+
+                                         cJsonOut = cJSON_Print(json);
+                                         CcspTraceWarning(( "Updated json content is %s\n", cJsonOut));
+                                         configUpdateStatus = writeToJson(cJsonOut, BOOTSTRAP_INFO_FILE);
+                                         if ( !configUpdateStatus)
+                                         {
+                                                 CcspTraceWarning(( "Bootstrap config update: %s, %s, %s, %s \n", pKey, pValue, PartnerId, pSource));
+                                         }
+                                         else
+                                        {
+                                                 CcspTraceWarning(( "Failed to update value for %s partner\n",PartnerId));
+                                                 CcspTraceWarning(( "Param:%s\n",pKey));
+                                                 cJSON_Delete(json);
+                                                 return ANSC_STATUS_FAILURE;
+                                        }
+                                 }
+                                else
+                                {
+                                        CcspTraceWarning(("%s - OBJECT  Value is NULL %s\n", pKey,__FUNCTION__ ));
+                                        cJSON_Delete(json);
+                                        return ANSC_STATUS_FAILURE;
+                                }
+
+                         }
+                         else
+                         {
+                                CcspTraceWarning(("%s - PARTNER ID OBJECT Value is NULL\n", __FUNCTION__ ));
+                                cJSON_Delete(json);
+                                return ANSC_STATUS_FAILURE;
+                         }
+                        cJSON_Delete(json);
+                 }
+          }
+          else
+          {
+                CcspTraceWarning(("BOOTSTRAP_INFO_FILE %s is empty\n", BOOTSTRAP_INFO_FILE));
+                return ANSC_STATUS_FAILURE;
+          }
+
+          //Also update in the legacy file /nvram/partners_defaults.json for firmware roll over purposes.
+          UpdateJsonParamLegacy(pKey, PartnerId, pValue);
+
+         return ANSC_STATUS_SUCCESS;
+}

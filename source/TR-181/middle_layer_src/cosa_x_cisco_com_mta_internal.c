@@ -180,6 +180,8 @@ CosaMTAInitializeEthWanProv
  pMyObject->pmtaprovinfo = (PCOSA_MTA_ETHWAN_PROV_INFO)AnscAllocateMemory(sizeof(COSA_MTA_ETHWAN_PROV_INFO));
  memset (pMyObject->pmtaprovinfo, 0, sizeof(COSA_MTA_ETHWAN_PROV_INFO));
 
+ CosaMTAInitializeEthWanProvJournal(pMyObject->pmtaprovinfo);
+
 if(pMtaProv)
 {
 
@@ -336,14 +338,14 @@ CosaSetMTAHal
 if(pMtaProv)
 {
 
-	MtaIPMode = pmtaethpro->StartupIPMode;
+	MtaIPMode = pmtaethpro->StartupIPMode.ActiveValue;
 	pMtaProv->MtaIPMode = MtaIPMode;
 	printf("pMtaProv->MtaIPMode = %d\n", pMtaProv->MtaIPMode);
 	memset(buffer,0,sizeof(buffer));
 	memset(pMtaProv->DhcpOption122Suboption1,0,MTA_DHCPOPTION122SUBOPTION1_MAX);
-		if( 0 != strlen(pmtaethpro->IPv4PrimaryDhcpServerOptions))
+		if( 0 != strlen(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue))
 		{
-		   _ansc_strcpy(buffer,pmtaethpro->IPv4PrimaryDhcpServerOptions);
+		   _ansc_strcpy(buffer,pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
@@ -367,9 +369,9 @@ if(pMtaProv)
 		}
 		memset(buffer,0,sizeof(buffer));
 		memset(pMtaProv->DhcpOption122Suboption2,0,MTA_DHCPOPTION122SUBOPTION2_MAX);
-		if( 0 != strlen(pmtaethpro->IPv4SecondaryDhcpServerOptions))
+		if( 0 != strlen(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue))
 		{
-		   _ansc_strcpy(buffer,pmtaethpro->IPv4SecondaryDhcpServerOptions);  
+		   _ansc_strcpy(buffer,pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
@@ -392,9 +394,9 @@ if(pMtaProv)
   
 		memset(buffer,0,sizeof(buffer));
 		memset(pMtaProv->DhcpOption2171CccV6DssID1,0,MTA_DHCPOPTION122CCCV6DSSID1_MAX);
-		if(0 != strlen(pmtaethpro->IPv6PrimaryDhcpServerOptions))
+		if(0 != strlen(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue))
 		{
-		   _ansc_strcpy(buffer,pmtaethpro->IPv6PrimaryDhcpServerOptions);
+		   _ansc_strcpy(buffer,pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
@@ -417,9 +419,9 @@ if(pMtaProv)
 		}
 		memset(buffer,0,sizeof(buffer));
 		memset(pMtaProv->DhcpOption2171CccV6DssID2,0,MTA_DHCPOPTION122CCCV6DSSID2_MAX);
-		if(0 != strlen(pmtaethpro->IPv6SecondaryDhcpServerOptions))
+		if(0 != strlen(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue))
 		{
-		   _ansc_strcpy(buffer,pmtaethpro->IPv6SecondaryDhcpServerOptions);
+		   _ansc_strcpy(buffer,pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
