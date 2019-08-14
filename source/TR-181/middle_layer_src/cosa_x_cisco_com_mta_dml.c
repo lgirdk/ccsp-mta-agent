@@ -72,6 +72,28 @@
 #include "cosa_x_cisco_com_mta_dml.h"
 #include "cosa_x_cisco_com_mta_internal.h"
 
+#include "ccsp_base_api.h"
+#include "messagebus_interface_helper.h"
+
+extern ULONG g_currentBsUpdate;
+
+#define IS_UPDATE_ALLOWED_IN_DM(paramName, requestorStr) ({                                                                                                  \
+    if ( g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_firmware ||                                                                                     \
+         (g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_rfcUpdate && !AnscEqualString(requestorStr, BS_SOURCE_RFC_STR, TRUE)))                         \
+    {                                                                                                                                             \
+       CcspTraceWarning(("Do NOT allow override of param: %s bsUpdate = %d, requestor = %s\n", paramName, g_currentBsUpdate, requestorStr));      \
+       return FALSE;                                                                                                                              \
+    }                                                                                                                                             \
+})
+
+// If the requestor is RFC but the param was previously set by webpa, do not override it.
+#define IS_UPDATE_ALLOWED_IN_JSON(paramName, requestorStr, UpdateSource) ({                                                                                \
+   if (AnscEqualString(requestorStr, BS_SOURCE_RFC_STR, TRUE) && AnscEqualString(UpdateSource, BS_SOURCE_WEBPA_STR, TRUE))                         \
+   {                                                                                                                                               \
+      CcspTraceWarning(("Do NOT allow override of param: %s requestor = %d updateSource = %s\n", paramName, g_currentWriteEntity, UpdateSource));  \
+      return FALSE;                                                                                                                                \
+   }                                                                                                                                               \
+})
 
 /***********************************************************************
  IMPORTANT NOTE:
@@ -6363,6 +6385,38 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
     return -1;
 }
 
+#define BS_SOURCE_WEBPA_STR "webpa"
+#define BS_SOURCE_RFC_STR "rfc"
+#define  PARTNER_ID_LEN  64
+
+char * getRequestorString()
+{
+   switch(g_currentWriteEntity)
+   {
+      case 0x0A: //CCSP_COMPONENT_ID_WebPA from webpa_internal.h(parodus2ccsp)
+      case 0x0B: //CCSP_COMPONENT_ID_XPC
+         return BS_SOURCE_WEBPA_STR;
+
+      case 0x08: //DSLH_MPA_ACCESS_CONTROL_CLI
+      case 0x10: //DSLH_MPA_ACCESS_CONTROL_CLIENTTOOL
+         return BS_SOURCE_RFC_STR;
+
+      default:
+         return "unknown";
+   }
+}
+
+char * getTime()
+{
+    time_t timer;
+    static char buffer[50];
+    struct tm* tm_info;
+    time(&timer);
+    tm_info = localtime(&timer);
+    strftime(buffer, 50, "%Y-%m-%d %H:%M:%S ", tm_info);
+    return buffer;
+}
+
 /********************
 X_RDKCENTRAL-COM_EthernetWAN_MTA
 ***************/
@@ -6376,9 +6430,13 @@ BOOL EthernetWAN_MTA_SetParamIntValue
         PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
         if( AnscEqualString(ParamName, "StartupIPMode", TRUE))
         {
-
            char isEthEnabled[64]={'\0'};
 	   char buff[8] = {'\0'};
+           char * requestorStr = getRequestorString();
+           char * currentTime = getTime();
+
+           IS_UPDATE_ALLOWED_IN_DM(ParamName, requestorStr);
+           IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource);
 
           if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
@@ -6392,8 +6450,16 @@ BOOL EthernetWAN_MTA_SetParamIntValue
                    }
                }
                CosaDmlMTASetStartUpIpMode(pMyObject->pmtaprovinfo, pInt);
-            // set startup ip mode
-				CosaSetMTAHal(pMyObject->pmtaprovinfo);
+
+               memset( pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource ));
+               AnscCopyString( pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource, requestorStr );
+
+               char PartnerID[PARTNER_ID_LEN] = {0};
+               if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
+                   UpdateJsonParam("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.StartupIPMode",PartnerID, buff, requestorStr, currentTime);
+
+               // set startup ip mode
+               CosaSetMTAHal(pMyObject->pmtaprovinfo);
                return TRUE;
             } 
         }
@@ -6418,7 +6484,7 @@ EthernetWAN_MTA_GetParamIntValue
           if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
             {
-               *pInt = pMyObject->pmtaprovinfo->StartupIPMode;
+               *pInt = pMyObject->pmtaprovinfo->StartupIPMode.ActiveValue;
                 return TRUE;
             } else {
                 AnscTraceWarning(("Eth_wan not enabled : Invalid request\n"));
@@ -6446,24 +6512,24 @@ EthernetWAN_MTA_GetParamStringValue
     {         
            if( AnscEqualString(ParamName, "IPv4PrimaryDhcpServerOptions", TRUE))
             {
-                AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions);
+                AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.ActiveValue);
                 return 0;
             }
 
             if( AnscEqualString(ParamName, "IPv4SecondaryDhcpServerOptions", TRUE))
             {
-               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions);
+               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.ActiveValue);
                 return 0;
             }
             if( AnscEqualString(ParamName, "IPv6PrimaryDhcpServerOptions", TRUE))
             {
-               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions);
+               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.ActiveValue);
                 return 0;
             }
 
             if( AnscEqualString(ParamName, "IPv6SecondaryDhcpServerOptions", TRUE))
             {
-               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions);
+               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.ActiveValue);
                 return 0;
             }
  
@@ -6484,9 +6550,13 @@ EthernetWAN_MTA_SetParamStringValue
         char*                       pString
     )
 {
-MTA_IP_TYPE_TR ip_type;
-PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
-char isEthEnabled[64]={'\0'};
+          MTA_IP_TYPE_TR ip_type;
+          PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+          char isEthEnabled[64]={'\0'};
+          char * requestorStr = getRequestorString();
+          char * currentTime = getTime();
+
+          IS_UPDATE_ALLOWED_IN_DM(ParamName, requestorStr);
 
           if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
@@ -6494,6 +6564,8 @@ char isEthEnabled[64]={'\0'};
                ip_type = MTA_IPV4_TR;
                if( AnscEqualString(ParamName, "IPv4PrimaryDhcpServerOptions", TRUE))
                   {
+                      IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource);
+
                       if (syscfg_set(NULL, "IPv4PrimaryDhcpServerOptions", pString) != 0) 
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
@@ -6504,10 +6576,20 @@ char isEthEnabled[64]={'\0'};
                                 }
                           }
                       CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+
+                      memset( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource ));
+                      AnscCopyString( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource, requestorStr );
+
+                      char PartnerID[PARTNER_ID_LEN] = {0};
+                      if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
+                          UpdateJsonParam("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4PrimaryDhcpServerOptions",PartnerID, pString, requestorStr, currentTime);
+
                       return TRUE;
                   }
               if( AnscEqualString(ParamName, "IPv4SecondaryDhcpServerOptions", TRUE))
                   {
+                      IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource);
+
                       if (syscfg_set(NULL, "IPv4SecondaryDhcpServerOptions", pString) != 0) 
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
@@ -6518,6 +6600,14 @@ char isEthEnabled[64]={'\0'};
                                 }
                           }
                       CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+
+                      memset( pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource ));
+                      AnscCopyString( pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource, requestorStr );
+
+                      char PartnerID[PARTNER_ID_LEN] = {0};
+                      if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
+                          UpdateJsonParam("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions",PartnerID, pString, requestorStr, currentTime);
+
                       return TRUE;
                   }
 
@@ -6525,6 +6615,8 @@ char isEthEnabled[64]={'\0'};
 
               if( AnscEqualString(ParamName, "IPv6PrimaryDhcpServerOptions", TRUE))
                   {
+                      IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource);
+
                       if (syscfg_set(NULL, "IPv6PrimaryDhcpServerOptions", pString) != 0)
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
@@ -6535,10 +6627,20 @@ char isEthEnabled[64]={'\0'};
                                 }
                           }
                       CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+
+                      memset( pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource ));
+                      AnscCopyString( pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource, requestorStr );
+
+                      char PartnerID[PARTNER_ID_LEN] = {0};
+                      if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
+                          UpdateJsonParam("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions",PartnerID, pString, requestorStr, currentTime);
+
                       return TRUE;
                   }
                if( AnscEqualString(ParamName, "IPv6SecondaryDhcpServerOptions", TRUE))
                   {
+                      IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource);
+
                       if (syscfg_set(NULL, "IPv6SecondaryDhcpServerOptions", pString) != 0)
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
@@ -6549,6 +6651,14 @@ char isEthEnabled[64]={'\0'};
                                 }
                           }
                       CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
+
+                      memset( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource ));
+                      AnscCopyString( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource, requestorStr );
+
+                      char PartnerID[PARTNER_ID_LEN] = {0};
+                      if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
+                          UpdateJsonParam("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6SecondaryDhcpServerOptions",PartnerID, pString, requestorStr, currentTime);
+
                       return TRUE;
                   }
 
