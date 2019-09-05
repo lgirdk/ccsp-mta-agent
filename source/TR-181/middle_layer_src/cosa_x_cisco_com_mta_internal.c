@@ -74,7 +74,7 @@
 #include "cosa_x_cisco_com_mta_dml.h"
 #include "cosa_x_cisco_com_mta_internal.h"
 #include "mta_hal.h"
-
+#include <sysevent/sysevent.h>
 /**********************************************************************
 
     caller:     owner of the object
@@ -168,7 +168,7 @@ CosaMTAInitializeEthWanProv
         ANSC_HANDLE                 hThisObject
     )
 {
- char isEthEnabled[64]={'\0'};
+
  MTA_IP_TYPE_TR ip_type;
  char 	buffer [ 64 ] = { 0 };
  int	MtaIPMode = 0;
@@ -182,8 +182,7 @@ CosaMTAInitializeEthWanProv
 
 if(pMtaProv)
 {
-   if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) && ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
-        {
+
 	memset(buffer,0,sizeof(buffer));
 	if( 0 == syscfg_get( NULL, "StartupIPMode", buffer, sizeof(buffer)))
 	{
@@ -312,10 +311,6 @@ if(pMtaProv)
 		}
                 free(pMtaProv);
      #endif
-         } else { 
-             printf("\nEthernet Wan mode is disabled\n");  
-             return ANSC_STATUS_SUCCESS;
-         }
 }
 else
 	{
@@ -465,6 +460,60 @@ else
 		return ANSC_STATUS_FAILURE;
 	}  
 }
+
+
+
+ANSC_STATUS Mta_Sysevent_thread(ANSC_HANDLE  hThisObject)
+
+{
+
+ PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
+ static int sysevent_fd;
+         static token_t sysevent_token;
+         sysevent_fd = sysevent_open("127.0.0.1", SE_SERVER_WELL_KNOWN_PORT, SE_VERSION, "WAN State", &sysevent_token);
+
+         unsigned char current_wan_state[10] = {0};
+
+         async_id_t wan_state_asyncid;
+         sysevent_set_options(sysevent_fd, sysevent_token, "current_wan_state", TUPLE_FLAG_EVENT);
+         sysevent_setnotification(sysevent_fd, sysevent_token, "current_wan_state",  &wan_state_asyncid);
+
+         sysevent_get(sysevent_fd, sysevent_token, "current_wan_state", current_wan_state, sizeof(current_wan_state));
+         if(strcmp(current_wan_state, "up") == 0)
+         {
+                CcspTraceWarning(("%s current_wan_state up, Initializing MTA \n",__FUNCTION__));
+
+      		CosaMTAInitializeEthWanProv(pMyObject);
+
+         }
+
+        while (1)
+        {
+                async_id_t getnotification_asyncid;
+                int err;
+                unsigned char name[25]={0}, val[10]={0};
+
+                int namelen = sizeof(name);
+                int vallen  = sizeof(val);
+                err = sysevent_getnotification(sysevent_fd, sysevent_token, name, &namelen, val, &vallen, &getnotification_asyncid);
+
+                if (!err)
+                {
+                        CcspTraceWarning(("%s Recieved notification event  %s, state %s\n",__FUNCTION__,name,val));
+                        if(( strcmp(name,"current_wan_state") == 0 ) && ( strcmp(val, "up") == 0 ) )
+                        {
+
+                            CcspTraceWarning(("%s Initializing/Reinitializing MTA\n",__FUNCTION__));
+                            CosaMTAInitializeEthWanProv(pMyObject);
+                        }
+
+                }
+        }
+
+
+
+}
+
 /**********************************************************************
 
     caller:     self
@@ -497,7 +546,7 @@ CosaMTAInitialize
 {
     ANSC_STATUS                  returnStatus = ANSC_STATUS_SUCCESS;
     PCOSA_DATAMODEL_MTA          pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
-
+    char isEthEnabled[64]={'\0'};
     /* Initiation all functions */
 
     /* Initialize middle layer for Device.DeviceInfo.  */
@@ -506,8 +555,19 @@ CosaMTAInitialize
     {
         CcspTraceError(("syscfg init Failed '%s'\n", __FUNCTION__));
     }
-    #ifdef _COSA_BCM_ARM_
-    CosaMTAInitializeEthWanProv(hThisObject);
+
+   #ifdef _COSA_BCM_ARM_
+
+   if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) && ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
+        {
+    pthread_t MtaInit;
+    pthread_create(&MtaInit, NULL, &Mta_Sysevent_thread, (ANSC_HANDLE) hThisObject);
+	}
+   else { 
+             printf("\nEthernet Wan mode is disabled\n");  
+         }
+  //  CosaMTAInitializeEthWanProv(hThisObject);
+
     #endif
     return returnStatus;
 }
