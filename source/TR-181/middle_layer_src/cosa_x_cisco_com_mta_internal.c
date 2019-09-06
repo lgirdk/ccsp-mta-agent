@@ -170,7 +170,7 @@ CosaMTAInitializeEthWanProv
 {
 
  MTA_IP_TYPE_TR ip_type;
- char 	buffer [ 64 ] = { 0 };
+ char 	buffer [ 128 ] = { 0 };
  int	MtaIPMode = 0;
  int i = 0, j =0; int len = 0;
  PMTAMGMT_MTA_PROVISIONING_PARAMS pMtaProv = NULL;
@@ -203,15 +203,21 @@ if(pMtaProv)
 		{
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
 
-					for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122SUBOPTION1_MAX; i++,j++)
+					for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption122Suboption1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122SUBOPTION1_MAX)
+						{
+							pMtaProv->DhcpOption122Suboption1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 	
 					printf("pMtaProv->DhcpOption122Suboption1[0] = %X %d\n",pMtaProv->DhcpOption122Suboption1[0],pMtaProv->DhcpOption122Suboption1[0]);
@@ -230,14 +236,20 @@ if(pMtaProv)
 		   
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
-			   		for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122SUBOPTION2_MAX; i++,j++)
+			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122SUBOPTION2_MAX)
+						{
+							pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 					printf("pMtaProv->DhcpOption122Suboption2[0] = %X %d\n",pMtaProv->DhcpOption122Suboption2[0],pMtaProv->DhcpOption122Suboption2[0]);
 					printf("pMtaProv->DhcpOption122Suboption2[1] = %X %d\n",pMtaProv->DhcpOption122Suboption2[1],pMtaProv->DhcpOption122Suboption2[1]);
@@ -262,40 +274,58 @@ if(pMtaProv)
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
 
-					for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122CCCV6DSSID1_MAX; i++,j++)
+					for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122CCCV6DSSID1_MAX)
+						{
+							pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 	
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[0] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[0],pMtaProv->DhcpOption2171CccV6DssID1[0]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[1] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[1],pMtaProv->DhcpOption2171CccV6DssID1[1]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[2] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[2],pMtaProv->DhcpOption2171CccV6DssID1[2]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[3] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[3],pMtaProv->DhcpOption2171CccV6DssID1[3]);
+					pMtaProv->DhcpOption2171CccV6DssID1Len = j;
+					printf("pMtaProv->DhcpOption2171CccV6DssID1Len = %d\n",pMtaProv->DhcpOption2171CccV6DssID1Len);
 				}
+
 			}
 		   }
 		}
 		memset(buffer,0,sizeof(buffer));
 		memset(pMtaProv->DhcpOption2171CccV6DssID2,0,MTA_DHCPOPTION122CCCV6DSSID2_MAX);
+		pMtaProv->DhcpOption2171CccV6DssID2Len = 0;
 		if( 0 == syscfg_get( NULL, "IPv6SecondaryDhcpServerOptions", buffer, sizeof(buffer)))
 		{
 		   
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
-			   		for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122CCCV6DSSID2_MAX; i++,j++)
+			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122CCCV6DSSID2_MAX)
+						{
+							pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[0] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[0],pMtaProv->DhcpOption2171CccV6DssID2[0]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[1] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[1],pMtaProv->DhcpOption2171CccV6DssID2[1]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[2] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[2],pMtaProv->DhcpOption2171CccV6DssID2[2]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[3] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[3],pMtaProv->DhcpOption2171CccV6DssID2[3]);
+					pMtaProv->DhcpOption2171CccV6DssID2Len = j;
+					printf("pMtaProv->DhcpOption2171CccV6DssID2Len = %d\n",pMtaProv->DhcpOption2171CccV6DssID2Len);
 				}
+
 			}
 
 		   }
@@ -329,7 +359,7 @@ CosaSetMTAHal
         PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro
     )
 {
- char 	buffer [ 64 ] = { 0 };
+ char 	buffer [ 128 ] = { 0 };
  int	MtaIPMode = 0;
  int i = 0, j =0; int len = 0;
  PMTAMGMT_MTA_PROVISIONING_PARAMS pMtaProv = NULL;
@@ -348,14 +378,20 @@ if(pMtaProv)
 		   _ansc_strcpy(buffer,pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
 
-					for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122SUBOPTION1_MAX; i++,j++)
+					for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption122Suboption1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122SUBOPTION1_MAX)
+						{
+							pMtaProv->DhcpOption122Suboption1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 	
 					printf("pMtaProv->DhcpOption122Suboption1[0] = %X %d\n",pMtaProv->DhcpOption122Suboption1[0],pMtaProv->DhcpOption122Suboption1[0]);
@@ -374,13 +410,19 @@ if(pMtaProv)
 		   _ansc_strcpy(buffer,pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
-			   		for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122SUBOPTION2_MAX; i++,j++)
+			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122SUBOPTION2_MAX)
+						{
+							pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 					printf("pMtaProv->DhcpOption122Suboption2[0] = %X %d\n",pMtaProv->DhcpOption122Suboption2[0],pMtaProv->DhcpOption122Suboption2[0]);
 					printf("pMtaProv->DhcpOption122Suboption2[1] = %X %d\n",pMtaProv->DhcpOption122Suboption2[1],pMtaProv->DhcpOption122Suboption2[1]);
@@ -399,43 +441,60 @@ if(pMtaProv)
 		   _ansc_strcpy(buffer,pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
 
-					for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122CCCV6DSSID1_MAX; i++,j++)
+					for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122CCCV6DSSID1_MAX)
+						{
+							pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 	
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[0] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[0],pMtaProv->DhcpOption2171CccV6DssID1[0]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[1] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[1],pMtaProv->DhcpOption2171CccV6DssID1[1]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[2] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[2],pMtaProv->DhcpOption2171CccV6DssID1[2]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID1[3] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID1[3],pMtaProv->DhcpOption2171CccV6DssID1[3]);
+					pMtaProv->DhcpOption2171CccV6DssID1Len = j;
+					printf("pMtaProv->DhcpOption2171CccV6DssID1Len = %d\n",pMtaProv->DhcpOption2171CccV6DssID1Len);
 				}
 			}
 		   }
 		}
 		memset(buffer,0,sizeof(buffer));
 		memset(pMtaProv->DhcpOption2171CccV6DssID2,0,MTA_DHCPOPTION122CCCV6DSSID2_MAX);
+		pMtaProv->DhcpOption2171CccV6DssID2Len = 0;
 		if(0 != strlen(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue))
 		{
 		   _ansc_strcpy(buffer,pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue);
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
 				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
 				{
-			   		for(i = 0,j= 0;i<len,j<MTA_DHCPOPTION122CCCV6DSSID2_MAX; i++,j++)
+			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
-						pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						if(j<MTA_DHCPOPTION122CCCV6DSSID2_MAX)
+						{
+							pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						}
+						else
+							break;
 					}
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[0] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[0],pMtaProv->DhcpOption2171CccV6DssID2[0]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[1] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[1],pMtaProv->DhcpOption2171CccV6DssID2[1]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[2] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[2],pMtaProv->DhcpOption2171CccV6DssID2[2]);
 					printf("pMtaProv->DhcpOption2171CccV6DssID2[3] = %X %d\n",pMtaProv->DhcpOption2171CccV6DssID2[3],pMtaProv->DhcpOption2171CccV6DssID2[3]);
+					pMtaProv->DhcpOption2171CccV6DssID2Len = j;
+					printf("pMtaProv->DhcpOption2171CccV6DssID2Len = %d\n",pMtaProv->DhcpOption2171CccV6DssID2Len);
 				}
 			}
 
