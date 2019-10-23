@@ -436,6 +436,7 @@ if(pMtaProv)
   
 		memset(buffer,0,sizeof(buffer));
 		memset(pMtaProv->DhcpOption2171CccV6DssID1,0,MTA_DHCPOPTION122CCCV6DSSID1_MAX);
+		pMtaProv->DhcpOption2171CccV6DssID1Len = 0;
 		if(0 != strlen(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue))
 		{
 		   _ansc_strcpy(buffer,pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue);
