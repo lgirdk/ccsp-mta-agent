@@ -268,6 +268,7 @@ if(pMtaProv)
 		{
 		   if(buffer[0] != '\0')
 		   {
+			len = strlen(buffer);
 			CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
