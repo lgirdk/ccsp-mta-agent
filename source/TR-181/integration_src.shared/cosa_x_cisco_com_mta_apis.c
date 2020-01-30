@@ -1051,6 +1051,48 @@ void FillParamUpdateSource(cJSON *partnerObj, char *key, char *paramUpdateSource
     }
 }
 
+void FillMissingSyscfgParam(cJSON *partnerObj, char *key, char *syscfgParam)
+{
+    int ret;
+    char buf[64] = {0};
+
+    ret = syscfg_get( NULL, syscfgParam, buf, sizeof(buf));
+
+    if( ret != 0 || buf[0] == '\0' )
+    {
+	cJSON *paramObj = cJSON_GetObjectItem( partnerObj, key);
+	if ( paramObj != NULL )
+	{
+	    char *valuestr = NULL;
+	    cJSON *paramObjVal = cJSON_GetObjectItem(paramObj, "ActiveValue");
+	    if (paramObjVal)
+		valuestr = paramObjVal->valuestring;
+	    if (valuestr != NULL)
+	    {
+		if (syscfg_set(NULL, syscfgParam, valuestr) != 0)
+		{
+		    CcspTraceError(("%s - syscfg_set %s failed\n", __FUNCTION__,syscfgParam));
+		}
+		else
+		{
+		    if (syscfg_commit() != 0)
+		    {
+			CcspTraceError(("%s - syscfg_commit failed\n", __FUNCTION__));
+		    }
+		}
+	    }
+	    else
+	    {
+		CcspTraceWarning(("%s - %s ActiveValue is NULL\n", __FUNCTION__, key ));
+	    }
+	}
+	else
+	{
+	    CcspTraceWarning(("%s - %s Object is NULL\n", __FUNCTION__, key ));
+	}
+    }
+}
+
 void FillPartnerIDJournal
     (
         cJSON *json ,
@@ -1066,6 +1108,13 @@ void FillPartnerIDJournal
                       FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions", &pmtaethpro->IPv4SecondaryDhcpServerOptions.UpdateSource);
                       FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions", &pmtaethpro->IPv6PrimaryDhcpServerOptions.UpdateSource);
                       FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6SecondaryDhcpServerOptions", &pmtaethpro->IPv6SecondaryDhcpServerOptions.UpdateSource);
+
+		      //Check if syscfg parameters are missing in db. If so update the syscfg parameter based on ActiveValue from bootstrap.json
+		      FillMissingSyscfgParam(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.StartupIPMode","StartupIPMode");
+		      FillMissingSyscfgParam(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4PrimaryDhcpServerOptions","IPv4PrimaryDhcpServerOptions");
+		      FillMissingSyscfgParam(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions","IPv4SecondaryDhcpServerOptions");
+		      FillMissingSyscfgParam(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions","IPv6PrimaryDhcpServerOptions");
+		      FillMissingSyscfgParam(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6SecondaryDhcpServerOptions","IPv6SecondaryDhcpServerOptions");
                 }
                 else
                 {
