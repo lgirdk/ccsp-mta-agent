@@ -1136,7 +1136,7 @@ CosaMTAInitializeEthWanProvJournal
         char PartnerID[PARTNER_ID_LEN] = {0};
         char cmd[512] = {0};
         ULONG size = PARTNER_ID_LEN - 1;
-        int len;
+        int len =0;
         if (!pmtaethpro)
         {
                 CcspTraceWarning(("%s-%d : NULL param\n" , __FUNCTION__, __LINE__ ));
@@ -1157,7 +1157,14 @@ CosaMTAInitializeEthWanProvJournal
 
          fseek( fileRead, 0, SEEK_END );
          len = ftell( fileRead );
-         fseek( fileRead, 0, SEEK_SET );
+	 /* Coverity Issue Fix - CID:74334 : Negative Returns */
+	 if (len < 0)
+	 {
+		CcspTraceWarning(("%s-%d : Error finding size of JSON file\n" , __FUNCTION__, __LINE__ ));
+                fclose(fileRead);
+                 return ANSC_STATUS_FAILURE;
+         }
+	 fseek( fileRead, 0, SEEK_SET );
          data = ( char* )malloc( sizeof(char) * (len + 1) );
          if (data != NULL)
          {
@@ -1246,7 +1253,7 @@ ANSC_STATUS UpdateJsonParamLegacy
 	FILE *fileRead = NULL;
 	char * cJsonOut = NULL;
 	char* data = NULL;
-	 int len ;
+	 int len  = 0;
 	 int configUpdateStatus = -1;
 	 fileRead = fopen( PARTNERS_INFO_FILE, "r" );
 	 if( fileRead == NULL ) 
@@ -1257,6 +1264,13 @@ ANSC_STATUS UpdateJsonParamLegacy
 	 
 	 fseek( fileRead, 0, SEEK_END );
 	 len = ftell( fileRead );
+	 /* Coverity Issue Fix - CID:74334 : Negative Returns*/
+	 if (len < 0)
+	 {
+		CcspTraceWarning(("%s-%d : Error finding size of JSON file\n" , __FUNCTION__, __LINE__ ));
+                 fclose(fileRead);
+                 return ANSC_STATUS_FAILURE;
+         }
 	 fseek( fileRead, 0, SEEK_SET );
 	 data = ( char* )malloc( sizeof(char) * (len + 1) );
 	 if (data != NULL) 
@@ -1349,7 +1363,7 @@ ANSC_STATUS UpdateJsonParam
         FILE *fileRead = NULL;
         char * cJsonOut = NULL;
         char* data = NULL;
-         int len ;
+         int len = 0;
          int configUpdateStatus = -1;
          fileRead = fopen( BOOTSTRAP_INFO_FILE, "r" );
          if( fileRead == NULL )
@@ -1360,6 +1374,13 @@ ANSC_STATUS UpdateJsonParam
 
          fseek( fileRead, 0, SEEK_END );
          len = ftell( fileRead );
+	 /* Coverity Issue Fix - CID:74334 : Negative Returns */
+	 if (len < 0)
+	 {
+		CcspTraceWarning(("%s-%d : Error finding size of JSON file\n" , __FUNCTION__, __LINE__ ));
+                 fclose(fileRead);
+                 return ANSC_STATUS_FAILURE;
+         }
          fseek( fileRead, 0, SEEK_SET );
          data = ( char* )malloc( sizeof(char) * (len + 1) );
          if (data != NULL)
