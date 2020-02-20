@@ -188,7 +188,8 @@ X_CISCO_COM_MTA_GetParamBoolValue
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     PCOSA_DML_MTA_LOG               pCfg          = (PCOSA_DML_MTA_LOG   )&pMyObject->MtaLog;
-	BOOL                       btemp;
+        /* Coverity Issue Fix - CID:57316 : UnInitialised Variable */
+	BOOL                       btemp = FALSE;
 	
     /* check the parameter name and return the corresponding value */
     if( AnscEqualString(ParamName, "pktcMtaDevEnabled", TRUE))
