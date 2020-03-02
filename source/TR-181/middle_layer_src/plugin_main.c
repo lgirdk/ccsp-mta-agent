@@ -55,6 +55,7 @@
 
 #include "ansc_platform.h"
 #include "ansc_load_library.h"
+#include "safec_lib_common.h"
 #include "cosa_plugin_api.h"
 #include "plugin_main.h"
 #include "plugin_main_apis.h"
@@ -96,6 +97,7 @@ COSA_Init
     COSAGetHandleProc               pGetMessageBusHandleProc    = (COSAGetHandleProc                 )NULL;
     COSAGetInterfaceByNameProc      pGetInterfaceByNameProc     = (COSAGetInterfaceByNameProc        )NULL;
     ULONG                           ret                         = 0;
+    errno_t                         rc                          = -1;
 
     if ( uMaxVersionSupported < THIS_PLUGIN_VERSION )
     {
@@ -337,7 +339,12 @@ COSA_Init
         
         if ( tmpSubsystemPrefix = g_GetSubsystemPrefix(g_pDslhDmlAgent) )
         {
-            AnscCopyString(g_SubSysPrefix_Irep, tmpSubsystemPrefix);
+            rc = strcpy_s(g_SubSysPrefix_Irep, sizeof(g_SubSysPrefix_Irep), tmpSubsystemPrefix);
+            if(rc != EOK)
+            {
+                ERR_CHK(rc);
+                goto EXIT;
+            }
         }
 
         /* retrieve the subsystem prefix */
@@ -440,8 +447,12 @@ COSA_IsObjSupported
 #endif
 
 #if (defined(_COSA_DRG_CNS_))
+    errno_t rc  = -1;
+    int     ind = -1;
 
-    if(AnscEqualString(pObjName, "Device.DNS.Client.", TRUE))
+    rc = strcmp_s("Device.DNS.Client.", strlen("Device.DNS.Client."), pObjName, &ind);
+    ERR_CHK(rc);
+    if((rc == EOK) && (!ind))
     {
         return FALSE;
     }        
