@@ -70,6 +70,7 @@
 **********************************************************************/
 
 #include "ssp_global.h"
+#include "safec_lib_common.h"
 
 
 ANSC_HANDLE                 bus_handle         = NULL;
@@ -93,6 +94,7 @@ ssp_PnmMbi_MessageBusEngage
 {
     ANSC_STATUS                 returnStatus       = ANSC_STATUS_SUCCESS;
     CCSP_Base_Func_CB           cb                 = {0};
+    errno_t rc = -1;
     
     char PsmName[256];
 
@@ -125,7 +127,12 @@ ssp_PnmMbi_MessageBusEngage
     }
     else
     {
-        AnscCopyString(PsmName, CCSP_DBUS_PSM);
+        rc = strcpy_s(PsmName,sizeof(PsmName),CCSP_DBUS_PSM);
+        if(rc != EOK)
+        {
+            ERR_CHK(rc);
+            return ANSC_STATUS_FAILURE;
+        }
     }
 
     /* Wait for PSM */

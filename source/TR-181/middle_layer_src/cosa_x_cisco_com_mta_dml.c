@@ -68,6 +68,7 @@
 
 #include "ansc_platform.h"
 #include "plugin_main_apis.h"
+#include "safec_lib_common.h"
 #include "cosa_x_cisco_com_mta_apis.h"
 #include "cosa_x_cisco_com_mta_dml.h"
 #include "cosa_x_cisco_com_mta_internal.h"
@@ -535,10 +536,15 @@ X_CISCO_COM_MTA_GetParamBoolValue
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     PCOSA_DML_MTA_LOG               pCfg          = (PCOSA_DML_MTA_LOG   )&pMyObject->MtaLog;
         /* Coverity Issue Fix - CID:57316 : UnInitialised Variable */
-	BOOL                       btemp = FALSE;
+        BOOL                            btemp = FALSE;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 	
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "pktcMtaDevEnabled", TRUE))
+
+    rc = strcmp_s("pktcMtaDevEnabled", strlen("pktcMtaDevEnabled"), ParamName , &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK)) 
     {
         /* collect value */
         CosaDmlMTAGetPktc(NULL, pPktc);
@@ -546,7 +552,10 @@ X_CISCO_COM_MTA_GetParamBoolValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "DSXLogEnable", TRUE))
+
+    rc = strcmp_s("DSXLogEnable", strlen("DSXLogEnable"), ParamName, &ind);
+    ERR_CHK(rc);
+    if( (!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTAGetDSXLogEnable(NULL, &btemp);
@@ -554,14 +563,18 @@ X_CISCO_COM_MTA_GetParamBoolValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "ClearDSXLog", TRUE))
+    rc = strcmp_s("ClearDSXLog", strlen("ClearDSXLog"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = FALSE;
         return TRUE;
     }
 
-	if( AnscEqualString(ParamName, "CallSignallingLogEnable", TRUE))
+    rc = strcmp_s("CallSignallingLogEnable", strlen("CallSignallingLogEnable"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK)) 
     {
         /* collect value */
 		CosaDmlMTAGetCallSignallingLogEnable(NULL, &btemp);
@@ -569,21 +582,27 @@ X_CISCO_COM_MTA_GetParamBoolValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "ClearCallSignallingLog", TRUE))
+    rc = strcmp_s("ClearCallSignallingLog", strlen("ClearCallSignallingLog"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = FALSE;
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "EnableDECTLog", TRUE))
+    rc = strcmp_s("EnableDECTLog", strlen("EnableDECTLog"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = pCfg->EnableDECTLog;
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "EnableMTALog", TRUE))
+    rc = strcmp_s("EnableMTALog", strlen("EnableMTALog"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = pCfg->EnableMTALog;
@@ -680,198 +699,163 @@ X_CISCO_COM_MTA_GetParamUlongValue
 
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-
-    if( AnscEqualString(ParamName, "pktcSigDefCallSigTos", TRUE) )
+    if (strncmp("pktc", ParamName, strlen("pktc")) == 0) 
     {
         /* collect value */
-        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS)
+        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS) 
+        {
             return FALSE;
-
-        *puLong = pPktc->pktcSigDefCallSigTos;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "pktcSigDefMediaStreamTos", TRUE) )
+        }
+        rc = strcmp_s("pktcSigDefCallSigTos",  strlen("pktcSigDefCallSigTos"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = pPktc->pktcSigDefCallSigTos;
+            return TRUE;
+        }
+        rc = strcmp_s("pktcSigDefMediaStreamTos", strlen("pktcSigDefMediaStreamTos"), ParamName, &ind);
+        ERR_CHK(rc);
+        
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = pPktc->pktcSigDefMediaStreamTos;
+            return TRUE;
+        }
+        rc = strcmp_s("pktcMtaDevRealmOrgName", strlen("pktcMtaDevRealmOrgName"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = pPktc->pktcMtaDevRealmOrgName;
+            return TRUE;
+        }
+        rc = strcmp_s("pktcMtaDevCmsKerbRealmName", strlen("pktcMtaDevCmsKerbRealmName"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = pPktc->pktcMtaDevCmsKerbRealmName;
+            return TRUE;
+        }
+        rc = strcmp_s("pktcMtaDevCmsIpsecCtrl", strlen("pktcMtaDevCmsIpsecCtrl"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = pPktc->pktcMtaDevCmsIpsecCtrl;
+            return TRUE;
+        }
+        rc = strcmp_s("pktcMtaDevCmsSolicitedKeyTimeout", strlen("pktcMtaDevCmsSolicitedKeyTimeout"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = pPktc->pktcMtaDevCmsSolicitedKeyTimeout;
+            return TRUE;
+        }
+        rc = strcmp_s("pktcMtaDevRealmPkinitGracePeriod", strlen("pktcMtaDevRealmPkinitGracePeriod"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = pPktc->pktcMtaDevRealmPkinitGracePeriod;
+            return TRUE;
+        }    
+    } 
+    else 
     {
-        /* collect value */
-        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = pPktc->pktcSigDefMediaStreamTos;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "pktcMtaDevRealmOrgName", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = pPktc->pktcMtaDevRealmOrgName;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "pktcMtaDevCmsKerbRealmName", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = pPktc->pktcMtaDevCmsKerbRealmName;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "pktcMtaDevCmsIpsecCtrl", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = pPktc->pktcMtaDevCmsIpsecCtrl;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "pktcMtaDevCmsSolicitedKeyTimeout", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = pPktc->pktcMtaDevCmsSolicitedKeyTimeout;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "pktcMtaDevRealmPkinitGracePeriod", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = pPktc->pktcMtaDevRealmPkinitGracePeriod;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "IPAddress", TRUE) )
-    {
-        /* collect value */
         if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        {
             return FALSE;
-
-        *puLong = Info.IPAddress.Value;
-
-        return TRUE;
+        }
+        rc = strcmp_s("IPAddress", strlen("IPAddress"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.IPAddress.Value;
+            return TRUE;
+        }
+        
+        rc = strcmp_s("SubnetMask", strlen("SubnetMask"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.SubnetMask.Value;
+            return TRUE;
+        }
+        rc = strcmp_s("Gateway", strlen("Gateway"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.Gateway.Value;
+            return TRUE;
+        }
+        rc = strcmp_s("LeaseTimeRemaining", strlen("LeaseTimeRemaining"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.LeaseTimeRemaining;
+            return TRUE;
+        }
+        rc = strcmp_s("PrimaryDNS", strlen("PrimaryDNS"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.PrimaryDNS.Value;
+            return TRUE;
+        }
+        rc = strcmp_s("SecondaryDNS", strlen("SecondaryDNS"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.SecondaryDNS.Value;
+            return TRUE;
+        }
+        rc = strcmp_s("PrimaryDHCPServer", strlen("PrimaryDHCPServer"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.PrimaryDHCPServer.Value;
+            // AnscCopyString(pValue, Info.PrimaryDHCPServer);
+            return TRUE;
+        }
+        rc = strcmp_s("SecondaryDHCPServer", strlen("SecondaryDHCPServer"), ParamName, &ind);
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
+        {
+            *puLong = Info.SecondaryDHCPServer.Value;
+            // AnscCopyString(pValue, Info.SecondaryDHCPServer);
+            return TRUE;
+        }
     }
 
-    if( AnscEqualString(ParamName, "SubnetMask", TRUE) )
+    rc = strcmp_s("MTAResetCount", strlen("MTAResetCount"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return FALSE;
+	if (CosaDmlMtaGetResetCount(NULL,MTA_RESET,puLong) != ANSC_STATUS_SUCCESS)
+	return FALSE;
 
-        *puLong = Info.SubnetMask.Value;
-
-        return TRUE;
+	return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "Gateway", TRUE) )
+    rc = strcmp_s("LineResetCount", strlen("LineResetCount"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return FALSE;
+	if (CosaDmlMtaGetResetCount(NULL,LINE_RESET,puLong) != ANSC_STATUS_SUCCESS)
+	return FALSE;
 
-        *puLong = Info.Gateway.Value;
-
-        return TRUE;
+	return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "LeaseTimeRemaining", TRUE) )
+    rc = strcmp_s("ClearLineStats", strlen("ClearLineStats"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = Info.LeaseTimeRemaining;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "PrimaryDNS", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = Info.PrimaryDNS.Value;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "SecondaryDNS", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = Info.SecondaryDNS.Value;
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "PrimaryDHCPServer", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = Info.PrimaryDHCPServer.Value;
-        // AnscCopyString(pValue, Info.PrimaryDHCPServer);
-
-        return TRUE;
-    }
-
-    if( AnscEqualString(ParamName, "SecondaryDHCPServer", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return FALSE;
-
-        *puLong = Info.SecondaryDHCPServer.Value;
-        // AnscCopyString(pValue, Info.SecondaryDHCPServer);
-
-        return TRUE;
-    }
-
-	if( AnscEqualString(ParamName, "MTAResetCount", TRUE) )
-	{
-		if (CosaDmlMtaGetResetCount(NULL,MTA_RESET,puLong) != ANSC_STATUS_SUCCESS)
-			return FALSE;
-
-		return TRUE;
-	}
-
-	if( AnscEqualString(ParamName, "LineResetCount", TRUE) )
-	{
-		if (CosaDmlMtaGetResetCount(NULL,LINE_RESET,puLong) != ANSC_STATUS_SUCCESS)
-			return FALSE;
-
-		return TRUE;
-	}
-
-	if( AnscEqualString(ParamName, "ClearLineStats", TRUE) )
-	{
         *puLong = 0;
 
-		return TRUE;
-	}
+	return TRUE;
+    }
 
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
@@ -925,115 +909,149 @@ X_CISCO_COM_MTA_GetParamStringValue
     )
 {
     COSA_MTA_DHCP_INFO              Info = {0};
-
+    errno_t                         rc   = -1;
+    int                             ind  = -1;
+    
+    
+    if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+            return -1;
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "BootFileName", TRUE) )
+    rc = strcmp_s("BootFileName", strlen("BootFileName"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.BootFileName);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.BootFileName);
-
+        }
+        return 0;
+    }
+    
+    rc = strcmp_s("FQDN", strlen("FQDN"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        rc = strcpy_s(pValue, *pUlSize, Info.FQDN);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+    
+    rc = strcmp_s("RebindTimeRemaining", strlen("RebindTimeRemaining"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        rc = strcpy_s(pValue, *pUlSize, Info.RebindTimeRemaining);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "FQDN", TRUE) )
+    rc = strcmp_s("RenewTimeRemaining", strlen("RenewTimeRemaining"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.RenewTimeRemaining);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.FQDN);
-
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RebindTimeRemaining", TRUE) )
+    rc = strcmp_s("DHCPOption3", strlen("DHCPOption3"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.DHCPOption3);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.RebindTimeRemaining);
-
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RenewTimeRemaining", TRUE) )
+    rc = strcmp_s("DHCPOption6", strlen("DHCPOption6"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.DHCPOption6);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.RenewTimeRemaining);
-
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "DHCPOption3", TRUE) )
+    rc = strcmp_s("DHCPOption7", strlen("DHCPOption7"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.DHCPOption7);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.DHCPOption3);
-
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "DHCPOption6", TRUE) )
+    rc = strcmp_s("DHCPOption8", strlen("DHCPOption8"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.DHCPOption8);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.DHCPOption6);
-
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "DHCPOption7", TRUE) )
+    rc = strcmp_s("PCVersion", strlen("PCVersion"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.PCVersion);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.DHCPOption7);
-
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "DHCPOption8", TRUE) )
+    rc = strcmp_s("MACAddress", strlen("MACAddress"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, Info.MACAddress);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        AnscCopyString(pValue, Info.DHCPOption8);
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "PCVersion", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return -1;
-
-        AnscCopyString(pValue, Info.PCVersion);
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "MACAddress", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
-            return -1;
-
-        AnscCopyString(pValue, Info.MACAddress);
-
+        }
+        
         return 0;
     }
 
@@ -1082,50 +1100,68 @@ X_CISCO_COM_MTA_SetParamBoolValue
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     PCOSA_DML_MTA_LOG               pCfg          = (PCOSA_DML_MTA_LOG   )&pMyObject->MtaLog;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and set the corresponding value */
 
-    if( AnscEqualString(ParamName, "pktcMtaDevEnabled", TRUE))
+    rc = strcmp_s("pktcMtaDevEnabled", strlen("pktcMtaDevEnabled"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         pPktc->pktcMtaDevEnabled = bValue;
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "ClearDSXLog", TRUE))
+    rc = strcmp_s("ClearDSXLog", strlen("ClearDSXLog"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTAClearDSXLog(NULL,bValue);
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "DSXLogEnable", TRUE))
+    rc = strcmp_s("DSXLogEnable", strlen("DSXLogEnable"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTASetDSXLogEnable(NULL, bValue);
         return TRUE;
     }
 
-	if( AnscEqualString(ParamName, "CallSignallingLogEnable", TRUE))
+    rc = strcmp_s("CallSignallingLogEnable", strlen("CallSignallingLogEnable"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
 		CosaDmlMTASetCallSignallingLogEnable(NULL, bValue);
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "ClearCallSignallingLog", TRUE))
+    rc = strcmp_s("ClearCallSignallingLog", strlen("ClearCallSignallingLog"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+
     {
          CosaDmlMTAClearCallSignallingLog(NULL,bValue);
          return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "EnableDECTLog", TRUE))
+    rc = strcmp_s("EnableDECTLog", strlen("EnableDECTLog"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+
     {
         /* save update to backup */
         pCfg->EnableDECTLog = bValue;
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "EnableMTALog", TRUE))
+    rc = strcmp_s("EnableMTALog", strlen("EnableMTALog"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* save update to backup */
         pCfg->EnableMTALog = bValue;
@@ -1220,26 +1256,34 @@ X_CISCO_COM_MTA_SetParamUlongValue
 {
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and set the corresponding value */
 
-    if( AnscEqualString(ParamName, "pktcSigDefCallSigTos", TRUE) )
+    rc = strcmp_s("pktcSigDefCallSigTos", strlen("pktcSigDefCallSigTos"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         pPktc->pktcSigDefCallSigTos = uValue;
 
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "pktcSigDefMediaStreamTos", TRUE) )
+    rc = strcmp_s("pktcSigDefMediaStreamTos", strlen("pktcSigDefMediaStreamTos"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK)) 
     {
         pPktc->pktcSigDefMediaStreamTos = uValue;
 
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "ClearLineStats", TRUE) )
+    rc = strcmp_s("ClearLineStats", strlen("ClearLineStats"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-		CosaDmlMtaClearCalls( uValue );
+	CosaDmlMtaClearCalls( uValue );
 
         return TRUE;
     }
@@ -1460,14 +1504,22 @@ LineTable_GetEntryCount
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA     )g_pCosaBEManager->hMTA;
     PCOSA_MTA_LINETABLE_INFO        pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
     ULONG                           ulCount;
+    errno_t                         rc            = -1;
     
     ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
 fprintf(stderr, "### %s %d  ulCount=%ld\n", __func__, __LINE__, ulCount);
     if ( ulCount != 0 )
     {
         pLineTable = AnscAllocateMemory(ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
-
-        memset( pLineTable, 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
+        
+        if(pLineTable == NULL)
+        {
+            pMyObject->pLineTable = pLineTable;
+            return ulCount;
+        }
+        rc = memset_s( pLineTable, ulCount * sizeof(COSA_MTA_LINETABLE_INFO), 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
+        ERR_CHK(rc);
+       
 
 ULONG ul=0;
 for (ul=0; ul<ulCount; ul++) {
@@ -1567,8 +1619,12 @@ LineTable_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "TriggerDiagnostics", TRUE))
+    rc = strcmp_s("TriggerDiagnostics", strlen("TriggerDiagnostics"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = FALSE;
@@ -1664,11 +1720,15 @@ LineTable_GetParamUlongValue
     PCOSA_MTA_LINETABLE_INFO        pInfo = (PCOSA_MTA_LINETABLE_INFO)hInsContext;
 
     ULONG                           nIndex = pInfo->InstanceNumber - 1;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     CosaDmlMTALineTableGetEntry(NULL, nIndex, pInfo);
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "LineNumber", TRUE))
+    rc = strcmp_s("LineNumber", strlen("LineNumber"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pInfo->LineNumber;
@@ -1676,7 +1736,9 @@ LineTable_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "Status", TRUE))
+    rc = strcmp_s("Status", strlen("Status"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pInfo->Status;
@@ -1684,7 +1746,9 @@ LineTable_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "CAPort", TRUE))
+    rc = strcmp_s("CAPort", strlen("CAPort"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pInfo->CAPort;
@@ -1692,7 +1756,9 @@ LineTable_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "MWD", TRUE))
+    rc = strcmp_s("MWD", strlen("MWD"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pInfo->MWD;
@@ -1700,7 +1766,9 @@ LineTable_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "OverCurrentFault", TRUE))
+    rc = strcmp_s("OverCurrentFault", strlen("OverCurrentFault"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pInfo->OverCurrentFault;
@@ -1762,55 +1830,99 @@ LineTable_GetParamStringValue
     PCOSA_MTA_LINETABLE_INFO        pInfo = (PCOSA_MTA_LINETABLE_INFO)hInsContext;
 
     ULONG                           nIndex = pInfo->InstanceNumber - 1;
-
+    errno_t                         rc     = -1;
+    int                             ind    = -1;
     CosaDmlMTALineTableGetEntry(NULL, nIndex, pInfo);
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "HazardousPotential", TRUE))
+    rc = strcmp_s("HazardousPotential", strlen("HazardousPotential"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->HazardousPotential);
-
+       
+        rc = strcpy_s(pValue, *pUlSize, pInfo->HazardousPotential);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "ForeignEMF", TRUE))
+    rc = strcmp_s("ForeignEMF", strlen("ForeignEMF"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->ForeignEMF);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->ForeignEMF);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        } 
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "ResistiveFaults", TRUE))
+    rc = strcmp_s("ResistiveFaults", strlen("ResistiveFaults"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->ResistiveFaults);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->ResistiveFaults);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "ReceiverOffHook", TRUE))
+    rc = strcmp_s("ReceiverOffHook", strlen("ReceiverOffHook"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->ReceiverOffHook);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->ReceiverOffHook);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RingerEquivalency", TRUE))
+    rc = strcmp_s("RingerEquivalency", strlen("RingerEquivalency"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->RingerEquivalency);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->RingerEquivalency);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "CAName", TRUE))
+    rc = strcmp_s("CAName", strlen("CAName"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->CAName);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->CAName);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
@@ -1858,10 +1970,15 @@ LineTable_SetParamBoolValue
 {
     PCOSA_MTA_LINETABLE_INFO        pInfo = (PCOSA_MTA_LINETABLE_INFO)hInsContext;
 
-    ULONG                           nIndex = pInfo->InstanceNumber - 1;	
+    ULONG                           nIndex = pInfo->InstanceNumber - 1;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     /* check the parameter name and set the corresponding value */
     // printf("\n\n ==> LineTable_SetParamBoolValue ParamName=%s \n\n", ParamName);
-    if( AnscEqualString(ParamName, "TriggerDiagnostics", TRUE))
+    rc = strcmp_s("TriggerDiagnostics", strlen("TriggerDiagnostics"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
 		// printf("\n\n ==> LineTable_SetParamBoolValue bValue=%d \n", bValue);
         /* save update to backup */
@@ -2171,34 +2288,54 @@ CALLP_GetParamStringValue
     COSA_MTA_CAPPL                  CALLP = {0};
     PCOSA_MTA_LINETABLE_INFO        pInfo = (PCOSA_MTA_LINETABLE_INFO)hInsContext;
     ULONG                           nIndex = pInfo->InstanceNumber - 1;
-
+    errno_t                         rc     = -1;
+    int                             ind    = -1; 
     CosaDmlMTALineTableGetEntry(NULL, nIndex, pInfo);
-
+    
+    if (CosaDmlMTAGetCALLP(hInsContext, &CALLP) != ANSC_STATUS_SUCCESS)
+    {
+        return -1;
+    }
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "LCState", TRUE))
-    {
-        /* collect value */
-        CosaDmlMTAGetCALLP(hInsContext, &CALLP);
-        AnscCopyString(pValue, CALLP.LCState);
-
+    rc = strcmp_s("LCState", strlen("LCState"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))    
+    {       
+        rc = strcpy_s(pValue, *pUlSize, CALLP.LCState);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        } 
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "CallPState", TRUE))
+    rc = strcmp_s("CallPState", strlen("CallPState"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        CosaDmlMTAGetCALLP(hInsContext, &CALLP);
-        AnscCopyString(pValue, CALLP.CallPState);
-
+        rc = strcpy_s(pValue, *pUlSize, CALLP.CallPState);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "LoopCurrent", TRUE))
+    rc = strcmp_s("LoopCurrent", strlen("LoopCurrent"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        CosaDmlMTAGetCALLP(hInsContext, &CALLP);
-        AnscCopyString(pValue, CALLP.LoopCurrent);
-
+        rc = strcpy_s(pValue, *pUlSize, CALLP.LoopCurrent);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
     
@@ -2256,8 +2393,13 @@ VQM_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "ResetStats", TRUE))
+    rc = strcmp_s("ResetStats", strlen("ResetStats"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = FALSE;
@@ -2306,8 +2448,13 @@ VQM_SetParamBoolValue
         BOOL                        bValue
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     /* check the parameter name and set the corresponding value */
-    if( AnscEqualString(ParamName, "ResetStats", TRUE))
+    rc = strcmp_s("ResetStats", strlen("ResetStats"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK)) 
     {
         /* save update to backup */
         if ( bValue == TRUE )
@@ -2668,23 +2815,31 @@ Calls_GetParamBoolValue
     )
 {
     PCOSA_MTA_CALLS                 pCalls = (PCOSA_MTA_CALLS)hInsContext;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "JitterBufferAdaptive", TRUE))
+    rc = strcmp_s("JitterBufferAdaptive", strlen("JitterBufferAdaptive"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = pCalls->JitterBufferAdaptive;
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "Originator", TRUE))
+    rc = strcmp_s("Originator", strlen("Originator"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = pCalls->Originator;
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "RemoteJitterBufferAdaptive", TRUE))
+    rc = strcmp_s("RemoteJitterBufferAdaptive", strlen("RemoteJitterBufferAdaptive"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = pCalls->RemoteJitterBufferAdaptive;
@@ -2734,9 +2889,13 @@ Calls_GetParamUlongValue
     )
 {
     PCOSA_MTA_CALLS                 pCalls = (PCOSA_MTA_CALLS)hInsContext;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
     
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "RemoteIPAddress", TRUE))
+    rc = strcmp_s("RemoteIPAddress", strlen("RemoteIPAddress"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pCalls->RemoteIPAddress.Value; 
@@ -2744,7 +2903,9 @@ Calls_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "CallDuration", TRUE))
+    rc = strcmp_s("CallDuration", strlen("CallDuration"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pCalls->CallDuration; 
@@ -2806,494 +2967,930 @@ Calls_GetParamStringValue
     )
 {
     PCOSA_MTA_CALLS                 pCalls = (PCOSA_MTA_CALLS)hInsContext;
+    errno_t                         rc       = -1;
+    int                             ind      = -1;
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "Codec", TRUE))
+    rc = strcmp_s("Codec", strlen("Codec"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->Codec);
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->Codec);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteCodec", TRUE))
+    rc = strcmp_s("RemoteCodec", strlen("RemoteCodec"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteCodec);
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteCodec);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "CallEndTime", TRUE))
+    rc = strcmp_s("CallEndTime", strlen("CallEndTime"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->CallEndTime);
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->CallEndTime);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "CallStartTime", TRUE))
+    rc = strcmp_s("CallStartTime", strlen("CallStartTime"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->CallStartTime);
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->CallStartTime);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "CWErrorRate", TRUE))
+    rc = strcmp_s("CWErrorRate", strlen("CWErrorRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->CWErrorRate);
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->CWErrorRate);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "PktLossConcealment", TRUE))
+    rc = strcmp_s("PktLossConcealment", strlen("PktLossConcealment"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->PktLossConcealment);
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->PktLossConcealment);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemotePktLossConcealment", TRUE))
+    rc = strcmp_s("RemotePktLossConcealment", strlen("RemotePktLossConcealment"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemotePktLossConcealment);
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemotePktLossConcealment);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 	/********************zqiu >>**********************************************/
-	if( AnscEqualString(ParamName, "CWErrors", TRUE))
+
+    rc = strcmp_s("CWErrors", strlen("CWErrors"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->CWErrors); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->CWErrors);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "SNR", TRUE))
+    rc = strcmp_s("SNR", strlen("SNR"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->SNR); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->SNR);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+               
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "MicroReflections", TRUE))
+    rc = strcmp_s("MicroReflections", strlen("MicroReflections"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->MicroReflections); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->MicroReflections);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "DownstreamPower", TRUE))
+    rc = strcmp_s("DownstreamPower", strlen("DownstreamPower"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->DownstreamPower); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->DownstreamPower);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+ 
+    rc = strcmp_s("UpstreamPower", strlen("UpstreamPower"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->UpstreamPower);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "UpstreamPower", TRUE))
+    rc = strcmp_s("EQIAverage", strlen("EQIAverage"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->UpstreamPower); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "EQIAverage", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->EQIAverage); 
-
-        return 0;
-
-    }
-    if( AnscEqualString(ParamName, "EQIMinimum", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->EQIMinimum); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "EQIMaximum", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->EQIMaximum); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "EQIInstantaneous", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->EQIInstantaneous); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "MOS-LQ", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->MOS_LQ); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "MOS-CQ", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->MOS_CQ); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "EchoReturnLoss", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->EchoReturnLoss); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "SignalLevel", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->SignalLevel); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "NoiseLevel", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->NoiseLevel); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "LossRate", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->LossRate); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "DiscardRate", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->DiscardRate); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "BurstDensity", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->BurstDensity); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "GapDensity", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->GapDensity); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "BurstDuration", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->BurstDuration); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "GapDuration", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->GapDuration); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "RoundTripDelay", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->RoundTripDelay); 
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "Gmin", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->Gmin); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->EQIAverage);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
 
     }
 
-    if( AnscEqualString(ParamName, "RFactor", TRUE))
+    rc = strcmp_s("EQIMinimum", strlen("EQIMinimum"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RFactor); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->EQIMinimum);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        } 
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "ExternalRFactor", TRUE))
+    rc = strcmp_s("EQIMaximum", strlen("EQIMaximum"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->ExternalRFactor); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->EQIMaximum);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "JitterBufRate", TRUE))
+
+    rc = strcmp_s("EQIInstantaneous", strlen("EQIInstantaneous"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->JitterBufRate); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->EQIInstantaneous);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "JBNominalDelay", TRUE))
+    rc = strcmp_s("MOS-LQ", strlen("MOS-LQ"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->JBNominalDelay); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->MOS_LQ);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "JBMaxDelay", TRUE))
+    rc = strcmp_s("MOS-CQ", strlen("MOS-CQ"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->JBMaxDelay); 
+        rc = strcpy_s(pValue, *pUlSize, pCalls->MOS_CQ);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
 
+    rc = strcmp_s("EchoReturnLoss", strlen("EchoReturnLoss"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->EchoReturnLoss);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("SignalLevel", strlen("SignalLevel"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->SignalLevel);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("NoiseLevel", strlen("NoiseLevel"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->NoiseLevel);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("LossRate", strlen("LossRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->LossRate);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("DiscardRate", strlen("DiscardRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->DiscardRate);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("BurstDensity", strlen("BurstDensity"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->BurstDensity);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("GapDensity", strlen("GapDensity"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->GapDensity);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("BurstDuration", strlen("BurstDuration"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->BurstDuration);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("GapDuration", strlen("GapDuration"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->GapDuration);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("RoundTripDelay", strlen("RoundTripDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RoundTripDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("Gmin", strlen("Gmin"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->Gmin);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
 
     }
 
-    if( AnscEqualString(ParamName, "JBAbsMaxDelay", TRUE))
+    rc = strcmp_s("RFactor", strlen("RFactor"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->JBAbsMaxDelay); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RFactor);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "TxPackets", TRUE))
+    rc = strcmp_s("ExternalRFactor", strlen("ExternalRFactor"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->TxPackets); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->ExternalRFactor);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "TxOctets", TRUE))
+    rc = strcmp_s("JitterBufRate", strlen("JitterBufRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->TxOctets); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->JitterBufRate);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RxPackets", TRUE))
+    rc = strcmp_s("JBNominalDelay", strlen("JBNominalDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RxPackets); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->JBNominalDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RxOctets", TRUE))
+    rc = strcmp_s("JBMaxDelay", strlen("JBMaxDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RxOctets); 
+        rc = strcpy_s(pValue, *pUlSize, pCalls->JBMaxDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
 
+    }
+
+    rc = strcmp_s("JBAbsMaxDelay", strlen("JBAbsMaxDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */        
+        rc = strcpy_s(pValue, *pUlSize, pCalls->JBAbsMaxDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "PacketLoss", TRUE))
+    rc = strcmp_s("TxPackets", strlen("TxPackets"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->PacketLoss); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->TxPackets);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "IntervalJitter", TRUE))
+    rc = strcmp_s("TxOctets", strlen("TxOctets"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->IntervalJitter); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->TxOctets);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteIntervalJitter", TRUE))
+    rc = strcmp_s("RxPackets", strlen("RxPackets"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteIntervalJitter); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RxPackets);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteMOS-LQ", TRUE))
+    rc = strcmp_s("RxOctets", strlen("RxOctets"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteMOS_LQ); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RxOctets);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteMOS-CQ", TRUE))
+    rc = strcmp_s("PacketLoss", strlen("PacketLoss"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteMOS_CQ); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->PacketLoss);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteEchoReturnLoss", TRUE))
+    rc = strcmp_s("IntervalJitter", strlen("IntervalJitter"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteEchoReturnLoss);
+        rc = strcpy_s(pValue, *pUlSize, pCalls->IntervalJitter);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteSignalLevel", TRUE))
+    rc = strcmp_s("RemoteIntervalJitter", strlen("RemoteIntervalJitter"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteSignalLevel); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteIntervalJitter);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteNoiseLevel", TRUE))
+    rc = strcmp_s("RemoteMOS-LQ", strlen("RemoteMOS-LQ"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteNoiseLevel); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteMOS_LQ);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteLossRate", TRUE))
+    rc = strcmp_s("RemoteMOS-CQ", strlen("RemoteMOS-CQ"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteLossRate); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteMOS_CQ);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteDiscardRate", TRUE))
+    rc = strcmp_s("RemoteEchoReturnLoss", strlen("RemoteEchoReturnLoss"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteDiscardRate); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteEchoReturnLoss);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteBurstDensity", TRUE))
+    rc = strcmp_s("RemoteSignalLevel", strlen("RemoteSignalLevel"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteBurstDensity); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteSignalLevel);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteGapDensity", TRUE))
+    rc = strcmp_s("RemoteNoiseLevel", strlen("RemoteNoiseLevel"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteGapDensity); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteNoiseLevel);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteBurstDuration", TRUE))
+
+    rc = strcmp_s("RemoteLossRate", strlen("RemoteLossRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteBurstDuration); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteLossRate);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteGapDuration", TRUE))
+    rc = strcmp_s("RemoteDiscardRate", strlen("RemoteDiscardRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteGapDuration); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteDiscardRate);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteRoundTripDelay", TRUE))
+    rc = strcmp_s("RemoteBurstDensity", strlen("RemoteBurstDensity"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteRoundTripDelay); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteBurstDensity);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteGmin", TRUE))
+    rc = strcmp_s("RemoteGapDensity", strlen("RemoteGapDensity"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteGmin); 
-
+        /* collect value */        
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteGapDensity);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteRFactor", TRUE))
+
+    rc = strcmp_s("RemoteBurstDuration", strlen("RemoteBurstDuration"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteRFactor); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteBurstDuration);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteExternalRFactor", TRUE))
+
+    rc = strcmp_s("RemoteGapDuration", strlen("RemoteGapDuration"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteExternalRFactor); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteGapDuration);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteJitterBufRate", TRUE))
+    rc = strcmp_s("RemoteRoundTripDelay", strlen("RemoteRoundTripDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteJitterBufRate); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteRoundTripDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteJBNominalDelay", TRUE))
+    rc = strcmp_s("RemoteGmin", strlen("RemoteGmin"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteJBNominalDelay); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteGmin);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteJBMaxDelay", TRUE))
+    rc = strcmp_s("RemoteRFactor", strlen("RemoteRFactor"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteJBMaxDelay); 
-
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteRFactor);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RemoteJBAbsMaxDelay", TRUE))
+    rc = strcmp_s("RemoteExternalRFactor", strlen("RemoteExternalRFactor"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pCalls->RemoteJBAbsMaxDelay); 
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteExternalRFactor);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
 
+    rc = strcmp_s("RemoteJitterBufRate", strlen("RemoteJitterBufRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteJitterBufRate);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("RemoteJBNominalDelay", strlen("RemoteJBNominalDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteJBNominalDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("RemoteJBMaxDelay", strlen("RemoteJBMaxDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteJBMaxDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+
+    rc = strcmp_s("RemoteJBAbsMaxDelay", strlen("RemoteJBAbsMaxDelay"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pCalls->RemoteJBAbsMaxDelay);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 	/********************zqiu <<**********************************************/
@@ -3550,13 +4147,22 @@ ServiceClass_GetParamStringValue
 {
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_SERVICE_CLASS         pServiceClass = (PCOSA_MTA_SERVICE_CLASS)&pMyObject->pServiceClass;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "ServiceClassName", TRUE))
+    rc = strcmp_s("ServiceClassName", strlen("ServiceClassName"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pServiceClass->ServiceClassName);
-
+        rc = strcpy_s(pValue, *pUlSize, pServiceClass->ServiceClassName);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
@@ -3804,9 +4410,13 @@ ServiceFlow_GetParamBoolValue
     )
 {
     PCOSA_MTA_SERVICE_FLOW          pFlow = (PCOSA_MTA_SERVICE_FLOW)hInsContext;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "DefaultFlow", TRUE))
+    rc = strcmp_s("DefaultFlow", strlen("DefaultFlow"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *pBool = pFlow->DefaultFlow;
@@ -3865,29 +4475,52 @@ ServiceFlow_GetParamStringValue
     )
 {
     PCOSA_MTA_SERVICE_FLOW          pFlow = (PCOSA_MTA_SERVICE_FLOW)hInsContext;
+    errno_t                         rc       = -1;
+    int                             ind      = -1;
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "TrafficType", TRUE))
+    rc = strcmp_s("TrafficType", strlen("TrafficType"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pFlow->TrafficType);
-
+        rc = strcpy_s(pValue, *pUlSize, pFlow->TrafficType);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
+        return 0;
+    }
+    
+    rc = strcmp_s("Direction", strlen("Direction"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        /* collect value */
+        rc = strcpy_s(pValue, *pUlSize, pFlow->Direction);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "Direction", TRUE))
+    rc = strcmp_s("ServiceClassName", strlen("ServiceClassName"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pFlow->Direction);
-
-        return 0;
-    }
-
-    if( AnscEqualString(ParamName, "ServiceClassName", TRUE))
-    {
-        /* collect value */
-        AnscCopyString(pValue, pFlow->ServiceClassName);
-
+        rc = strcpy_s(pValue, *pUlSize, pFlow->ServiceClassName);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
@@ -3934,9 +4567,13 @@ ServiceFlow_GetParamUlongValue
     )
 {
     PCOSA_MTA_SERVICE_FLOW          pFlow = (PCOSA_MTA_SERVICE_FLOW)hInsContext;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
     
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "SFID", TRUE))
+    rc = strcmp_s("SFID", strlen("SFID"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->SFID; 
@@ -3944,7 +4581,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "ScheduleType", TRUE))
+    rc = strcmp_s("ScheduleType", strlen("ScheduleType"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->ScheduleType; 
@@ -3952,7 +4591,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "NomGrantInterval", TRUE))
+rc = strcmp_s("NomGrantInterval", strlen("NomGrantInterval"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->NomGrantInterval; 
@@ -3960,7 +4601,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "UnsolicitGrantSize", TRUE))
+    rc = strcmp_s("UnsolicitGrantSize", strlen("UnsolicitGrantSize"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->UnsolicitGrantSize; 
@@ -3968,7 +4611,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "TolGrantJitter", TRUE))
+    rc = strcmp_s("TolGrantJitter", strlen("TolGrantJitter"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->TolGrantJitter; 
@@ -3976,7 +4621,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "NomPollInterval", TRUE))
+    rc = strcmp_s("NomPollInterval", strlen("NomPollInterval"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->NomPollInterval; 
@@ -3984,7 +4631,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "MinReservedPkt", TRUE))
+    rc = strcmp_s("MinReservedPkt", strlen("MinReservedPkt"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->MinReservedPkt; 
@@ -3992,7 +4641,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "MaxTrafficRate", TRUE))
+    rc = strcmp_s("MaxTrafficRate", strlen("MaxTrafficRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->MaxTrafficRate; 
@@ -4000,7 +4651,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "MinReservedRate", TRUE))
+    rc = strcmp_s("MinReservedRate", strlen("MinReservedRate"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->MinReservedRate; 
@@ -4008,7 +4661,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "MaxTrafficBurst", TRUE))
+    rc = strcmp_s("MaxTrafficBurst", strlen("MaxTrafficBurst"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->MaxTrafficBurst; 
@@ -4016,7 +4671,9 @@ ServiceFlow_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "NumberOfPackets", TRUE))
+    rc = strcmp_s("NumberOfPackets", strlen("NumberOfPackets"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pFlow->NumberOfPackets; 
@@ -4078,15 +4735,22 @@ Dect_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "Enable", TRUE))
+    rc = strcmp_s("Enable", strlen("Enable"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTADectGetEnable(hInsContext, pBool);
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "RegistrationMode", TRUE))
+    rc = strcmp_s("RegistrationMode", strlen("RegistrationMode"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTADectGetRegistrationMode(hInsContext, pBool);
@@ -4181,17 +4845,22 @@ Dect_GetParamUlongValue
 {
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_DECT                  pDect         = (PCOSA_MTA_DECT      )&pMyObject->Dect;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-
-    if( AnscEqualString(ParamName, "RegisterDectHandset", TRUE))
+    rc = strcmp_s("RegisterDectHandset", strlen("RegisterDectHandset"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = 0;
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "DeregisterDectHandset", TRUE))
+    rc = strcmp_s("DeregisterDectHandset", strlen("DeregisterDectHandset"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = 0;
@@ -4250,41 +4919,74 @@ Dect_GetParamStringValue
 {
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_DECT                  pDect         = (PCOSA_MTA_DECT      )&pMyObject->Dect;
+    errno_t                         rc       = -1;
+    int                             ind      = -1;
 
+    if (CosaDmlMTAGetDect(hInsContext, pDect) != ANSC_STATUS_SUCCESS) 
+    {
+        return FALSE;
+    }    
+            
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "HardwareVersion", TRUE))
+    rc = strcmp_s("HardwareVersion", strlen("HardwareVersion"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))    
     {
         /* collect value */
-        CosaDmlMTAGetDect(hInsContext, pDect);
-        AnscCopyString(pValue, pDect->HardwareVersion);
-
+        rc = strcpy_s(pValue, *pUlSize, pDect->HardwareVersion);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "RFPI", TRUE))
+    rc = strcmp_s("RFPI", strlen("RFPI"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        CosaDmlMTAGetDect(hInsContext, pDect);
-        AnscCopyString(pValue, pDect->RFPI);
-
+        rc = strcpy_s(pValue, *pUlSize, pDect->RFPI);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "SoftwareVersion", TRUE))
+    rc = strcmp_s("SoftwareVersion", strlen("SoftwareVersion"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        CosaDmlMTAGetDect(hInsContext, pDect);
-        AnscCopyString(pValue, pDect->SoftwareVersion);
 
+        rc = strcpy_s(pValue, *pUlSize, pDect->SoftwareVersion);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
-    
-    if( AnscEqualString(ParamName, "PIN", TRUE))
+
+    rc = strcmp_s("PIN", strlen("PIN"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTAGetDectPIN(hInsContext, pDect->PIN);
-        AnscCopyString(pValue, pDect->PIN);
-
+        rc = strcpy_s(pValue, *pUlSize, pDect->PIN);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
@@ -4300,15 +5002,22 @@ Dect_SetParamBoolValue
         BOOL                        bValue
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     /* check the parameter name and set the corresponding value */
-    if( AnscEqualString(ParamName, "Enable", TRUE))
+    rc = strcmp_s("Enable", strlen("Enable"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTADectSetEnable(hInsContext, bValue);
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "RegistrationMode", TRUE))
+    rc = strcmp_s("RegistrationMode", strlen("RegistrationMode"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         CosaDmlMTADectSetRegistrationMode(hInsContext, bValue);
@@ -4358,16 +5067,21 @@ Dect_SetParamUlongValue
     )
 {
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-
-    if( AnscEqualString(ParamName, "RegisterDectHandset", TRUE))
+    rc = strcmp_s("RegisterDectHandset", strlen("RegisterDectHandset"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         CosaDmlMTADectRegisterDectHandset(hInsContext, uValue);
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "DeregisterDectHandset", TRUE))
+    rc = strcmp_s("DeregisterDectHandset", strlen("DeregisterDectHandset"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         if ( ANSC_STATUS_SUCCESS == CosaDmlMTADectDeregisterDectHandset(hInsContext, uValue) )
         {
@@ -4388,8 +5102,13 @@ Dect_SetParamStringValue
         char*                       pString
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     /* check the parameter name and set the corresponding value */
-    if( AnscEqualString(ParamName, "PIN", TRUE))
+    rc = strcmp_s("PIN", strlen("PIN"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         CosaDmlMTASetDectPIN(hInsContext, pString);
         return TRUE;
@@ -4705,9 +5424,14 @@ Handsets_GetParamBoolValue
     )
 {
     PCOSA_MTA_HANDSETS_INFO         pInfo = (PCOSA_MTA_HANDSETS_INFO)hInsContext;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "Status", TRUE))
+    rc = strcmp_s("Status", strlen("Status"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    
     {
         /* collect value */
         *pBool = pInfo->Status;
@@ -4855,47 +5579,84 @@ Handsets_GetParamStringValue
     )
 {
     PCOSA_MTA_HANDSETS_INFO         pInfo = (PCOSA_MTA_HANDSETS_INFO)hInsContext;
+    errno_t                         rc       = -1;
+    int                             ind      = -1;
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "LastActiveTime", TRUE))
+    rc = strcmp_s("LastActiveTime", strlen("LastActiveTime"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->LastActiveTime);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->LastActiveTime);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "HandsetName", TRUE))
+    rc = strcmp_s("HandsetName", strlen("HandsetName"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->HandsetName);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->HandsetName);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "HandsetFirmware", TRUE))
+    rc = strcmp_s("HandsetFirmware", strlen("HandsetFirmware"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->HandsetFirmware);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->HandsetFirmware);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "OperatingTN", TRUE))
+    rc = strcmp_s("OperatingTN", strlen("OperatingTN"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         // At present only TN1 will be assigned to DECT phones
         //AnscCopyString(pValue, pInfo->OperatingTN);
-        AnscCopyString(pValue, "TN1");
-
+        rc = strcpy_s(pValue, *pUlSize, "TN1");
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "SupportedTN", TRUE))
+    rc = strcmp_s("SupportedTN", strlen("SupportedTN"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pInfo->SupportedTN);
-
+        rc = strcpy_s(pValue, *pUlSize, pInfo->SupportedTN);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
@@ -5074,12 +5835,22 @@ Handsets_SetParamStringValue
     )
 {
     PCOSA_MTA_HANDSETS_INFO         pInfo = (PCOSA_MTA_HANDSETS_INFO)hInsContext;
+    errno_t                         rc       = -1;
+    int                             ind      = -1;
+    
 
     /* check the parameter name and set the corresponding value */
-    if(AnscEqualString(ParamName, "OperatingTN", TRUE))
+    rc = strcmp_s("OperatingTN", strlen("OperatingTN"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        AnscCopyString(pInfo->OperatingTN, pString);
-
+        rc = strcpy_s(pInfo->OperatingTN, sizeof(pInfo->OperatingTN), pString);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return  FALSE;
+        } 
+        
         return TRUE;
     }
 
@@ -5445,20 +6216,36 @@ DSXLog_GetParamStringValue
     //PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     //PCOSA_MTA_DSXLOG                pDSXLog   = (PCOSA_MTA_DSXLOG)&pMyObject->pDSXLog;
     PCOSA_MTA_DSXLOG                pDSXLog    = (PCOSA_MTA_DSXLOG)hInsContext;
+    errno_t                         rc       = -1;
+    int                             ind      = -1;
+
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "Time", TRUE))
+    rc = strcmp_s("Time", strlen("Time"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pDSXLog->Time);
-
+        rc = strcpy_s(pValue, *pUlSize, pDSXLog->Time);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
-
-    if( AnscEqualString(ParamName, "Description", TRUE))
+    rc = strcmp_s("Description", strlen("Description"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
-        AnscCopyString(pValue, pDSXLog->Description);
-
+        rc = strcpy_s(pValue, *pUlSize, pDSXLog->Description);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
+            return -1;
+        }
+        
         return 0;
     }
 
@@ -5504,12 +6291,17 @@ DSXLog_GetParamUlongValue
         ULONG*                      puLong
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     //PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     //PCOSA_MTA_DSXLOG                pDSXLog   = (PCOSA_MTA_DSXLOG)&pMyObject->pDSXLog;
     PCOSA_MTA_DSXLOG                pDSXLog    = (PCOSA_MTA_DSXLOG)hInsContext;
     
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "ID", TRUE))
+    rc = strcmp_s("ID", strlen("ID"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pDSXLog->ID; 
@@ -5517,7 +6309,9 @@ DSXLog_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "Level", TRUE))
+    rc = strcmp_s("Level", strlen("Level"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pDSXLog->Level; 
@@ -5780,9 +6574,13 @@ MTALog_GetParamUlongValue
     )
 {
     PCOSA_DML_MTALOG_FULL           pConf        = (PCOSA_DML_MTALOG_FULL)hInsContext;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
     
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "Index", TRUE))
+    rc = strcmp_s("Index", strlen("Index"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pConf->Index; 
@@ -5790,7 +6588,9 @@ MTALog_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "EventID", TRUE))
+    rc = strcmp_s("EventID", strlen("EventID"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pConf->EventID; 
@@ -5850,9 +6650,13 @@ MTALog_GetParamStringValue
     )
 {
     PCOSA_DML_MTALOG_FULL           pConf        = (PCOSA_DML_MTALOG_FULL)hInsContext;
+    errno_t                         rc           = -1;
+    int                             ind          = -1;
 
-    /* check the parameter name and return the corresponding value */    
-    if( AnscEqualString(ParamName, "Description", TRUE))
+    /* check the parameter name and return the corresponding value */
+    rc = strcmp_s("Description", strlen("Description"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))    
     {
     
         /* collect value */
@@ -5866,7 +6670,9 @@ MTALog_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "Time", TRUE))
+    rc = strcmp_s("Time", strlen("Time"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if ( _ansc_strlen(pConf->Time) >= *pUlSize )
@@ -5878,7 +6684,6 @@ MTALog_GetParamStringValue
         AnscCopyString(pValue, pConf->Time);
         return 0;
     }
-
     if( AnscEqualString(ParamName, "EventLevel", TRUE))
     {
         /* collect value */
@@ -6137,9 +6942,13 @@ DECTLog_GetParamUlongValue
     )
 {
     PCOSA_DML_DECTLOG_FULL          pConf        = (PCOSA_DML_DECTLOG_FULL)hInsContext;
+    errno_t                         rc            = -1;
+    int                             ind           = -1;    
     
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "Index", TRUE))
+    rc = strcmp_s("Index", strlen("Index"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pConf->Index; 
@@ -6147,7 +6956,9 @@ DECTLog_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "EventID", TRUE))
+    rc = strcmp_s("EventID", strlen("EventID"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         *puLong = pConf->EventID; 
@@ -6215,9 +7026,12 @@ DECTLog_GetParamStringValue
     )
 {
     PCOSA_DML_DECTLOG_FULL          pConf        = (PCOSA_DML_DECTLOG_FULL)hInsContext;
-    
+    errno_t                         rc           = -1;
+    int                             ind          = -1;
     /* check the parameter name and return the corresponding value */    
-    if( AnscEqualString(ParamName, "Description", TRUE))
+    rc = strcmp_s("Description", strlen("Description"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK)) 
     {
         /* collect value */
         if ( _ansc_strlen(pConf->Description) >= *pUlSize )
@@ -6230,7 +7044,9 @@ DECTLog_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "Time", TRUE))
+    rc = strcmp_s("Time", strlen("Time"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if ( _ansc_strlen(pConf->Time) >= *pUlSize )
@@ -6301,11 +7117,16 @@ Battery_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     // PCOSA_DATAMODEL_MTA     pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     // PCOSA_DML_CM_LOG               pCfg      = &pMyObject->CmLog;
 
     /* check the parameter name and return the corresponding value */
-    if (AnscEqualString(ParamName, "Installed", TRUE))
+    rc = strcmp_s("Installed", strlen("Installed"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         if (CosaDmlMtaBatteryGetInstalled(NULL, pBool) != ANSC_STATUS_SUCCESS)
             return FALSE;
@@ -6399,17 +7220,25 @@ Battery_GetParamUlongValue
         ULONG*                      puLong
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
+    
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "TotalCapacity", TRUE) )
+    rc = strcmp_s("TotalCapacity", strlen("TotalCapacity"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
+       /* collect value */
         if (CosaDmlMtaBatteryGetTotalCapacity(NULL, puLong) != ANSC_STATUS_SUCCESS)
-            return FALSE;
+            return FALSE; 
 
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "ActualCapacity", TRUE) )
+    rc = strcmp_s("ActualCapacity", strlen("ActualCapacity"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetActualCapacity(NULL, puLong) != ANSC_STATUS_SUCCESS)
@@ -6418,7 +7247,9 @@ Battery_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "RemainingCharge", TRUE) )
+    rc = strcmp_s("RemainingCharge", strlen("RemainingCharge"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetRemainingCharge(NULL, puLong) != ANSC_STATUS_SUCCESS)
@@ -6427,7 +7258,9 @@ Battery_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "RemainingTime", TRUE) )
+    rc = strcmp_s("RemainingTime", strlen("RemainingTime"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetRemainingTime(NULL, puLong) != ANSC_STATUS_SUCCESS)
@@ -6436,7 +7269,9 @@ Battery_GetParamUlongValue
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "NumberofCycles", TRUE) )
+    rc = strcmp_s("NumberofCycles", strlen("NumberofCycles"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetNumberofCycles(NULL, puLong) != ANSC_STATUS_SUCCESS)
@@ -6499,9 +7334,13 @@ Battery_GetParamStringValue
 {
     PCOSA_DATAMODEL_MTA      pMTA   = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     PCOSA_DML_BATTERY_INFO          pInfo = (PCOSA_DML_BATTERY_INFO)&pMTA->MtaBatteryInfo;
+    errno_t                         rc    = -1;
+    int                             ind   = -1;        
 
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "PowerStatus", TRUE) )
+    rc = strcmp_s("PowerStatus", strlen("PowerStatus"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetPowerStatus(NULL, pValue, pUlSize) != ANSC_STATUS_SUCCESS)
@@ -6510,7 +7349,9 @@ Battery_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "Condition", TRUE) )
+    rc = strcmp_s("Condition", strlen("Condition"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetCondition(NULL, pValue, pUlSize) != ANSC_STATUS_SUCCESS)
@@ -6519,7 +7360,9 @@ Battery_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "Status", TRUE) )
+    rc = strcmp_s("Status", strlen("Status"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetStatus(NULL, pValue, pUlSize) != ANSC_STATUS_SUCCESS)
@@ -6528,7 +7371,9 @@ Battery_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "Life", TRUE) )
+    rc = strcmp_s("Life", strlen("Life"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMtaBatteryGetLife(NULL, pValue, pUlSize) != ANSC_STATUS_SUCCESS)
@@ -6537,49 +7382,73 @@ Battery_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "ModelNumber", TRUE) )
+     if (CosaDmlMtaBatteryGetInfo(NULL, pInfo) != ANSC_STATUS_SUCCESS)
+     {
+         return -1;
+     }
+     
+    rc = strcmp_s("ModelNumber", strlen("ModelNumber"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMtaBatteryGetInfo(NULL, pInfo) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, pInfo->ModelNumber);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
-
-        _ansc_strcpy(pValue, pInfo->ModelNumber);
+        }
+        
+        
         *pUlSize = _ansc_strlen(pValue);
 
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "SerialNumber", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMtaBatteryGetInfo(NULL, pInfo) != ANSC_STATUS_SUCCESS)
+    rc = strcmp_s("SerialNumber", strlen("SerialNumber"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {            
+        rc = strcpy_s(pValue, *pUlSize, pInfo->SerialNumber);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
+        }
         
-        _ansc_strcpy(pValue, pInfo->SerialNumber);
         *pUlSize = _ansc_strlen(pValue);
 
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "PartNumber", TRUE) )
+    rc = strcmp_s("PartNumber", strlen("PartNumber"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
-        /* collect value */
-        if (CosaDmlMtaBatteryGetInfo(NULL, pInfo) != ANSC_STATUS_SUCCESS)
+        rc = strcpy_s(pValue, *pUlSize, pInfo->PartNumber);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
+        }
         
-        _ansc_strcpy(pValue, pInfo->PartNumber);
+
         *pUlSize = _ansc_strlen(pValue);
 
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "ChargerFirmwareRevision", TRUE) )
-    {
-        /* collect value */
-        if (CosaDmlMtaBatteryGetInfo(NULL, pInfo) != ANSC_STATUS_SUCCESS)
+    rc = strcmp_s("ChargerFirmwareRevision", strlen("ChargerFirmwareRevision"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {        
+        rc = strcpy_s(pValue, *pUlSize, pInfo->ChargerFirmwareRevision);
+        if (rc != EOK)
+        {
+            ERR_CHK(rc);
             return -1;
+        }
         
-        _ansc_strcpy(pValue, pInfo->ChargerFirmwareRevision);
+
         *pUlSize = _ansc_strlen(pValue);
 
         return 0;
@@ -6642,9 +7511,13 @@ X_RDKCENTRAL_COM_MTA_GetParamUlongValue
         ULONG*                      puLong
     )
 {
-	/* check the parameter name and return the corresponding value */
+        errno_t                         rc            = -1;
+        int                             ind           = -1;
 
-	if( AnscEqualString(ParamName, "Ipv4DhcpStatus", TRUE) )
+	/* check the parameter name and return the corresponding value */
+        rc = strcmp_s("Ipv4DhcpStatus", strlen("Ipv4DhcpStatus"), ParamName, &ind );
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
 	{
 		ULONG Ipv4DhcpStatus = 0, 
 		      Ipv6DhcpStatus = 0;
@@ -6654,7 +7527,9 @@ X_RDKCENTRAL_COM_MTA_GetParamUlongValue
 		return TRUE;
 	}
 
-	if( AnscEqualString(ParamName, "Ipv6DhcpStatus", TRUE) )
+        rc = strcmp_s("Ipv6DhcpStatus", strlen("Ipv6DhcpStatus"), ParamName, &ind );
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
 	{
 		ULONG Ipv4DhcpStatus = 0, 
 		      Ipv6DhcpStatus = 0;
@@ -6664,7 +7539,9 @@ X_RDKCENTRAL_COM_MTA_GetParamUlongValue
 		return TRUE;
 	}
 
-	if( AnscEqualString(ParamName, "ConfigFileStatus", TRUE) )
+        rc = strcmp_s("ConfigFileStatus", strlen("ConfigFileStatus"), ParamName, &ind );
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
 	{
         CosaDmlMtaGetConfigFileStatus( puLong );
 		return TRUE;
@@ -6721,9 +7598,13 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
-	/* check the parameter name and return the corresponding value */
+       errno_t                         rc            = -1;
+       int                             ind           = -1;
 
-    if( AnscEqualString(ParamName, "LineRegisterStatus", TRUE) )
+	/* check the parameter name and return the corresponding value */
+    rc = strcmp_s("LineRegisterStatus", strlen("LineRegisterStatus"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
 		CHAR acLineRegisterStatus[ 128 ] = { 0 };
 
@@ -6732,8 +7613,14 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
 		CosaDmlMtaGetLineRegisterStatus( acLineRegisterStatus );
         if ( AnscSizeOfString( acLineRegisterStatus ) < *pUlSize)
         {
-            AnscCopyString(pValue, acLineRegisterStatus );
-		    return 0;
+            rc = strcpy_s(pValue, *pUlSize, acLineRegisterStatus);
+            if (rc != EOK)
+            {
+                ERR_CHK(rc);
+                return -1;
+            }
+            
+	    return 0;
         }
         else
         {
@@ -6788,8 +7675,13 @@ BOOL EthernetWAN_MTA_SetParamIntValue
         int                         pInt
     )
 {
+        errno_t                         rc            = -1;
+        int                             ind           = -1;
+
         PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
-        if( AnscEqualString(ParamName, "StartupIPMode", TRUE))
+        rc = strcmp_s("StartupIPMode", strlen("StartupIPMode"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
         {
            char isEthEnabled[64]={'\0'};
 	   char buff[8] = {'\0'};
@@ -6811,9 +7703,14 @@ BOOL EthernetWAN_MTA_SetParamIntValue
                    }
                }
                CosaDmlMTASetStartUpIpMode(pMyObject->pmtaprovinfo, pInt);
-
-               memset( pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource ));
-               AnscCopyString( pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource, requestorStr );
+               
+               rc = strcpy_s(pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource,sizeof( pMyObject->pmtaprovinfo->StartupIPMode.UpdateSource ), requestorStr);
+               if (rc != EOK)
+               {
+                   ERR_CHK(rc);
+                   return  FALSE;
+               }
+               
 
                char PartnerID[PARTNER_ID_LEN] = {0};
                if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
@@ -6835,6 +7732,9 @@ EthernetWAN_MTA_GetParamIntValue
         int*                        pInt
     )
 {
+    errno_t                         rc            = -1;
+    int                             ind           = -1;
+
     /* check the parameter name and return the corresponding value */
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
      if(pMyObject == NULL)
@@ -6842,7 +7742,9 @@ EthernetWAN_MTA_GetParamIntValue
         AnscTraceWarning(("Unsupported parameter - MTA Object not available"));
         return FALSE;
     }
-    if( AnscEqualString(ParamName, "StartupIPMode", TRUE))
+    rc = strcmp_s("StartupIPMode", strlen("StartupIPMode"), ParamName, &ind );
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
             char isEthEnabled[64]={'\0'};
@@ -6871,31 +7773,67 @@ EthernetWAN_MTA_GetParamStringValue
     )
 {
   /* check the parameter name and return the corresponding value */
-    PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
-    char isEthEnabled[64]={'\0'};
+    PCOSA_DATAMODEL_MTA             pMyObject         = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+    char                            isEthEnabled[64]  ={'\0'};
+    errno_t                         rc                = -1;
+    int                             ind               = -1;
+
     if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))   
     {         
-           if( AnscEqualString(ParamName, "IPv4PrimaryDhcpServerOptions", TRUE))
+            rc = strcmp_s("IPv4PrimaryDhcpServerOptions", strlen("IPv4PrimaryDhcpServerOptions"), ParamName, &ind );
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
             {
-                AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.ActiveValue);
+                rc = strcpy_s(pValue, *pUlSize, pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.ActiveValue);
+                if (rc != EOK)
+                {
+                    ERR_CHK(rc);
+                    return -1;
+                }
+                
                 return 0;
             }
 
-            if( AnscEqualString(ParamName, "IPv4SecondaryDhcpServerOptions", TRUE))
+            rc = strcmp_s("IPv4SecondaryDhcpServerOptions", strlen("IPv4SecondaryDhcpServerOptions"), ParamName, &ind );
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
             {
-               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.ActiveValue);
-                return 0;
-            }
-            if( AnscEqualString(ParamName, "IPv6PrimaryDhcpServerOptions", TRUE))
-            {
-               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.ActiveValue);
+                rc = strcpy_s(pValue, *pUlSize, pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.ActiveValue);
+                if (rc != EOK)
+                {
+                    ERR_CHK(rc);
+                    return -1;
+                }
+                
                 return 0;
             }
 
-            if( AnscEqualString(ParamName, "IPv6SecondaryDhcpServerOptions", TRUE))
+            rc = strcmp_s("IPv6PrimaryDhcpServerOptions", strlen("IPv6PrimaryDhcpServerOptions"), ParamName, &ind );
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
             {
-               AnscCopyString(pValue,pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.ActiveValue);
+                rc = strcpy_s(pValue, *pUlSize, pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.ActiveValue);
+                if (rc != EOK)
+                {
+                    ERR_CHK(rc);
+                    return -1;
+                }
+                
+                return 0;
+            }
+
+            rc = strcmp_s("IPv6SecondaryDhcpServerOptions", strlen("IPv6SecondaryDhcpServerOptions"), ParamName, &ind );
+            ERR_CHK(rc);
+            if((!ind) && (rc == EOK))
+            {
+               rc = strcpy_s(pValue, *pUlSize, pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.ActiveValue);
+                if (rc != EOK)
+                {
+                    ERR_CHK(rc);
+                    return -1;
+                }
+                
                 return 0;
             }
  
@@ -6921,6 +7859,8 @@ EthernetWAN_MTA_SetParamStringValue
           char isEthEnabled[64]={'\0'};
           char * requestorStr = getRequestorString();
           char * currentTime = getTime();
+          errno_t rc         = -1;
+          int     ind        = -1;
 
           IS_UPDATE_ALLOWED_IN_DM(ParamName, requestorStr);
 
@@ -6928,7 +7868,9 @@ EthernetWAN_MTA_SetParamStringValue
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
             {
                ip_type = MTA_IPV4_TR;
-               if( AnscEqualString(ParamName, "IPv4PrimaryDhcpServerOptions", TRUE))
+               rc = strcmp_s("IPv4PrimaryDhcpServerOptions", strlen("IPv4PrimaryDhcpServerOptions"), ParamName, &ind );
+               ERR_CHK(rc);
+              if((!ind) && (rc == EOK))
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource);
 
@@ -6943,8 +7885,13 @@ EthernetWAN_MTA_SetParamStringValue
                           }
                       CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
-                      memset( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource ));
-                      AnscCopyString( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource, requestorStr );
+                      rc = strcpy_s( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource,sizeof( pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource ) , requestorStr);
+                      if (rc != EOK)
+                      {
+                          ERR_CHK(rc);
+                          return FALSE;
+                      } 
+                      
 
                       char PartnerID[PARTNER_ID_LEN] = {0};
                       if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
@@ -6952,7 +7899,10 @@ EthernetWAN_MTA_SetParamStringValue
 
                       return TRUE;
                   }
-              if( AnscEqualString(ParamName, "IPv4SecondaryDhcpServerOptions", TRUE))
+
+              rc = strcmp_s("IPv4SecondaryDhcpServerOptions", strlen("IPv4SecondaryDhcpServerOptions"), ParamName, &ind );
+              ERR_CHK(rc);
+              if((!ind) && (rc == EOK))   
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource);
 
@@ -6967,9 +7917,13 @@ EthernetWAN_MTA_SetParamStringValue
                           }
                       CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
-                      memset( pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource ));
-                      AnscCopyString( pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource, requestorStr );
-
+                      rc = strcpy_s(pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource, sizeof( pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource ), requestorStr );
+                      if (rc != EOK)
+                      {
+                          ERR_CHK(rc);
+                          return FALSE;
+                      }
+                      
                       char PartnerID[PARTNER_ID_LEN] = {0};
                       if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
                           UpdateJsonParam("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions",PartnerID, pString, requestorStr, currentTime);
@@ -6979,7 +7933,9 @@ EthernetWAN_MTA_SetParamStringValue
 
               ip_type = MTA_IPV6_TR;
 
-              if( AnscEqualString(ParamName, "IPv6PrimaryDhcpServerOptions", TRUE))
+              rc = strcmp_s("IPv6PrimaryDhcpServerOptions", strlen("IPv6PrimaryDhcpServerOptions"), ParamName, &ind );
+              ERR_CHK(rc);
+              if((!ind) && (rc == EOK))
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource);
 
@@ -6994,16 +7950,23 @@ EthernetWAN_MTA_SetParamStringValue
                           }
                       CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
-                      memset( pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource ));
-                      AnscCopyString( pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource, requestorStr );
-
+                      rc = strcpy_s(pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource, sizeof( pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource ), requestorStr );
+                      if (rc != EOK)
+                      {
+                          ERR_CHK(rc);
+                          return FALSE;
+                      }
+                      
                       char PartnerID[PARTNER_ID_LEN] = {0};
                       if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
                           UpdateJsonParam("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions",PartnerID, pString, requestorStr, currentTime);
 
                       return TRUE;
                   }
-               if( AnscEqualString(ParamName, "IPv6SecondaryDhcpServerOptions", TRUE))
+
+               rc = strcmp_s("IPv6SecondaryDhcpServerOptions", strlen("IPv6SecondaryDhcpServerOptions"), ParamName, &ind );
+               ERR_CHK(rc);
+               if((!ind) && (rc == EOK))
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource);
 
@@ -7018,8 +7981,13 @@ EthernetWAN_MTA_SetParamStringValue
                           }
                       CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
-                      memset( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource, 0, sizeof( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource ));
-                      AnscCopyString( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource, requestorStr );
+                      rc = strcpy_s( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource,sizeof( pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource ), requestorStr );
+                      if (rc != EOK)
+                      {
+                          ERR_CHK(rc);
+                          return FALSE;
+                      }
+                      
 
                       char PartnerID[PARTNER_ID_LEN] = {0};
                       if((CCSP_SUCCESS == getPartnerId(PartnerID) ) && (PartnerID[ 0 ] != '\0') )
@@ -7042,8 +8010,12 @@ X_RDKCENTRAL_COM_MTA_GetParamBoolValue
         char*                       ParamName,
         BOOL*                       pBool
     )
-{
-	if( AnscEqualString(ParamName, "pktcMtaDevResetNow", TRUE) )
+{ 
+        errno_t                         rc            = -1;
+        int                             ind           = -1;
+        rc = strcmp_s("pktcMtaDevResetNow", strlen("pktcMtaDevResetNow"), ParamName, &ind );
+        ERR_CHK(rc);
+        if((!ind) && (rc == EOK))
 	{
 		*pBool = false;
 		return TRUE;
@@ -7060,8 +8032,12 @@ X_RDKCENTRAL_COM_MTA_SetParamBoolValue
         BOOL*                       pBool
     )
 {
+        errno_t                         rc            = -1;
+        int                             ind           = -1;
 
-	if( AnscEqualString(ParamName, "pktcMtaDevResetNow", TRUE) )
+        rc = strcmp_s("pktcMtaDevResetNow", strlen("pktcMtaDevResetNow"), ParamName, &ind );
+               ERR_CHK(rc);
+               if((!ind) && (rc == EOK))
 	{
 		if(pBool == true)
 		{
@@ -7086,4 +8062,3 @@ X_RDKCENTRAL_COM_MTA_SetParamBoolValue
 	return FALSE;
 
 }
-
