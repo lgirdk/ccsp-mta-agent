@@ -641,6 +641,7 @@ if(pMtaProv)
         ip_type = MTA_IPV6_TR;
 		memset(buffer,0,sizeof(buffer));
 		memset(pMtaProv->DhcpOption2171CccV6DssID1,0,MTA_DHCPOPTION122CCCV6DSSID1_MAX);
+                pMtaProv->DhcpOption2171CccV6DssID1Len = 0;
 		if( 0 == syscfg_get( NULL, "IPv6PrimaryDhcpServerOptions", buffer, sizeof(buffer)))
 		{
 		   if(buffer[0] != '\0')
@@ -708,7 +709,7 @@ if(pMtaProv)
 
 		   }
 		}
-    #ifdef _COSA_BCM_ARM_	
+    #ifdef ENABLE_ETH_WAN	
 		// call hal to start provisioning
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
@@ -878,7 +879,7 @@ if(pMtaProv)
 
 		   }
 		}
-#ifdef _COSA_BCM_ARM_
+    #ifdef ENABLE_ETH_WAN	
 		// call hal to start provisioning
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
@@ -910,11 +911,37 @@ ANSC_STATUS Mta_Sysevent_thread(ANSC_HANDLE  hThisObject)
          static token_t sysevent_token;
          sysevent_fd = sysevent_open("127.0.0.1", SE_SERVER_WELL_KNOWN_PORT, SE_VERSION, "WAN State", &sysevent_token);
 #endif
+
+#if defined(INTEL_PUMA7)
+         //Intel SDK 7.2 Proposed Bug Fix: Prevent CCSP MTA Crash when erouter is in IPv6 mode
+         unsigned char wan_status[10] = {0};
+#else
          unsigned char current_wan_state[10] = {0};
+#endif
+
         async_id_t getnotification_asyncid;
           int err;
           unsigned char name[25]={0}, val[10]={0};
           int namelen=0, vallen=0;
+
+#if defined(INTEL_PUMA7)
+         //Intel SDK 7.2 Proposed Bug Fix: Prevent CCSP MTA Crash when erouter is in IPv6 mode
+         async_id_t wan_status_asyncid;
+         sysevent_set_options(sysevent_fd, sysevent_token, "wan-status", TUPLE_FLAG_EVENT);
+         sysevent_setnotification(sysevent_fd, sysevent_token, "wan-status",  &wan_status_asyncid);
+ 
+
+         sysevent_get(sysevent_fd, sysevent_token, "wan-status", wan_status, sizeof(wan_status));
+         if(strcmp(wan_status, "started") == 0)
+          {
+                CcspTraceWarning(("%s wan-status started, Initializing MTA \n",__FUNCTION__));
+
+      		CosaMTAInitializeEthWanProv(pMyObject);
+
+         }
+#else
+
+
          async_id_t wan_state_asyncid;
          sysevent_set_options(sysevent_fd, sysevent_token, "current_wan_state", TUPLE_FLAG_EVENT);
          sysevent_setnotification(sysevent_fd, sysevent_token, "current_wan_state",  &wan_state_asyncid);
@@ -927,6 +954,7 @@ ANSC_STATUS Mta_Sysevent_thread(ANSC_HANDLE  hThisObject)
       		CosaMTAInitializeEthWanProv(pMyObject);
 
          }
+#endif
 
         while (1)
         {
@@ -939,8 +967,14 @@ ANSC_STATUS Mta_Sysevent_thread(ANSC_HANDLE  hThisObject)
 
                 if (!err)
                 {
+#if defined(INTEL_PUMA7)
+                        //Intel SDK 7.2 Proposed Bug Fix: Prevent CCSP MTA Crash when erouter is in IPv6 mode
+                        CcspTraceWarning(("%s Recieved notification event  %s, status %s\n",__FUNCTION__,name,val));
+                        if(( strcmp(name,"wan_status") == 0 ) && ( strcmp(val, "started") == 0 ) )
+#else
                         CcspTraceWarning(("%s Recieved notification event  %s, state %s\n",__FUNCTION__,name,val));
                         if(( strcmp(name,"current_wan_state") == 0 ) && ( strcmp(val, "up") == 0 ) )
+#endif
                         {
 
                             CcspTraceWarning(("%s Initializing/Reinitializing MTA\n",__FUNCTION__));
@@ -998,7 +1032,7 @@ CosaMTAInitialize
         CcspTraceError(("syscfg init Failed '%s'\n", __FUNCTION__));
     }
 
-#ifdef _COSA_BCM_ARM_ 
+   #ifdef ENABLE_ETH_WAN
 
    if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) && ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
         {
