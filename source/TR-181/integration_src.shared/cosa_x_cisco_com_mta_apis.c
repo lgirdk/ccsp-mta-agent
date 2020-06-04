@@ -202,12 +202,12 @@ CosaDmlMTAGetServiceFlow
     PMTAMGMT_MTA_SERVICE_FLOW pInfo = NULL;
     if ( mta_hal_GetServiceFlow(pulCount, &pInfo) != RETURN_OK )
     {
-          if(pInfo)
-	  {
-	     free(pInfo);
-	     pInfo = NULL;
-	  }        
-          return ANSC_STATUS_FAILURE;
+         /*Coverity Fix CID:58790 RESOURCE_LEAK */
+          if(pInfo != NULL)
+          {
+             free(pInfo);
+              return ANSC_STATUS_FAILURE;
+          }
     }
 
     if (*pulCount > 0) {
@@ -482,19 +482,19 @@ CosaDmlMTAGetDSXLogs
     if ( mta_hal_GetDSXLogs(pulCount, &pInfo) != RETURN_OK )
     {
 
+        /* Coverity Fix CID:76397 RESOURCE_LEAK */
         if( pInfo != NULL )
         {
             free(pInfo);
-            pInfo = NULL;
-        }
-
-        return ANSC_STATUS_FAILURE;
+           return ANSC_STATUS_FAILURE;
+       }
     }
 
     if (*pulCount > 0) {
         if( (*ppDSXLog = (PCOSA_MTA_DSXLOG)AnscAllocateMemory(sizeof(MTAMGMT_MTA_DSXLOG)*(*pulCount))) == NULL )
         {
             AnscTraceWarning(("AllocateMemory error %s, %d\n", __FUNCTION__, __LINE__));
+             free(pInfo);
             return ANSC_STATUS_FAILURE;  
         }
         AnscCopyMemory(*ppDSXLog, pInfo, sizeof(MTAMGMT_MTA_DSXLOG)*(*pulCount));
@@ -752,18 +752,19 @@ CosaDmlMtaGetMtaLog
     PMTAMGMT_MTA_MTALOG_FULL pInfo = NULL;
     if ( mta_hal_GetMtaLog(pulCount, &pInfo) != RETURN_OK )
     {
+        /* Coverity Fix CID:79698 RESOURCE_LEAK */
         if(pInfo != NULL)
-        {
-            free(pInfo);
-            pInfo = NULL;
-        }      
-        return ANSC_STATUS_FAILURE;
+        {     free(pInfo);
+          return ANSC_STATUS_FAILURE;
+        }
     }
 
     if (*pulCount > 0) {
         if( (*ppConf = (PCOSA_DML_MTALOG_FULL)AnscAllocateMemory(sizeof(MTAMGMT_MTA_MTALOG_FULL)*(*pulCount))) == NULL )
         {
             AnscTraceWarning(("AllocateMemory error %s, %d\n", __FUNCTION__, __LINE__));
+            /* Coverity Fix CID:79698 RESOURCE_LEAK */
+            free(pInfo);
             return ANSC_STATUS_FAILURE;  
         }
         AnscCopyMemory(*ppConf, pInfo, sizeof(MTAMGMT_MTA_MTALOG_FULL)*(*pulCount));
@@ -873,11 +874,14 @@ CosaDmlMtaGetConfigFileStatus
 		PULONG pConfigFileStatus
     )
 {
-	MTAMGMT_MTA_STATUS output_status = MTA_ERROR;
+	
 
 	*pConfigFileStatus = MTA_ERROR;
 
 #ifdef _CBR_PRODUCT_REQ_
+     
+         /*Coverity Fix CID 59560 */
+         MTAMGMT_MTA_STATUS output_status = MTA_ERROR;
 	if ( RETURN_OK == mta_hal_getConfigFileStatus( &output_status))
 	{
 		*pConfigFileStatus = output_status;
@@ -985,13 +989,17 @@ CosaDmlMtaResetNow
 
 }
 
-void MtaProvisioningStatusGetFunc()
+/*Coverity fix CID 56740 argument type mismatch */
+void * MtaProvisioningStatusGetFunc(void * arg)
 {
-	unsigned int ProvisioningStatus;
-	char counter=0;
+	
+	
 	pthread_detach(pthread_self());
 
 #ifdef _CBR_PRODUCT_REQ_
+        /*Coverity Fix CID 62657 55626 */
+        unsigned int ProvisioningStatus;
+        char counter=0;
 	while(1)
 	{
 		if(	RETURN_OK != mta_hal_getMtaOperationalStatus(&ProvisioningStatus) )
@@ -1154,12 +1162,12 @@ void FillPartnerIDJournal
 {
                 cJSON *partnerObj = cJSON_GetObjectItem( json, partnerID );
                 if( partnerObj != NULL)
-                {
-                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.StartupIPMode", &pmtaethpro->StartupIPMode.UpdateSource);
-                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4PrimaryDhcpServerOptions", &pmtaethpro->IPv4PrimaryDhcpServerOptions.UpdateSource);
-                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions", &pmtaethpro->IPv4SecondaryDhcpServerOptions.UpdateSource);
-                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions", &pmtaethpro->IPv6PrimaryDhcpServerOptions.UpdateSource);
-                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6SecondaryDhcpServerOptions", &pmtaethpro->IPv6SecondaryDhcpServerOptions.UpdateSource);
+                {     /*Coverity Fix CID 60029 70533 72638 53440 58371 Incompatible argument type */
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.StartupIPMode", pmtaethpro->StartupIPMode.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4PrimaryDhcpServerOptions", pmtaethpro->IPv4PrimaryDhcpServerOptions.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions", pmtaethpro->IPv4SecondaryDhcpServerOptions.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions", pmtaethpro->IPv6PrimaryDhcpServerOptions.UpdateSource);
+                      FillParamUpdateSource(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6SecondaryDhcpServerOptions", pmtaethpro->IPv6SecondaryDhcpServerOptions.UpdateSource);
 
 		      //Check if syscfg parameters are missing in db. If so update the syscfg parameter based on ActiveValue from bootstrap.json
 		      FillMissingSyscfgParam(partnerObj, "Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.StartupIPMode","StartupIPMode");
@@ -1182,21 +1190,14 @@ CosaMTAInitializeEthWanProvJournal
     )
 {
         char *data = NULL;
-        char buf[64] = {0};
         cJSON *json = NULL;
         FILE *fileRead = NULL;
         char PartnerID[PARTNER_ID_LEN] = {0};
-        char cmd[512] = {0};
         ULONG size = PARTNER_ID_LEN - 1;
-        int len =0;
+        int len =0,frsize=0;
         if (!pmtaethpro)
         {
                 CcspTraceWarning(("%s-%d : NULL param\n" , __FUNCTION__, __LINE__ ));
-                return ANSC_STATUS_FAILURE;
-        }
-
-        if (access(BOOTSTRAP_INFO_FILE, F_OK) != 0)
-        {
                 return ANSC_STATUS_FAILURE;
         }
 
@@ -1221,7 +1222,11 @@ CosaMTAInitializeEthWanProvJournal
          if (data != NULL)
          {
                 memset( data, 0, ( sizeof(char) * (len + 1) ));
-                fread( data, 1, len, fileRead );
+               /*Coverity CID Fix :60325 CHECKED_RETURN */
+               if( fread( data, 1, len, fileRead ) < (len*sizeof(char)) )
+                     CcspTraceWarning(("%s-%d : fread  failed \n", __FUNCTION__, __LINE__));
+
+			
          }
          else
          {
@@ -1258,7 +1263,8 @@ CosaMTAInitializeEthWanProvJournal
                                 else
                                 {
                                         CcspTraceWarning(( "Reading Deafult PartnerID Values \n" ));
-                                        strcpy(PartnerID, "comcast");
+                                        /*Coverity Fix CID:67642 DC.STRING_BUFFER */
+                                        strncpy(PartnerID, "comcast",sizeof(PartnerID)-1);
                                         FillPartnerIDJournal(json, PartnerID, pmtaethpro);
                                 }
                         }
@@ -1268,13 +1274,13 @@ CosaMTAInitializeEthWanProvJournal
                         cJSON_Delete(json);
                 }
                 free(data);
-                data = NULL;
+               
          }
          else
          {
                 CcspTraceWarning(("BOOTSTRAP_INFO_FILE %s is empty\n", BOOTSTRAP_INFO_FILE));
+                /* Coverity Fix CID: 58665 RESOURCE_LEAK */
                 free(data);
-                data = NULL;
                 return ANSC_STATUS_FAILURE;
          }
          return ANSC_STATUS_SUCCESS;

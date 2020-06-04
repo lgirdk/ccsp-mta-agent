@@ -547,7 +547,14 @@ X_CISCO_COM_MTA_GetParamBoolValue
     if((!ind) && (rc == EOK)) 
     {
         /* collect value */
-        CosaDmlMTAGetPktc(NULL, pPktc);
+        /*Coverity Fix CID: 55776 CHECKED_RETURN */
+        if( CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS )
+         {
+              CcspTraceWarning(("%s-CosaDmlMTAGetPktc is not success\n",__FUNCTION__));
+               free(pPktc);
+		return FALSE;
+         }
+         
         *pBool = pPktc->pktcMtaDevEnabled;
         return TRUE;
     }
@@ -703,13 +710,19 @@ X_CISCO_COM_MTA_GetParamUlongValue
     int                             ind           = -1;
 
     /* check the parameter name and return the corresponding value */
-    if (strncmp("pktc", ParamName, strlen("pktc")) == 0) 
+    rc = strcmp_s("pktc",  strlen("pktc"), ParamName, &ind);
+    ERR_CHK(rc);
+    
+    if((!ind) && (rc == EOK))
     {
         /* collect value */
         if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS) 
         {
             return FALSE;
         }
+        
+        ind = -1;
+        rc =  -1;
         rc = strcmp_s("pktcSigDefCallSigTos",  strlen("pktcSigDefCallSigTos"), ParamName, &ind);
         ERR_CHK(rc);
         if((!ind) && (rc == EOK))
@@ -717,6 +730,7 @@ X_CISCO_COM_MTA_GetParamUlongValue
             *puLong = pPktc->pktcSigDefCallSigTos;
             return TRUE;
         }
+               
         rc = strcmp_s("pktcSigDefMediaStreamTos", strlen("pktcSigDefMediaStreamTos"), ParamName, &ind);
         ERR_CHK(rc);
         
@@ -1445,8 +1459,9 @@ X_CISCO_COM_MTA_Rollback
 {
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
-
-    CosaDmlMTAGetPktc(NULL, pPktc);
+    /*Coverity Fix CID:51944 CHECKED_RETURN */
+    if( CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS )
+        CcspTraceWarning(("%s- CosaDmlMTAGetPktc not success\n",__FUNCTION__)); 
 
     return 0;
 }
@@ -4854,7 +4869,6 @@ Dect_GetParamUlongValue
     )
 {
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
-    PCOSA_MTA_DECT                  pDect         = (PCOSA_MTA_DECT      )&pMyObject->Dect;
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
@@ -7407,8 +7421,6 @@ Battery_GetParamStringValue
             ERR_CHK(rc);
             return -1;
         }
-        
-        
         *pUlSize = _ansc_strlen(pValue);
 
         return 0;
@@ -8010,6 +8022,8 @@ EthernetWAN_MTA_SetParamStringValue
                 AnscTraceWarning(("Eth_wan not enabled : Invalid request\n"));
                 return FALSE;
            }
+            /*Coverity Fix CID:59709 MISSING_RETURN */
+            return FALSE;
 
 }
 

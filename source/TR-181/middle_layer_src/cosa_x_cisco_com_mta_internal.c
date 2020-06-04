@@ -77,6 +77,7 @@
 #include "mta_hal.h"
 #include <sysevent/sysevent.h>
 
+#define MAX_BUFF_SIZE 128
 static int sysevent_fd;
 static token_t sysevent_token;
 
@@ -100,14 +101,14 @@ static token_t sysevent_token;
     return:     newly created device info object.
 
 **********************************************************************/
-
+/* Coverity Fix CID 66908 - NonStd_void_param_list */
 ANSC_HANDLE
 CosaMTACreate
     (
-        VOID
+     void
     )
 {
-    ANSC_STATUS                  returnStatus = ANSC_STATUS_SUCCESS;
+    
     PCOSA_DATAMODEL_MTA          pMyObject    = (PCOSA_DATAMODEL_MTA)NULL;
 
     /*
@@ -137,7 +138,8 @@ CosaMTACreate
 
 ANSC_STATUS ConverStr2Hex(unsigned char buffer[])
 {
-	int i = 0, j =0; int len = 0;
+       /* Coverity Fix :CID 70174 Declare and Never Used */
+	int i = 0, len = 0;
 	char 	tbuffer [ 64 ] = { 0 };
         errno_t rc = -1;
 			len = strlen(buffer);
@@ -181,15 +183,29 @@ CosaMTAInitializeEthWanProvDhcpOption
 {
 
 	 MTA_IP_TYPE_TR ip_type;
-	 char 	buffer [ 128 ] = { 0 };
+	 char 	buffer [ MAX_BUFF_SIZE ] = { 0 };
 	 int	MtaIPMode = 0,IP_Pref_Mode_Received=0;
 	 int i = 0, j =0; int len = 0;
          errno_t rc = -1;
+         unsigned char x,y;
 	 PMTAMGMT_MTA_PROVISIONING_PARAMS pMtaProv = NULL;
 	 pMtaProv = (PMTAMGMT_MTA_PROVISIONING_PARAMS)malloc(sizeof(MTAMGMT_PROVISIONING_PARAMS));
+         
+        if(pMtaProv == NULL)
+        {
+		printf("Memory Alloction Failed '%s'\n", __FUNCTION__);
+		CcspTraceError(("Memory Alloction Failed '%s'\n", __FUNCTION__));
+		return ANSC_STATUS_FAILURE;
+	} 
 
 	 PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
-	 pMyObject->pmtaprovinfo = (PCOSA_MTA_ETHWAN_PROV_INFO)AnscAllocateMemory(sizeof(COSA_MTA_ETHWAN_PROV_INFO));
+         /*Coverity Fix CID 120992  NULL Check */
+	 if((pMyObject->pmtaprovinfo = (PCOSA_MTA_ETHWAN_PROV_INFO)AnscAllocateMemory(sizeof(COSA_MTA_ETHWAN_PROV_INFO))) == NULL);
+         {
+             CcspTraceWarning(("%s:pMyObject->pmtaprovinfo attained NULL\n",__FUNCTION__));
+              free(pMtaProv);
+             return ANSC_STATUS_FAILURE;
+         }    
 	 rc = memset_s(pMyObject->pmtaprovinfo, sizeof(COSA_MTA_ETHWAN_PROV_INFO), 0, sizeof(COSA_MTA_ETHWAN_PROV_INFO));
          ERR_CHK(rc);
 
@@ -214,11 +230,8 @@ CosaMTAInitializeEthWanProvDhcpOption
 	    CcspTraceWarning(("%s Received 0's from dhcp sever ,not initializing MTA \n",__FUNCTION__));
 		return ANSC_STATUS_FAILURE;
 	} 
-
-	if(pMtaProv)
-	{
-
-		if(Ip_Pref[0] != '\0') {
+      
+	if(Ip_Pref[0] != '\0') {
 			sscanf( Ip_Pref, "%d", &IP_Pref_Mode_Received );
 			if ( IP_Pref_Mode_Received == 01 )
 				MtaIPMode = MTA_IPV4;
@@ -297,14 +310,17 @@ CosaMTAInitializeEthWanProvDhcpOption
 					len = strlen(buffer);
 					CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 					if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
-					{
-						if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+					{       
+                                                /* Coverity Fix CID:121023 Incompatible type */
+						if(ConverStr2Hex((unsigned char *)buffer) == ANSC_STATUS_SUCCESS)
 						{
 							for(i = 0,j= 0;i<len; i++,j++)
 							{
 								if(j<MTA_DHCPOPTION122SUBOPTION1_MAX)
 								{
-									pMtaProv->DhcpOption122Suboption1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+                                                                      x = buffer[i]<<4;
+                                                                      y = buffer[++i];
+									pMtaProv->DhcpOption122Suboption1[j] |= x + y;
 								}
 								else
 									break;
@@ -329,6 +345,8 @@ CosaMTAInitializeEthWanProvDhcpOption
                                    ERR_CHK(rc);
                                    return ANSC_STATUS_FAILURE;
                                }
+                        x=0;
+                        y=0;
 			}
 			else
 			{
@@ -340,14 +358,16 @@ CosaMTAInitializeEthWanProvDhcpOption
 					len = strlen(buffer);
 					CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 					if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
-					{
-						if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+					{       /* Coverity Fix CID:121023 Incompatible type */
+						if(ConverStr2Hex((unsigned char *)buffer) == ANSC_STATUS_SUCCESS)
 						{
 					   		for(i = 0,j= 0;i<len; i++,j++)
 							{
 								if(j<MTA_DHCPOPTION122SUBOPTION2_MAX)
 								{
-									pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+                                                                        x= buffer[i]<<4;
+                                                                        y = buffer[++i];
+									pMtaProv->DhcpOption122Suboption2[j] |= x + y;
 								}
 								else
 									break;
@@ -372,6 +392,9 @@ CosaMTAInitializeEthWanProvDhcpOption
                                     ERR_CHK(rc);
                                     return ANSC_STATUS_FAILURE;
                                 }
+                                x=0;
+                                y=0;
+				memset(pMtaProv->DhcpOption2171CccV6DssID1,0,MTA_DHCPOPTION122CCCV6DSSID1_MAX);
 			}
 
 			else
@@ -384,15 +407,17 @@ CosaMTAInitializeEthWanProvDhcpOption
 					len = strlen(buffer);
 					CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 					if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
-					{	
-						if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+					{	/* Coverity Fix CID:121023 Incompatible type */
+						if(ConverStr2Hex((unsigned char *)buffer) == ANSC_STATUS_SUCCESS)
 						{
 							printf("Buffer is %s\n",buffer);
 								for(i = 0,j= 0;i<len; i++,j++)
 										{
 								if(j<MTA_DHCPOPTION122CCCV6DSSID1_MAX)
-								{
-									pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+								{       /*Coverity Fix CID:120994 EVALUTION_ORDER */
+                                                                        x = buffer[i]<<4;
+                                                                         y = buffer[++i];
+									pMtaProv->DhcpOption2171CccV6DssID1[j] |= x + y;
 								}
 								else
 									break;
@@ -419,6 +444,8 @@ CosaMTAInitializeEthWanProvDhcpOption
                                     ERR_CHK(rc);
                                     return ANSC_STATUS_FAILURE;
                                 }
+                                x =0;
+                                y =0;
 			}
 			else
 			{
@@ -429,15 +456,17 @@ CosaMTAInitializeEthWanProvDhcpOption
 					len = strlen(buffer);
 					CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 					if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
-				      {	
-						if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				      {	        /* Coverity Fix CID:121023 Incompatible type */
+						if(ConverStr2Hex((unsigned char *)buffer) == ANSC_STATUS_SUCCESS)
 						{
 							printf("Buffer is %s\n",buffer);
 					   		for(i = 0,j= 0;i<len; i++,j++)
 							{
 								if(j<MTA_DHCPOPTION122CCCV6DSSID2_MAX)
 								{
-									pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+                                                                        x =buffer[i]<<4;
+                                                                        y = buffer[++i];
+									pMtaProv->DhcpOption2171CccV6DssID2[j] |= x + y;
 								}
 								else
 									break;
@@ -457,24 +486,21 @@ CosaMTAInitializeEthWanProvDhcpOption
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
 			CcspTraceError(("mta_hal_start_provisioning succeded '%s'\n", __FUNCTION__));
-			free(pMtaProv);           
+                        /*Coverity Fix  CID:120996 RESOURCE_LEAK */
+                        free(pMtaProv);
 			return ANSC_STATUS_SUCCESS;
 		}
 		else
 		{
 			CcspTraceError(("mta_hal_start_provisioning Failed '%s'\n", __FUNCTION__));
-			 free(pMtaProv);
+                        /*Coverity Fix  CID:120995 RESOURCE_LEAK */
+                        free(pMtaProv);
 			return ANSC_STATUS_FAILURE;
 		}
+     #else
+                free(pMtaProv);
      #endif
      free(pMtaProv);
-}
-else
-	{
-		printf("Memory Alloction Failed '%s'\n", __FUNCTION__);
-		CcspTraceError(("Memory Alloction Failed '%s'\n", __FUNCTION__));
-		return ANSC_STATUS_FAILURE;
-	}  
 }
 
 void WaitForDhcpOption()
@@ -504,7 +530,8 @@ void WaitForDhcpOption()
  
 }
 
-ANSC_STATUS Mta_Sysevent_thread_Dhcp_Option(ANSC_HANDLE  hThisObject)
+/*Coverity Fix CID 121026 Arg Type MisMatch */
+void * Mta_Sysevent_thread_Dhcp_Option( void * hThisObject)
 
 {
 
@@ -590,6 +617,7 @@ CosaMTAInitializeEthWanProv
  int	MtaIPMode = 0;
  int i = 0, j =0; int len = 0;
  errno_t rc = -1;
+ unsigned char x,y;
  PMTAMGMT_MTA_PROVISIONING_PARAMS pMtaProv = NULL;
  pMtaProv = (PMTAMGMT_MTA_PROVISIONING_PARAMS)malloc(sizeof(MTAMGMT_PROVISIONING_PARAMS));
 
@@ -633,7 +661,10 @@ if(pMtaProv)
 					{
 						if(j<MTA_DHCPOPTION122SUBOPTION1_MAX)
 						{
-							pMtaProv->DhcpOption122Suboption1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+                                                        /*Coverity Fix CID:63437 EVALUTION_ORDER */
+                                                        x = buffer[i]<<4;
+                                                        y = buffer[++i];
+							pMtaProv->DhcpOption122Suboption1[j] |= x + y;
 						}
 						else
 							break;
@@ -761,27 +792,18 @@ if(pMtaProv)
 		// call hal to start provisioning
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
-			if( pMtaProv )
-			{
-				free(pMtaProv);
-				pMtaProv = NULL;
-			}
-
+                        /* Coverity Fix CID:74083 RESOURCE_LEAK */
+                        free(pMtaProv);
 			return ANSC_STATUS_SUCCESS;
 		}
 		else
 		{
 			CcspTraceError(("mta_hal_start_provisioning Failed '%s'\n", __FUNCTION__));
-			if( pMtaProv )
-			{
-				free(pMtaProv);
-				pMtaProv = NULL;
-			}
-
+                         free(pMtaProv);
 			return ANSC_STATUS_FAILURE;
 		}
-    
-	#endif
+               
+     #endif
 }
 else
 	{
@@ -802,6 +824,7 @@ CosaSetMTAHal
  int i = 0, j =0; int len = 0;
  errno_t rc = -1;
  ANSC_STATUS status = ANSC_STATUS_SUCCESS;
+ unsigned char x,y;
  PMTAMGMT_MTA_PROVISIONING_PARAMS pMtaProv = NULL;
  pMtaProv = (PMTAMGMT_MTA_PROVISIONING_PARAMS)malloc(sizeof(MTAMGMT_PROVISIONING_PARAMS));
 
@@ -834,7 +857,9 @@ if(pMtaProv)
 					{
 						if(j<MTA_DHCPOPTION122SUBOPTION1_MAX)
 						{
-							pMtaProv->DhcpOption122Suboption1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+                                                        x= buffer[i]<<4;
+                                                        y= buffer[++i];
+							pMtaProv->DhcpOption122Suboption1[j] |= x + y;
 						}
 						else
 							break;
@@ -860,6 +885,8 @@ if(pMtaProv)
                         status = ANSC_STATUS_FAILURE;
                         goto EXIT;
                    }
+                x=0;
+                y =0;
 		   if(buffer[0] != '\0')
 		   {
 			len = strlen(buffer);
@@ -870,8 +897,11 @@ if(pMtaProv)
 			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
 						if(j<MTA_DHCPOPTION122SUBOPTION2_MAX)
-						{
-							pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+						{     
+                                                        x=buffer[i]<<4;
+                                                          y =buffer[++i];
+
+							pMtaProv->DhcpOption122Suboption2[j] |= x + y;
 						}
 						else
 							break;
@@ -898,6 +928,8 @@ if(pMtaProv)
                         status = ANSC_STATUS_FAILURE;
                         goto EXIT;
                    }
+                x =0;
+                 y=0; 
 		   if(buffer[0] != '\0')
 		   {
 			len = strlen(buffer);
@@ -910,7 +942,9 @@ if(pMtaProv)
 					{
 						if(j<MTA_DHCPOPTION122CCCV6DSSID1_MAX)
 						{
-							pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+                                                        x=buffer[i]<<4;
+                                                        y = buffer[++i];
+							pMtaProv->DhcpOption2171CccV6DssID1[j] |= x + y;
 						}
 						else
 							break;
@@ -938,6 +972,8 @@ if(pMtaProv)
                         status = ANSC_STATUS_FAILURE;
                         goto EXIT;
                    }
+                x=0;
+                y =0;
 		   if(buffer[0] != '\0')
 		   {
 			len = strlen(buffer);
@@ -949,7 +985,9 @@ if(pMtaProv)
 					{
 						if(j<MTA_DHCPOPTION122CCCV6DSSID2_MAX)
 						{
-							pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+                                                        x= buffer[i]<<4;
+                                                        y =buffer[++i];
+							pMtaProv->DhcpOption2171CccV6DssID2[j] |= x + y;
 						}
 						else
 							break;
@@ -970,14 +1008,14 @@ if(pMtaProv)
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
 			status = ANSC_STATUS_SUCCESS;
+                   
 		}
 		else
 		{
-			CcspTraceError(("mta_hal_start_provisioning Failed '%s'\n", __FUNCTION__));
 			status = ANSC_STATUS_FAILURE;
 		}
                 free(pMtaProv);
-                pMtaProv = NULL;
+              
 #endif
 }
 else
@@ -994,8 +1032,8 @@ EXIT:
       }
       return status;
 }
-
-ANSC_STATUS Mta_Sysevent_thread(ANSC_HANDLE  hThisObject)
+/*CID 121026 Argument Type mismatch*/
+void * Mta_Sysevent_thread(void *  hThisObject)
 
 {
 
