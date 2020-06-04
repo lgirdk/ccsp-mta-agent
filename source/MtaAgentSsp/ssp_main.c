@@ -53,6 +53,11 @@
 
 #define DEBUG_INI_NAME  "/etc/debug.ini"
 
+
+
+#ifdef MTA_TR104SUPPORT
+#include "TR104.h"
+#endif
 PDSLH_CPE_CONTROLLER_OBJECT     pDslhCpeController      = NULL;
 PCOMPONENT_COMMON_DM            g_pComponent_Common_Dm  = NULL;
 char                            g_Subsystem[32]         = {0};
@@ -416,8 +421,17 @@ int main(int argc, char* argv[])
     while ( cmdChar != 'q' )
     {
         cmdChar = getchar();
-
-        cmd_dispatch(cmdChar);
+        /*Coverity Fix CID:79619 CHECKED_RETURN */
+           if (cmdChar == EOF ) 
+           {  
+                  CcspTraceWarning(("Error:%s:%d cmdChar return as EOF \n",__FUNCTION__,__LINE__));
+                  
+           }
+           else
+           {
+                 cmd_dispatch(cmdChar);
+           }
+                    
     }
     
 #elif defined(_ANSC_LINUX)
@@ -503,7 +517,17 @@ int main(int argc, char* argv[])
         {
             cmdChar = getchar();
 
-            cmd_dispatch(cmdChar);
+        /*Coverity Fix CID:79619 CHECKED_RETURN */
+            if (cmdChar == EOF ) 
+           {  
+                  CcspTraceWarning(("Error:%s:%d cmdChar return as EOF \n",__FUNCTION__,__LINE__));
+                  
+           }
+           else
+           {
+                 cmd_dispatch(cmdChar);
+           }
+      
         }
     }
 #endif
