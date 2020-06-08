@@ -6491,6 +6491,11 @@ EthernetWAN_MTA_GetParamIntValue
 {
     /* check the parameter name and return the corresponding value */
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+     if(pMyObject == NULL)
+    {
+        AnscTraceWarning(("Unsupported parameter - MTA Object not available"));
+        return FALSE;
+    }
     if( AnscEqualString(ParamName, "StartupIPMode", TRUE))
     {
         /* collect value */
