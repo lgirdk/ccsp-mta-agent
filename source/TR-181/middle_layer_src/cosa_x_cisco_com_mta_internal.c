@@ -452,7 +452,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 					}
 
 				   }
-    #if defined (_COSA_BCM_ARM_) 
+    #if defined (ENABLE_ETH_WAN)
 		// call hal to start provisioning
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
