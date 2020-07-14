@@ -1505,7 +1505,17 @@ LineTable_GetEntryCount
     PCOSA_MTA_LINETABLE_INFO        pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
     ULONG                           ulCount;
     errno_t                         rc            = -1;
-    
+    if ( pLineTable )
+    {
+        if ( pLineTable->pCalls )
+        {
+            AnscFreeMemory(pLineTable->pCalls);
+            pLineTable->pCalls = NULL;
+        }
+        AnscFreeMemory(pLineTable);
+        pLineTable = NULL;
+        pMyObject->pLineTable = NULL;
+    }
     ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
 fprintf(stderr, "### %s %d  ulCount=%ld\n", __func__, __LINE__, ulCount);
     if ( ulCount != 0 )

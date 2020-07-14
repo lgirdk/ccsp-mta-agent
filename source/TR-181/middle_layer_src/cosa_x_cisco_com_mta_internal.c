@@ -457,15 +457,17 @@ CosaMTAInitializeEthWanProvDhcpOption
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
 			CcspTraceError(("mta_hal_start_provisioning succeded '%s'\n", __FUNCTION__));
+			free(pMtaProv);           
 			return ANSC_STATUS_SUCCESS;
 		}
 		else
 		{
 			CcspTraceError(("mta_hal_start_provisioning Failed '%s'\n", __FUNCTION__));
+			 free(pMtaProv);
 			return ANSC_STATUS_FAILURE;
 		}
-                free(pMtaProv);
      #endif
+     free(pMtaProv);
 }
 else
 	{
@@ -759,15 +761,27 @@ if(pMtaProv)
 		// call hal to start provisioning
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
+			if( pMtaProv )
+			{
+				free(pMtaProv);
+				pMtaProv = NULL;
+			}
+
 			return ANSC_STATUS_SUCCESS;
 		}
 		else
 		{
 			CcspTraceError(("mta_hal_start_provisioning Failed '%s'\n", __FUNCTION__));
+			if( pMtaProv )
+			{
+				free(pMtaProv);
+				pMtaProv = NULL;
+			}
+
 			return ANSC_STATUS_FAILURE;
 		}
-                free(pMtaProv);
-     #endif
+    
+	#endif
 }
 else
 	{

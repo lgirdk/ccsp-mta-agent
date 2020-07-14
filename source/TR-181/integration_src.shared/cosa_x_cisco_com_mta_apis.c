@@ -201,7 +201,14 @@ CosaDmlMTAGetServiceFlow
     *pulCount = 0;
     PMTAMGMT_MTA_SERVICE_FLOW pInfo = NULL;
     if ( mta_hal_GetServiceFlow(pulCount, &pInfo) != RETURN_OK )
-        return ANSC_STATUS_FAILURE;
+    {
+          if(pInfo)
+	  {
+	     free(pInfo);
+	     pInfo = NULL;
+	  }        
+          return ANSC_STATUS_FAILURE;
+    }
 
     if (*pulCount > 0) {
         if( (*ppCfg = (PCOSA_MTA_SERVICE_FLOW)AnscAllocateMemory(sizeof(MTAMGMT_MTA_SERVICE_FLOW)*(*pulCount))) == NULL )
@@ -363,8 +370,15 @@ CosaDmlMTAGetHandsets
 {
     PMTAMGMT_MTA_HANDSETS_INFO pInfo = NULL;
     if ( mta_hal_GetHandsets( pulCount, &pInfo) != RETURN_OK )
+    {
+        if(pInfo)
+        {
+            free(pInfo);
+            pInfo = NULL;
+        }
         return ANSC_STATUS_FAILURE;
-
+    }
+ 
     if (*pulCount > 0) {
         if( (*ppHandsets = AnscAllocateMemory(DECT_MAX_HANDSETS * sizeof(MTAMGMT_MTA_HANDSETS_INFO))) == NULL )
         {
@@ -411,7 +425,15 @@ CosaDmlMTAGetCalls
     *pulCount = 0;
     PMTAMGMT_MTA_CALLS pInfo = NULL;
     if ( mta_hal_GetCalls(InstanceNumber, pulCount, &pInfo) != RETURN_OK )
+    {
+        if(pInfo)
+        {
+            free(pInfo);
+            pInfo = NULL;
+        }
+
         return ANSC_STATUS_FAILURE;
+    }
 
     if (*pulCount > 0) {
         if( (*ppCfg = (PCOSA_MTA_CALLS)AnscAllocateMemory(sizeof(MTAMGMT_MTA_CALLS)*(*pulCount))) == NULL )
@@ -458,7 +480,16 @@ CosaDmlMTAGetDSXLogs
     *pulCount = 0;
     PMTAMGMT_MTA_DSXLOG pInfo = NULL;
     if ( mta_hal_GetDSXLogs(pulCount, &pInfo) != RETURN_OK )
+    {
+
+        if( pInfo != NULL )
+        {
+            free(pInfo);
+            pInfo = NULL;
+        }
+
         return ANSC_STATUS_FAILURE;
+    }
 
     if (*pulCount > 0) {
         if( (*ppDSXLog = (PCOSA_MTA_DSXLOG)AnscAllocateMemory(sizeof(MTAMGMT_MTA_DSXLOG)*(*pulCount))) == NULL )
@@ -720,7 +751,14 @@ CosaDmlMtaGetMtaLog
     *pulCount = 0;
     PMTAMGMT_MTA_MTALOG_FULL pInfo = NULL;
     if ( mta_hal_GetMtaLog(pulCount, &pInfo) != RETURN_OK )
+    {
+        if(pInfo != NULL)
+        {
+            free(pInfo);
+            pInfo = NULL;
+        }      
         return ANSC_STATUS_FAILURE;
+    }
 
     if (*pulCount > 0) {
         if( (*ppConf = (PCOSA_DML_MTALOG_FULL)AnscAllocateMemory(sizeof(MTAMGMT_MTA_MTALOG_FULL)*(*pulCount))) == NULL )
@@ -1235,6 +1273,8 @@ CosaMTAInitializeEthWanProvJournal
          else
          {
                 CcspTraceWarning(("BOOTSTRAP_INFO_FILE %s is empty\n", BOOTSTRAP_INFO_FILE));
+                free(data);
+                data = NULL;
                 return ANSC_STATUS_FAILURE;
          }
          return ANSC_STATUS_SUCCESS;
