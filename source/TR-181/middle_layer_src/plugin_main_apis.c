@@ -68,6 +68,10 @@
 #include "plugin_main_apis.h"
 #include "cosa_x_cisco_com_mta_internal.h"
 
+// LGI ADD - START
+#include "cosa_x_lgi_com_mta_internal.h"
+// LGI ADD - END
+
 /*PCOSA_DIAG_PLUGIN_INFO             g_pCosaDiagPluginInfo;*/
 COSAGetParamValueByPathNameProc    g_GetParamValueByPathNameProc;
 COSASetParamValueByPathNameProc    g_SetParamValueByPathNameProc;
@@ -190,6 +194,10 @@ CosaBackEndManagerInitialize
 
     pMyObject->hMTA           = (ANSC_HANDLE)CosaMTACreate();
     AnscTraceWarning(("  CosaMTACreate done!\n"));
+// LGI ADD - START
+    pMyObject->hLgiMTA        = (ANSC_HANDLE)CosaLgiMTACreate();
+    AnscTraceWarning(("  CosaLgiMTACreate done!\n"));
+// LGI ADD - END
 
     printf("MTA DM initialization done!\n");
     CcspTraceWarning(("RDKB_SYSTEM_BOOT_UP_LOG : MTA DM initialization done!\n"));
@@ -233,6 +241,12 @@ CosaBackEndManagerRemove
     {
         CosaMTARemove((ANSC_HANDLE)pMyObject->hMTA);
     }
+// LGI ADD - START
+    if ( pMyObject->hLgiMTA )
+    {
+        CosaLgiMTARemove((ANSC_HANDLE)pMyObject->hLgiMTA);
+    }
+// LGI ADD - END
     // #endif
 
     /* Remove self */
