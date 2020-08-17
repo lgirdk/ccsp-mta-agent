@@ -98,6 +98,7 @@ extern COSARegisterCallBackAfterInitDmlProc  g_RegisterCallBackAfterInitDml;
 /* The OID for all objects s*/
 #define COSA_DATAMODEL_BASE_OID                                 0
 #define COSA_DATAMODEL_MTA_OID                                  33
+#define COSA_DATAMODEL_LGI_MTA_OID                             126 /* LGI ADD */
 
 /*
  * This is the cosa datamodel backend manager which is used to manager all backend object
@@ -106,6 +107,7 @@ extern COSARegisterCallBackAfterInitDmlProc  g_RegisterCallBackAfterInitDml;
     /* duplication of the base object class content */                                      \
     COSA_BASE_CONTENT                                                                       \
     ANSC_HANDLE                  hMTA;                                                      \
+    ANSC_HANDLE                  hLgiMTA;                                                   \
     PCOSA_PLUGIN_INFO            hCosaPluginInfo;
 
 typedef  struct
