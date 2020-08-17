@@ -67,6 +67,7 @@
 
 #include "plugin_main_apis.h"
 #include "cosa_x_cisco_com_mta_internal.h"
+#include "cosa_x_lgi_com_mta_internal.h"
 
 /*PCOSA_DIAG_PLUGIN_INFO             g_pCosaDiagPluginInfo;*/
 COSAGetParamValueByPathNameProc    g_GetParamValueByPathNameProc;
@@ -191,6 +192,9 @@ CosaBackEndManagerInitialize
     pMyObject->hMTA           = (ANSC_HANDLE)CosaMTACreate();
     AnscTraceWarning(("  CosaMTACreate done!\n"));
 
+    pMyObject->hLgiMTA        = (ANSC_HANDLE)CosaLgiMTACreate();
+    AnscTraceWarning(("  CosaLgiMTACreate done!\n"));
+
     printf("MTA DM initialization done!\n");
     CcspTraceWarning(("RDKB_SYSTEM_BOOT_UP_LOG : MTA DM initialization done!\n"));
     return returnStatus;
@@ -232,6 +236,10 @@ CosaBackEndManagerRemove
     if ( pMyObject->hMTA )
     {
         CosaMTARemove((ANSC_HANDLE)pMyObject->hMTA);
+    }
+    if ( pMyObject->hLgiMTA )
+    {
+        CosaLgiMTARemove((ANSC_HANDLE)pMyObject->hLgiMTA);
     }
     // #endif
 
