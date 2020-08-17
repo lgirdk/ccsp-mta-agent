@@ -2638,7 +2638,79 @@
 
             </parameters>
       </object>
-
+<!-- LGI ADD - START -->
+    <object>
+        <name>X_LGI-COM_MTA</name>
+        <objectType>object</objectType>
+        <functions>
+            <func_GetParamStringValue>X_LGI_COM_MTA_GetParamStringValue</func_GetParamStringValue>
+        </functions>
+        <parameters>
+            <parameter>
+                <name>PacketCableRegion</name>
+                <type>string(64)</type>
+                <syntax>string</syntax>
+                <writable>false</writable>
+            </parameter>
+        </parameters>
+        <objects>
+            <object>
+                <name>LineInfo</name>
+                <objectType>staticTable</objectType>
+                <maxInstance>128</maxInstance>
+                <functions>
+                    <func_GetEntryCount>X_LGI_COM_MTA_LineInfo_GetEntryCount</func_GetEntryCount>
+                    <func_GetEntry>X_LGI_COM_MTA_LineInfo_GetEntry</func_GetEntry>
+                    <func_GetParamUlongValue>X_LGI_COM_MTA_LineInfo_GetParamUlongValue</func_GetParamUlongValue>
+                    <func_SetParamUlongValue>X_LGI_COM_MTA_LineInfo_SetParamUlongValue</func_SetParamUlongValue>
+                    <func_Validate>X_LGI_COM_MTA_LineInfo_Validate</func_Validate>
+                    <func_Commit>X_LGI_COM_MTA_LineInfo_Commit</func_Commit>
+                    <func_Rollback>X_LGI_COM_MTA_LineInfo_Rollback</func_Rollback>
+               </functions>
+               <parameters>
+                   <parameter>
+                       <name>OperStatus</name>
+                       <description>
+                           Voice service is available (up) or unavailable (down) per line.
+                           The service can be down if there is a failure in the MTA provisioning process
+                           or if the line was disabled through provisioning.
+                       </description>
+                       <type>string: Up(1),Down(2),Testing(3)</type>
+                       <syntax>uint32/mapped</syntax>
+                   </parameter>
+                   <parameter>
+                       <name>AdminStatus</name>
+                       <description>MTA Line is enabled or disabled through provisioning</description>
+                       <type>string: Disabled(0),Enabled(1),Testing(2)</type>
+                       <syntax>uint32/mapped</syntax>
+                       <writable>true</writable>
+                   </parameter>
+               </parameters>
+            </object>
+            <object>
+                <name>LineTable</name>
+                <objectType>staticTable</objectType>
+                <maxInstance>2</maxInstance>
+                <functions>
+                    <func_GetEntryCount>X_LGI_COM_MTA_LineTable_GetEntryCount</func_GetEntryCount>
+                    <func_GetEntry>X_LGI_COM_MTA_LineTable_GetEntry</func_GetEntry>
+                    <func_GetParamUlongValue>X_LGI_COM_MTA_LineTable_GetParamUlongValue</func_GetParamUlongValue>
+                    <func_Validate>X_LGI_COM_MTA_LineTable_Validate</func_Validate>
+                    <func_Commit>X_LGI_COM_MTA_LineTable_Commit</func_Commit>
+                    <func_Rollback>X_LGI_COM_MTA_LineTable_Rollback</func_Rollback>
+                </functions>
+                <parameters>
+                    <parameter>
+                        <name>Status</name>
+                        <description>The hook status for each endpoint</description>
+                        <type>string: Onhook(0),Offhook(1)</type>
+                        <syntax>uint32/mapped</syntax>
+                    </parameter>
+                </parameters>
+            </object>
+        </objects>
+    </object>
+<!-- LGI ADD - END -->
   </objects>
 
   </dataModelInfo>
