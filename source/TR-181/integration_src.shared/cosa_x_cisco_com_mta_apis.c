@@ -67,6 +67,8 @@
 
 **************************************************************************/
 
+#include <cjson/cJSON.h>
+
 //!!!  This code assumes that all data structures are the SAME in middle-layer APIs and HAL layer APIs
 //!!!  So it uses casting from one to the other
 #include "cosa_x_cisco_com_mta_apis.h"
