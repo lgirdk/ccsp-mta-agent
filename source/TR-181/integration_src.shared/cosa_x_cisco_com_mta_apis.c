@@ -71,6 +71,7 @@
 //!!!  So it uses casting from one to the other
 #include "cosa_x_cisco_com_mta_apis.h"
 #include "mta_hal.h"
+#include "syscfg/syscfg.h"
 
 // #include "cosa_x_cisco_com_mta_internal.h"
 
@@ -84,7 +85,10 @@ CosaDmlMTAInit
         PANSC_HANDLE                phContext
     )
 {
-    // PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)phContext;
+    UNREFERENCED_PARAMETER(hDml);
+    UNREFERENCED_PARAMETER(phContext);
+
+   // PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)phContext;
 
     if ( mta_hal_InitDB() == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
@@ -100,6 +104,7 @@ CosaDmlMTAGetDHCPInfo
     )
 {
 
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_GetDHCPInfo((PMTAMGMT_MTA_DHCP_INFO)pInfo) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -114,6 +119,7 @@ CosaDmlMTAGetDHCPV6Info
     )
 {
 
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_GetDHCPV6Info((PMTAMGMT_MTA_DHCPv6_INFO)pInfo) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -127,6 +133,9 @@ CosaDmlMTAGetPktc
         PCOSA_MTA_PKTC              pPktc
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
+    UNREFERENCED_PARAMETER(pPktc);
+
     return ANSC_STATUS_SUCCESS;
 }
 
@@ -137,6 +146,9 @@ CosaDmlMTASetPktc
         PCOSA_MTA_PKTC              pPktc
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
+    UNREFERENCED_PARAMETER(pPktc);
+
     return ANSC_STATUS_SUCCESS;
 }
 
@@ -146,6 +158,7 @@ CosaDmlMTALineTableGetNumberOfEntries
         ANSC_HANDLE                 hContext
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     return mta_hal_LineTableGetNumberOfEntries();
 }
 
@@ -159,6 +172,7 @@ CosaDmlMTALineTableGetEntry
 
 {
 
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_LineTableGetEntry(ulIndex, (PMTAMGMT_MTA_LINETABLE_INFO)pEntry) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -185,6 +199,8 @@ CosaDmlMTAGetServiceClass
         PCOSA_MTA_SERVICE_CLASS     *ppCfg
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
+    UNREFERENCED_PARAMETER(ppCfg);
     *pulCount = 0;
 
     return ANSC_STATUS_SUCCESS;
@@ -198,6 +214,7 @@ CosaDmlMTAGetServiceFlow
         PCOSA_MTA_SERVICE_FLOW      *ppCfg
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     *pulCount = 0;
     PMTAMGMT_MTA_SERVICE_FLOW pInfo = NULL;
     if ( mta_hal_GetServiceFlow(pulCount, &pInfo) != RETURN_OK )
@@ -236,6 +253,7 @@ CosaDmlMTADectGetEnable
         BOOLEAN                     *pBool
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if (mta_hal_DectGetEnable(pBool) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -249,6 +267,7 @@ CosaDmlMTADectSetEnable
         BOOLEAN                     bBool
     )
 {
+     UNREFERENCED_PARAMETER(hContext);
      if (mta_hal_DectSetEnable(bBool) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -263,6 +282,7 @@ CosaDmlMTADectGetRegistrationMode
         BOOLEAN                     *pBool
     )
 {
+     UNREFERENCED_PARAMETER(hContext);
      if (mta_hal_DectGetRegistrationMode(pBool) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -277,6 +297,7 @@ CosaDmlMTADectSetRegistrationMode
         BOOLEAN                     bBool
     )
 {
+     UNREFERENCED_PARAMETER(hContext);
      if (mta_hal_DectSetRegistrationMode(bBool) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -292,10 +313,12 @@ CosaDmlMTADectRegisterDectHandset
     )
 {
     fprintf(stderr, "%s is not implemented!\n", __FUNCTION__);
-
+    UNREFERENCED_PARAMETER(hContext);
+    UNREFERENCED_PARAMETER(uValue);
     return ANSC_STATUS_SUCCESS;
 }
 
+ANSC_STATUS
 CosaDmlMTADectDeregisterDectHandset
     (
         ANSC_HANDLE                 hContext,
@@ -303,7 +326,8 @@ CosaDmlMTADectDeregisterDectHandset
     )
 {
 
-     if (mta_hal_DectDeregisterDectHandset(uValue) == RETURN_OK )
+    UNREFERENCED_PARAMETER(hContext);
+    if (mta_hal_DectDeregisterDectHandset(uValue) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
         return ANSC_STATUS_FAILURE;
@@ -319,8 +343,8 @@ CosaDmlMTAGetDect
     )
 {
 
-
-     if (mta_hal_GetDect(pDect) == RETURN_OK )
+     UNREFERENCED_PARAMETER(hContext);
+     if (mta_hal_GetDect((PMTAMGMT_MTA_DECT)pDect) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
         return ANSC_STATUS_FAILURE;
@@ -336,9 +360,10 @@ CosaDmlMTAGetDectPIN
     )
 {
 
+     UNREFERENCED_PARAMETER(hContext);
      if (mta_hal_GetDectPIN(pPINString) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
-    else
+     else
         return ANSC_STATUS_FAILURE;
 
 
@@ -352,7 +377,7 @@ CosaDmlMTASetDectPIN
     )
 {
 
-
+     UNREFERENCED_PARAMETER(hContext);
      if (mta_hal_SetDectPIN(pPINString) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -368,6 +393,7 @@ CosaDmlMTAGetHandsets
         PCOSA_MTA_HANDSETS_INFO     *ppHandsets
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     PMTAMGMT_MTA_HANDSETS_INFO pInfo = NULL;
     if ( mta_hal_GetHandsets( pulCount, &pInfo) != RETURN_OK )
     {
@@ -400,7 +426,8 @@ CosaDmlMTASetHandsets
     )
 {
    fprintf(stderr, "%s is not implemented!\n", __FUNCTION__);
-
+   UNREFERENCED_PARAMETER(hContext);
+   UNREFERENCED_PARAMETER(pHandsets);
    return ANSC_STATUS_SUCCESS;
 }
 
@@ -410,6 +437,7 @@ CosaDmlMTAVQMResetStats
         ANSC_HANDLE                 hContext
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     return ANSC_STATUS_SUCCESS;
 }
 
@@ -422,6 +450,7 @@ CosaDmlMTAGetCalls
         PCOSA_MTA_CALLS             *ppCfg
     )
 { 
+    UNREFERENCED_PARAMETER(hContext);
     *pulCount = 0;
     PMTAMGMT_MTA_CALLS pInfo = NULL;
     if ( mta_hal_GetCalls(InstanceNumber, pulCount, &pInfo) != RETURN_OK )
@@ -477,6 +506,7 @@ CosaDmlMTAGetDSXLogs
         PCOSA_MTA_DSXLOG            *ppDSXLog
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     *pulCount = 0;
     PMTAMGMT_MTA_DSXLOG pInfo = NULL;
     if ( mta_hal_GetDSXLogs(pulCount, &pInfo) != RETURN_OK )
@@ -517,6 +547,7 @@ CosaDmlMTAGetDSXLogEnable
         BOOLEAN                     *pBool
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_GetDSXLogEnable(pBool) == RETURN_OK ) 
         return ANSC_STATUS_SUCCESS;
     else
@@ -530,6 +561,7 @@ CosaDmlMTASetDSXLogEnable
         BOOLEAN                     Bool
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_SetDSXLogEnable(Bool) == RETURN_OK ) 
         return ANSC_STATUS_SUCCESS;
     else
@@ -540,11 +572,11 @@ ANSC_STATUS
 CosaDmlMTAClearDSXLog
     (
         ANSC_HANDLE                 hContext,
-		BOOLEAN                     ClearLog
+        BOOLEAN                     ClearLog
     )
 {
-	
-	if ( mta_hal_ClearDSXLog(ClearLog) == RETURN_OK ) 
+    UNREFERENCED_PARAMETER(hContext);
+    if ( mta_hal_ClearDSXLog(ClearLog) == RETURN_OK ) 
         return ANSC_STATUS_SUCCESS;
     else
         return ANSC_STATUS_FAILURE;
@@ -558,7 +590,8 @@ CosaDmlMTAGetCallSignallingLogEnable
         BOOLEAN                     *pBool
     )
 {
-	if ( mta_hal_GetCallSignallingLogEnable(pBool) == RETURN_OK ) 
+    UNREFERENCED_PARAMETER(hContext);
+    if ( mta_hal_GetCallSignallingLogEnable(pBool) == RETURN_OK ) 
         return ANSC_STATUS_SUCCESS;
     else
         return ANSC_STATUS_FAILURE;
@@ -571,6 +604,7 @@ CosaDmlMTASetCallSignallingLogEnable
         BOOLEAN                     Bool
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_SetCallSignallingLogEnable(Bool) == RETURN_OK ) 
         return ANSC_STATUS_SUCCESS;
     else
@@ -581,9 +615,10 @@ ANSC_STATUS
 CosaDmlMTAClearCallSignallingLog
     (
         ANSC_HANDLE                 hContext,
-		BOOLEAN                     ClearLog
+	BOOLEAN                     ClearLog
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_ClearCallSignallingLog(ClearLog) == RETURN_OK ) 
         return ANSC_STATUS_SUCCESS;
     else
@@ -599,6 +634,7 @@ CosaDmlMtaBatteryGetInstalled
         PBOOL                       pValue
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetInstalled(pValue) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -612,6 +648,7 @@ CosaDmlMtaBatteryGetTotalCapacity
         PULONG                      pValue
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetTotalCapacity(pValue) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -625,6 +662,7 @@ CosaDmlMtaBatteryGetActualCapacity
         PULONG                      pValue
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetActualCapacity(pValue) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -638,6 +676,7 @@ CosaDmlMtaBatteryGetRemainingCharge
         PULONG                      pValue
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetRemainingCharge(pValue) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -651,6 +690,7 @@ CosaDmlMtaBatteryGetRemainingTime
         PULONG                      pValue
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetRemainingTime(pValue) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -664,6 +704,7 @@ CosaDmlMtaBatteryGetNumberofCycles
         PULONG                      pValue
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetNumberofCycles(pValue) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -678,6 +719,7 @@ CosaDmlMtaBatteryGetPowerStatus
         PULONG                      pSize
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetPowerStatus(pValue, pSize) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -692,6 +734,7 @@ CosaDmlMtaBatteryGetCondition
         PULONG                      pSize
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetCondition(pValue, pSize) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -706,6 +749,7 @@ CosaDmlMtaBatteryGetStatus
         PULONG                      pSize
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetStatus(pValue, pSize) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -720,6 +764,7 @@ CosaDmlMtaBatteryGetLife
         PULONG                      pSize
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetLife(pValue, pSize) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else
@@ -733,6 +778,7 @@ CosaDmlMtaBatteryGetInfo
         PCOSA_DML_BATTERY_INFO      pInfo
     )
 {
+    UNREFERENCED_PARAMETER(hContext);
     if ( mta_hal_BatteryGetInfo((PMTAMGMT_MTA_BATTERY_INFO)pInfo) == RETURN_OK )
         return ANSC_STATUS_SUCCESS;
     else 
@@ -748,6 +794,7 @@ CosaDmlMtaGetMtaLog
         PCOSA_DML_MTALOG_FULL       *ppConf        
     )    
 {
+    UNREFERENCED_PARAMETER(hContext);
     *pulCount = 0;
     PMTAMGMT_MTA_MTALOG_FULL pInfo = NULL;
     if ( mta_hal_GetMtaLog(pulCount, &pInfo) != RETURN_OK )
@@ -769,7 +816,7 @@ CosaDmlMtaGetMtaLog
         }
         AnscCopyMemory(*ppConf, pInfo, sizeof(MTAMGMT_MTA_MTALOG_FULL)*(*pulCount));
         {
-            int i;
+            unsigned int i;
             for (i=0; i<*pulCount; i++) {
                 if (pInfo[i].pDescription) {
                     (*ppConf)[i].pDescription = AnscCloneString(pInfo[i].pDescription);
@@ -799,6 +846,9 @@ CosaDmlMtaGetDectLog
         PCOSA_DML_DECTLOG_FULL      *ppConf        
     )    
 {
+    UNREFERENCED_PARAMETER(hContext);
+    UNREFERENCED_PARAMETER(ppConf);
+
     *pulCount = 0;
     //*ppConf = (PCOSA_DML_DECTLOG_FULL)AnscAllocateMemory( sizeof(DectLog) );
 
@@ -811,11 +861,12 @@ ANSC_STATUS
 CosaDmlMtaGetResetCount
     (
         ANSC_HANDLE                 hContext,
-		MTA_RESET_TYPE              type,
+	MTA_RESET_TYPE              type,
         ULONG                       *pValue
     )
 {
-	switch(type)
+	UNREFERENCED_PARAMETER(hContext);
+        switch(type)
 	{
 		case MTA_RESET:{
 				mta_hal_Get_MTAResetCount(pValue);
@@ -851,14 +902,13 @@ CosaDmlMtaGetDhcpStatus
 		PULONG pIpv6DhcpStatus
     )
 {
-	MTAMGMT_MTA_STATUS output_pIpv4status = MTA_ERROR;
-	MTAMGMT_MTA_STATUS output_pIpv6status = MTA_ERROR;
-
 	*pIpv4DhcpStatus = MTA_ERROR;
 	*pIpv6DhcpStatus = MTA_ERROR;
 
 #ifdef _CBR_PRODUCT_REQ_
-	if ( RETURN_OK == mta_hal_getDhcpStatus( &output_pIpv4status, &output_pIpv6status ) )
+	MTAMGMT_MTA_STATUS output_pIpv4status = MTA_ERROR;
+	MTAMGMT_MTA_STATUS output_pIpv6status = MTA_ERROR;
+        if ( RETURN_OK == mta_hal_getDhcpStatus( &output_pIpv4status, &output_pIpv6status ) )
 	{
 		*pIpv4DhcpStatus = output_pIpv4status;
 		*pIpv6DhcpStatus = output_pIpv6status;
@@ -874,10 +924,7 @@ CosaDmlMtaGetConfigFileStatus
 		PULONG pConfigFileStatus
     )
 {
-	
-
-	*pConfigFileStatus = MTA_ERROR;
-
+        UNREFERENCED_PARAMETER(pConfigFileStatus);
 #ifdef _CBR_PRODUCT_REQ_
      
          /*Coverity Fix CID 59560 */
@@ -916,7 +963,7 @@ CosaDmlMtaGetLineRegisterStatus
 	else
 #endif /* _CBR_PRODUCT_REQ_ */
 	{	
-		sprintf( pcLineRegisterStatus,"" );
+		sprintf( pcLineRegisterStatus,"%s", "" );
 	}
 
     return ANSC_STATUS_SUCCESS;
@@ -974,9 +1021,9 @@ CosaDmlMtaResetNow
 		BOOLEAN	*pBool
     )
 {
-
+        UNREFERENCED_PARAMETER(pBool);
 #ifdef _CBR_PRODUCT_REQ_
-	if( RETURN_OK == mta_hal_devResetNow(pBool) )
+	if( RETURN_OK == mta_hal_devResetNow(*pBool) )
 #else
 	if( /*RETURN_OK == mta_hal_devResetNow(pBool)*/ 1 )
 #endif /* _CBR_PRODUCT_REQ_ */
@@ -1005,7 +1052,7 @@ void * MtaProvisioningStatusGetFunc(void * arg)
 		if(	RETURN_OK != mta_hal_getMtaOperationalStatus(&ProvisioningStatus) )
 		{
 			AnscTraceWarning(("mta_hal_getMtaOperationalStatus Fail \n"));
-			return;
+			return NULL;
 		}
 
 		switch(ProvisioningStatus)
@@ -1021,7 +1068,7 @@ void * MtaProvisioningStatusGetFunc(void * arg)
 			case COSA_MTA_COMPLETE:
 				AnscTraceWarning(("MTA is operational after reset \n"));
 				pthread_exit(NULL);
-				return;
+				return arg;
 
 			case COSA_MTA_ERROR:
 				AnscTraceWarning(("MTA provisioning failed after reset"));
@@ -1038,11 +1085,12 @@ void * MtaProvisioningStatusGetFunc(void * arg)
 		{
 			counter = 0;
 			pthread_exit(NULL);
-			return;
+			return arg;
 		}
-	}
-	pthread_exit(NULL);
+        }
+        pthread_exit(NULL);
 #endif /* _CBR_PRODUCT_REQ_ */
+        return arg;    
 }
 
 
@@ -1194,7 +1242,7 @@ CosaMTAInitializeEthWanProvJournal
         FILE *fileRead = NULL;
         char PartnerID[PARTNER_ID_LEN] = {0};
         ULONG size = PARTNER_ID_LEN - 1;
-        int len =0,frsize=0;
+        int len =0;
         if (!pmtaethpro)
         {
                 CcspTraceWarning(("%s-%d : NULL param\n" , __FUNCTION__, __LINE__ ));
@@ -1336,7 +1384,8 @@ ANSC_STATUS UpdateJsonParamLegacy
 	 if (data != NULL) 
 	 {
 		memset( data, 0, ( sizeof(char) * (len + 1) ));
-	 	fread( data, 1, len, fileRead );
+	 	if( fread( data, sizeof(char), len, fileRead ) < (len*sizeof(char)) )
+                     CcspTraceWarning(("%s-%d : File read failed \n", __FUNCTION__, __LINE__));
 	 } 
 	 else 
 	 {
@@ -1446,7 +1495,8 @@ ANSC_STATUS UpdateJsonParam
          if (data != NULL)
          {
                 memset( data, 0, ( sizeof(char) * (len + 1) ));
-                fread( data, 1, len, fileRead );
+                if( fread( data, sizeof(char), len, fileRead ) < (len*sizeof(char)) )
+                     CcspTraceWarning(("%s-%d : File read failed \n", __FUNCTION__, __LINE__));
          }
          else
          {

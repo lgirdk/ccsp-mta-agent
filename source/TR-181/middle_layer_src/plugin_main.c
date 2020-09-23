@@ -88,15 +88,12 @@ COSA_Init
     COSASetParamValueBoolProc       pSetParamValueBoolProc      = (COSASetParamValueBoolProc         )NULL;
     COSAGetInstanceNumbersProc      pGetInstanceNumbersProc     = (COSAGetInstanceNumbersProc        )NULL;
 
-    COSAGetCommonHandleProc         pGetCHProc                  = (COSAGetCommonHandleProc           )NULL;
     COSAValidateHierarchyInterfaceProc 
                                     pValInterfaceProc           = (COSAValidateHierarchyInterfaceProc)NULL;
     COSAGetHandleProc               pGetRegistryRootFolder      = (COSAGetHandleProc                 )NULL;
     COSAGetInstanceNumberByIndexProc
                                     pGetInsNumberByIndexProc    = (COSAGetInstanceNumberByIndexProc  )NULL;
-    COSAGetHandleProc               pGetMessageBusHandleProc    = (COSAGetHandleProc                 )NULL;
     COSAGetInterfaceByNameProc      pGetInterfaceByNameProc     = (COSAGetInterfaceByNameProc        )NULL;
-    ULONG                           ret                         = 0;
     errno_t                         rc                          = -1;
 
     if ( uMaxVersionSupported < THIS_PLUGIN_VERSION )
@@ -109,6 +106,7 @@ COSA_Init
     g_pDslhDmlAgent                 = pPlugInfo->hDmlAgent;
 
 /*
+    COSAGetCommonHandleProc         pGetCHProc                  = (COSAGetCommonHandleProc           )NULL;
     pGetCHProc = (COSAGetCommonHandleProc)pPlugInfo->AcquireFunction("COSAGetDiagPluginInfo");
 
     if( pGetCHProc != NULL)
@@ -165,7 +163,7 @@ COSA_Init
     }
 
 
-    pGetParamValueIntProc = (COSAGetParamValueUlongProc)pPlugInfo->AcquireFunction("COSAGetParamValueInt");
+    pGetParamValueIntProc = (COSAGetParamValueIntProc)pPlugInfo->AcquireFunction("COSAGetParamValueInt");
 
     if( pGetParamValueIntProc != NULL)
     {
@@ -318,7 +316,7 @@ COSA_Init
     }
 
     /* Get Message Bus Handle */
-    g_GetMessageBusHandle = (PFN_CCSPCCDM_APPLY_CHANGES)pPlugInfo->AcquireFunction("COSAGetMessageBusHandle");
+    g_GetMessageBusHandle = (COSAGetHandleProc)pPlugInfo->AcquireFunction("COSAGetMessageBusHandle");
     if ( g_GetMessageBusHandle == NULL )
     {
         goto EXIT;
@@ -337,7 +335,7 @@ COSA_Init
     {
         char*   tmpSubsystemPrefix;
         
-        if ( tmpSubsystemPrefix = g_GetSubsystemPrefix(g_pDslhDmlAgent) )
+        if ( ( tmpSubsystemPrefix = g_GetSubsystemPrefix(g_pDslhDmlAgent)))
         {
             rc = strcpy_s(g_SubSysPrefix_Irep, sizeof(g_SubSysPrefix_Irep), tmpSubsystemPrefix);
             if(rc != EOK)
@@ -375,14 +373,15 @@ COSA_Async_Init
         void*                       hCosaPlugInfo         /* PCOSA_PLUGIN_INFO passed in by the caller */
     )
 {
-    PCOSA_PLUGIN_INFO               pPlugInfo      = (PCOSA_PLUGIN_INFO)hCosaPlugInfo;
-
+    UNREFERENCED_PARAMETER(uMaxVersionSupported);
+    UNREFERENCED_PARAMETER(hCosaPlugInfo);
 #if 0
     if (g_pCosaBEManager)
     {
 #ifdef _COSA_SIM_   
         COSAGetHandleProc         pProc          = (COSAGetHandleProc       )NULL;
         ULONG                     ulRole         = 0;        
+        PCOSA_PLUGIN_INFO               pPlugInfo      = (PCOSA_PLUGIN_INFO)hCosaPlugInfo;
 
         pProc = (COSAGetHandleProc)pPlugInfo->AcquireFunction("COSAGetLPCRole");
 
@@ -430,6 +429,7 @@ COSA_IsObjSupported
         char*                        pObjName
     )
 {
+    UNREFERENCED_PARAMETER(pObjName);
     /* COSA XML file will be generated based on standard TR-xxx data model definition.
      * By default, all the objects are expected to supported in the libraray. 
      * Realistically, we will have certain ones cannot be supported at the early stage of development.

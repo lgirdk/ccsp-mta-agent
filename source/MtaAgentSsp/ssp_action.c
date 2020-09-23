@@ -97,8 +97,6 @@ extern  PCCSP_CCD_INTERFACE             pPnmCcdIf;
 extern  ANSC_HANDLE                     bus_handle;
 extern char                             g_Subsystem[32];
 
-static  COMPONENT_COMMON_DM             CommonDm = {0};
-
 ANSC_STATUS
 ssp_create_pnm
     (
@@ -295,6 +293,7 @@ ssp_PnmCCDmGetComponentName
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->Name;
 }
 
@@ -305,6 +304,7 @@ ssp_PnmCCDmGetComponentVersion
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->Version;
 }
 
@@ -315,6 +315,7 @@ ssp_PnmCCDmGetComponentAuthor
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->Author;
 }
 
@@ -325,6 +326,7 @@ ssp_PnmCCDmGetComponentHealth
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->Health;
 }
 
@@ -335,6 +337,7 @@ ssp_PnmCCDmGetComponentState
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->State;
 }
 
@@ -346,6 +349,7 @@ ssp_PnmCCDmGetLoggingEnabled
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->LogEnable;
 }
 
@@ -358,6 +362,7 @@ ssp_PnmCCDmSetLoggingEnabled
     )
 {
     /*CommonDm.LogEnable = bEnabled;*/
+    UNREFERENCED_PARAMETER(hThisObject);
     if(g_pComponent_Common_Dm->LogEnable == bEnabled) return ANSC_STATUS_SUCCESS;
     g_pComponent_Common_Dm->LogEnable = bEnabled;
 
@@ -376,6 +381,7 @@ ssp_PnmCCDmGetLoggingLevel
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->LogLevel;
 }
 
@@ -388,6 +394,7 @@ ssp_PnmCCDmSetLoggingLevel
     )
 {
     /*CommonDm.LogLevel = LogLevel; */
+    UNREFERENCED_PARAMETER(hThisObject);
     if(g_pComponent_Common_Dm->LogLevel == LogLevel) return ANSC_STATUS_SUCCESS;
     g_pComponent_Common_Dm->LogLevel = LogLevel;
 
@@ -404,6 +411,7 @@ ssp_PnmCCDmGetMemMaxUsage
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_ulAllocatedSizePeak;
 }
 
@@ -414,6 +422,7 @@ ssp_PnmCCDmGetMemMinUsage
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     return g_pComponent_Common_Dm->MemMinUsage;
 }
 
@@ -424,6 +433,7 @@ ssp_PnmCCDmGetMemConsumed
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     LONG             size = 0;
 
     size = AnscGetComponentMemorySize(gpPnmStartCfg->ComponentName);
@@ -440,6 +450,7 @@ ssp_PnmCCDmApplyChanges
         ANSC_HANDLE                     hThisObject
     )
 {
+    UNREFERENCED_PARAMETER(hThisObject);
     ANSC_STATUS                         returnStatus    = ANSC_STATUS_SUCCESS;
     /* Assume the parameter settings are committed immediately. */
     /*g_pComponent_Common_Dm->LogEnable = CommonDm.LogEnable;

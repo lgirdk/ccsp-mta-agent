@@ -76,6 +76,7 @@
 #include "cosa_x_cisco_com_mta_internal.h"
 #include "mta_hal.h"
 #include <sysevent/sysevent.h>
+#include "syscfg/syscfg.h"
 
 #define MAX_BUFF_SIZE 128
 static int sysevent_fd;
@@ -108,7 +109,6 @@ CosaMTACreate
      void
     )
 {
-    
     PCOSA_DATAMODEL_MTA          pMyObject    = (PCOSA_DATAMODEL_MTA)NULL;
 
     /*
@@ -142,8 +142,8 @@ ANSC_STATUS ConverStr2Hex(unsigned char buffer[])
 	int i = 0, len = 0;
 	char 	tbuffer [ 64 ] = { 0 };
         errno_t rc = -1;
-			len = strlen(buffer);
-                        rc = strcpy_s(tbuffer,sizeof(tbuffer), buffer);
+			len = strlen((const char*)buffer);
+                        rc = strcpy_s(tbuffer,sizeof(tbuffer), (const char*)buffer);
                         if(rc != EOK)
                         {
                             ERR_CHK(rc);
@@ -181,7 +181,6 @@ CosaMTAInitializeEthWanProvDhcpOption
         ANSC_HANDLE                 hThisObject
     )
 {
-
 	 MTA_IP_TYPE_TR ip_type;
 	 char 	buffer [ MAX_BUFF_SIZE ] = { 0 };
 	 int	MtaIPMode = 0,IP_Pref_Mode_Received=0;
@@ -293,7 +292,8 @@ CosaMTAInitializeEthWanProvDhcpOption
                 ERR_CHK(rc);
 		if (Ipv4_Primary[0] != '\0' )
 			{
-                                rc = strcpy_s(buffer, sizeof(buffer), Ipv4_Primary);
+                                char* pIpv4Primary = Ipv4_Primary;
+                                rc = strcpy_s(buffer, sizeof(buffer), pIpv4Primary);
                                 if(rc != EOK)
                                 {
                                     ERR_CHK(rc);
@@ -310,11 +310,11 @@ CosaMTAInitializeEthWanProvDhcpOption
 					len = strlen(buffer);
 					CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 					if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
-					{       
+				        {       
                                                 /* Coverity Fix CID:121023 Incompatible type */
 						if(ConverStr2Hex((unsigned char *)buffer) == ANSC_STATUS_SUCCESS)
-						{
-							for(i = 0,j= 0;i<len; i++,j++)
+                                                {
+                                                        for(i = 0,j= 0;i<len; i++,j++)
 							{
 								if(j<MTA_DHCPOPTION122SUBOPTION1_MAX)
 								{
@@ -339,7 +339,8 @@ CosaMTAInitializeEthWanProvDhcpOption
                         ERR_CHK(rc);
 			if (Ipv4_Secondary[0] != '\0' )
 			{
-                               rc = strcpy_s(buffer, sizeof(buffer), Ipv4_Secondary);
+                               char* pIpv4Secondary = Ipv4_Secondary;
+                               rc = strcpy_s(buffer, sizeof(buffer), pIpv4Secondary);
                                if(rc != EOK)
                                {
                                    ERR_CHK(rc);
@@ -386,7 +387,8 @@ CosaMTAInitializeEthWanProvDhcpOption
                                 ERR_CHK(rc);
 			if ( Ipv6_Primary[0] != '\0' ) 
 			{
-                                rc = strcpy_s(buffer, sizeof(buffer), Ipv6_Primary);
+                                char* pIpv6Primary = Ipv6_Primary;
+                                rc = strcpy_s(buffer, sizeof(buffer), pIpv6Primary);
                                 if(rc != EOK)
                                 {
                                     ERR_CHK(rc);
@@ -414,7 +416,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 								for(i = 0,j= 0;i<len; i++,j++)
 										{
 								if(j<MTA_DHCPOPTION122CCCV6DSSID1_MAX)
-								{       /*Coverity Fix CID:120994 EVALUTION_ORDER */
+							        {       /*Coverity Fix CID:120994 EVALUTION_ORDER */
                                                                         x = buffer[i]<<4;
                                                                          y = buffer[++i];
 									pMtaProv->DhcpOption2171CccV6DssID1[j] |= x + y;
@@ -438,7 +440,8 @@ CosaMTAInitializeEthWanProvDhcpOption
                                 ERR_CHK(rc);
 			if ( Ipv6_Secondary[0] != '\0' )   
 			{
-                                rc = strcpy_s(buffer, sizeof(buffer), Ipv6_Secondary);
+                                char* pIpv6Secondary = Ipv6_Secondary;
+                                rc = strcpy_s(buffer, sizeof(buffer), pIpv6Secondary);
                                 if(rc != EOK)
                                 {
                                     ERR_CHK(rc);
@@ -456,7 +459,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 					len = strlen(buffer);
 					CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 					if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
-				      {	        /* Coverity Fix CID:121023 Incompatible type */
+	                                {	        /* Coverity Fix CID:121023 Incompatible type */
 						if(ConverStr2Hex((unsigned char *)buffer) == ANSC_STATUS_SUCCESS)
 						{
 							printf("Buffer is %s\n",buffer);
@@ -464,10 +467,10 @@ CosaMTAInitializeEthWanProvDhcpOption
 							{
 								if(j<MTA_DHCPOPTION122CCCV6DSSID2_MAX)
 								{
-                                                                        x =buffer[i]<<4;
+                                                                       x =buffer[i]<<4;
                                                                         y = buffer[++i];
 									pMtaProv->DhcpOption2171CccV6DssID2[j] |= x + y;
-								}
+							}
 								else
 									break;
 							}
@@ -501,11 +504,12 @@ CosaMTAInitializeEthWanProvDhcpOption
                 free(pMtaProv);
      #endif
      free(pMtaProv);
+     return ANSC_STATUS_SUCCESS;
 }
 
 void WaitForDhcpOption()
 {
- unsigned char dhcp_option[10] = {0};
+ char dhcp_option[10] = {0};
  int count=0;
  errno_t rc = -1;
  int ind = -1;
@@ -516,7 +520,7 @@ void WaitForDhcpOption()
 	rc = memset_s(dhcp_option, sizeof(dhcp_option), 0, sizeof(dhcp_option));
         ERR_CHK(rc);
 	sysevent_get(sysevent_fd, sysevent_token, "dhcp_mta_option", dhcp_option, sizeof(dhcp_option));
-        rc  = strcmp_s(dhcp_option, sizeof(dhcp_option), "received", &ind);
+        rc  = strcmp_s((const char*)dhcp_option, sizeof(dhcp_option), "received", &ind);
         ERR_CHK(rc);
 	if ((ind == 0) && (rc == EOK))
 	{
@@ -532,15 +536,14 @@ void WaitForDhcpOption()
 
 /*Coverity Fix CID 121026 Arg Type MisMatch */
 void * Mta_Sysevent_thread_Dhcp_Option( void * hThisObject)
-
 {
 
  PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
 
- unsigned char current_wan_state[10] = {0}, dhcp_option[10] = {0};
+ char current_wan_state[10] = {0}, dhcp_option[10] = {0};
 
  int err;
- unsigned char name[25]={0}, val[10]={0};
+ char name[25]={0}, val[10]={0};
  errno_t rc = -1;
  int ind = -1;
  async_id_t getnotification_asyncid;
@@ -554,11 +557,11 @@ void * Mta_Sysevent_thread_Dhcp_Option( void * hThisObject)
  sysevent_get(sysevent_fd, sysevent_token, "current_wan_state", current_wan_state, sizeof(current_wan_state));
  sysevent_get(sysevent_fd, sysevent_token, "dhcp_mta_option", dhcp_option, sizeof(dhcp_option));
 
- rc = strcmp_s(current_wan_state, sizeof(current_wan_state), "up", &ind);
+ rc = strcmp_s((const char*)current_wan_state, sizeof(current_wan_state), "up", &ind);
  ERR_CHK(rc);
  if((rc == EOK) && (ind == 0))
  {
-     rc = strcmp_s(dhcp_option, sizeof(dhcp_option), "received", &ind);
+     rc = strcmp_s((const char*)dhcp_option, sizeof(dhcp_option), "received", &ind);
      ERR_CHK(rc);
      if((rc == EOK) && (ind == 0))
      {
@@ -589,11 +592,11 @@ void * Mta_Sysevent_thread_Dhcp_Option( void * hThisObject)
     if (!err)
     {
         CcspTraceWarning(("%s Recieved notification event  %s, state %s\n",__FUNCTION__,name,val));
-        rc = strcmp_s(name, sizeof(name), "current_wan_state", &ind);
+        rc = strcmp_s((const char*)name, sizeof(name), "current_wan_state", &ind);
         ERR_CHK(rc);
         if((rc == EOK) && (ind == 0))
         {
-             rc = strcmp_s(val, sizeof(val), "up", &ind);
+             rc = strcmp_s((const char*)val, sizeof(val), "up", &ind);
              ERR_CHK(rc);
              if((rc == EOK) && (ind == 0))
              {
@@ -612,6 +615,7 @@ CosaMTAInitializeEthWanProv
     )
 {
 
+ ANSC_STATUS ret = ANSC_STATUS_SUCCESS;
  MTA_IP_TYPE_TR ip_type;
  char 	buffer [ 128 ] = { 0 };
  int	MtaIPMode = 0;
@@ -654,7 +658,7 @@ if(pMtaProv)
 			CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 
 					for(i = 0,j= 0;i<len; i++,j++)
@@ -692,13 +696,15 @@ if(pMtaProv)
 			CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
 						if(j<MTA_DHCPOPTION122SUBOPTION2_MAX)
 						{
-							pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+							unsigned char tmp = buffer[i];
+                                                        ++i;
+                                                        pMtaProv->DhcpOption122Suboption2[j] |= (unsigned char)((tmp << 4) + (buffer[i]));
 						}
 						else
 							break;
@@ -727,14 +733,16 @@ if(pMtaProv)
 			CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 
 					for(i = 0,j= 0;i<len; i++,j++)
 					{
 						if(j<MTA_DHCPOPTION122CCCV6DSSID1_MAX)
 						{
-							pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+							unsigned char tmp = buffer[i];
+                                                        ++i;
+                                                        pMtaProv->DhcpOption2171CccV6DssID1[j] |= (unsigned char)((tmp << 4) + (buffer[i]));
 						}
 						else
 							break;
@@ -765,13 +773,15 @@ if(pMtaProv)
 			CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, buffer, ip_type);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
 						if(j<MTA_DHCPOPTION122CCCV6DSSID2_MAX)
 						{
-							pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)(((buffer[i])<<4) + (buffer[++i]));
+							unsigned char tmp = buffer[i];
+                                                        ++i;
+                                                        pMtaProv->DhcpOption2171CccV6DssID2[j] |= (unsigned char)((tmp << 4) + (buffer[i]));
 						}
 						else
 							break;
@@ -804,6 +814,8 @@ if(pMtaProv)
 		}
                
      #endif
+     free(pMtaProv);
+     return ret;
 }
 else
 	{
@@ -850,14 +862,14 @@ if(pMtaProv)
 			len = strlen(buffer);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 
 					for(i = 0,j= 0;i<len; i++,j++)
 					{
 						if(j<MTA_DHCPOPTION122SUBOPTION1_MAX)
 						{
-                                                        x= buffer[i]<<4;
+                                                       x= buffer[i]<<4;
                                                         y= buffer[++i];
 							pMtaProv->DhcpOption122Suboption1[j] |= x + y;
 						}
@@ -892,11 +904,12 @@ if(pMtaProv)
 			len = strlen(buffer);
 			if((MtaIPMode ==  MTA_IPV4) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
 						if(j<MTA_DHCPOPTION122SUBOPTION2_MAX)
+
 						{     
                                                         x=buffer[i]<<4;
                                                           y =buffer[++i];
@@ -935,7 +948,7 @@ if(pMtaProv)
 			len = strlen(buffer);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 
 					for(i = 0,j= 0;i<len; i++,j++)
@@ -979,7 +992,7 @@ if(pMtaProv)
 			len = strlen(buffer);
 			if((MtaIPMode == MTA_IPV6) || (MtaIPMode == MTA_DUAL_STACK))
 			{
-				if(ConverStr2Hex(buffer) == ANSC_STATUS_SUCCESS)
+				if(ConverStr2Hex((unsigned char*)buffer) == ANSC_STATUS_SUCCESS)
 				{
 			   		for(i = 0,j= 0;i<len; i++,j++)
 					{
@@ -988,7 +1001,7 @@ if(pMtaProv)
                                                         x= buffer[i]<<4;
                                                         y =buffer[++i];
 							pMtaProv->DhcpOption2171CccV6DssID2[j] |= x + y;
-						}
+                                                }
 						else
 							break;
 					}
@@ -1034,7 +1047,6 @@ EXIT:
 }
 /*CID 121026 Argument Type mismatch*/
 void * Mta_Sysevent_thread(void *  hThisObject)
-
 {
 
  PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
@@ -1046,14 +1058,14 @@ void * Mta_Sysevent_thread(void *  hThisObject)
 
 #if defined(INTEL_PUMA7)
          //Intel SDK 7.2 Proposed Bug Fix: Prevent CCSP MTA Crash when erouter is in IPv6 mode
-         unsigned char wan_status[10] = {0};
+         char wan_status[10] = {0};
 #else
-         unsigned char current_wan_state[10] = {0};
+         char current_wan_state[10] = {0};
 #endif
 
         async_id_t getnotification_asyncid;
           int err;
-          unsigned char name[25]={0}, val[10]={0};
+          char name[25]={0}, val[10]={0};
           int namelen=0, vallen=0;
           errno_t rc = -1;
           int ind = -1;
@@ -1066,7 +1078,7 @@ void * Mta_Sysevent_thread(void *  hThisObject)
  
 
          sysevent_get(sysevent_fd, sysevent_token, "wan-status", wan_status, sizeof(wan_status));
-         rc = strcmp_s(wan_status, sizeof(wan_status), "started", &ind);
+         rc = strcmp_s((const char*)wan_status, sizeof(wan_status), "started", &ind);
          ERR_CHK(rc);
          if((rc == EOK) && (ind == 0))
          {
@@ -1081,7 +1093,7 @@ void * Mta_Sysevent_thread(void *  hThisObject)
          sysevent_setnotification(sysevent_fd, sysevent_token, "current_wan_state",  &wan_state_asyncid);
 
          sysevent_get(sysevent_fd, sysevent_token, "current_wan_state", current_wan_state, sizeof(current_wan_state));
-         rc = strcmp_s(current_wan_state, sizeof(current_wan_state), "up", &ind);
+         rc = strcmp_s((const char*)current_wan_state, sizeof(current_wan_state), "up", &ind);
          ERR_CHK(rc);
          if((rc == EOK) && (ind == 0))
          {
@@ -1106,20 +1118,20 @@ void * Mta_Sysevent_thread(void *  hThisObject)
 #if defined(INTEL_PUMA7)
                         //Intel SDK 7.2 Proposed Bug Fix: Prevent CCSP MTA Crash when erouter is in IPv6 mode
                         CcspTraceWarning(("%s Recieved notification event  %s, status %s\n",__FUNCTION__,name,val));
-                        rc = strcmp_s(name, sizeof(name), "wan_status", &ind);
+                        rc = strcmp_s((const char*)name, sizeof(name), "wan_status", &ind);
                         ERR_CHK(rc);
                         if((rc == EOK) && ( ind == 0))
                         {
-                            rc = strcmp_s(val, sizeof(val), "started", &ind);
+                            rc = strcmp_s((const char*)val, sizeof(val), "started", &ind);
                             ERR_CHK(rc);
                         }
 #else
                         CcspTraceWarning(("%s Recieved notification event  %s, state %s\n",__FUNCTION__,name,val));
-                        rc = strcmp_s(name, sizeof(name), "current_wan_state", &ind);
+                        rc = strcmp_s((const char*)name, sizeof(name), "current_wan_state", &ind);
                         ERR_CHK(rc);
                         if((rc == EOK) && ( ind == 0))
                         {
-                            rc = strcmp_s(val, sizeof(val), "up", &ind);
+                            rc = strcmp_s((const char*)val, sizeof(val), "up", &ind);
                             ERR_CHK(rc);
                         }
                             
@@ -1170,7 +1182,6 @@ CosaMTAInitialize
 {
     ANSC_STATUS                  returnStatus = ANSC_STATUS_SUCCESS;
     PCOSA_DATAMODEL_MTA          pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
-    char isEthEnabled[64]={'\0'};
     /* Initiation all functions */
 
     /* Initialize middle layer for Device.DeviceInfo.  */
@@ -1182,7 +1193,7 @@ CosaMTAInitialize
     }
 
    #ifdef ENABLE_ETH_WAN
-
+   char isEthEnabled[64]={'\0'};
    if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) && ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
         {
         	sysevent_fd = sysevent_open("127.0.0.1", SE_SERVER_WELL_KNOWN_PORT, SE_VERSION, "WAN State", &sysevent_token);
