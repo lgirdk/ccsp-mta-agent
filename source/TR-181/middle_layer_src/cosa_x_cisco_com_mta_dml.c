@@ -75,6 +75,7 @@
 
 #include "ccsp_base_api.h"
 #include "messagebus_interface_helper.h"
+#include "syscfg/syscfg.h"
 
 extern ULONG g_currentBsUpdate;
 
@@ -180,7 +181,9 @@ X_CISCO_COM_MTA_V6_GetParamUlongValue
         ULONG*                      puLong
     )
 {
-    COSA_MTA_DHCPv6_INFO              Info = {0};
+    UNREFERENCED_PARAMETER(hInsContext);
+    COSA_MTA_DHCPv6_INFO              Info;
+    memset(&Info, 0, sizeof(COSA_MTA_DHCPv6_INFO));
 
     /* collect value */
     if (CosaDmlMTAGetDHCPV6Info(NULL, &Info) != ANSC_STATUS_SUCCESS)
@@ -192,6 +195,7 @@ X_CISCO_COM_MTA_V6_GetParamUlongValue
 
         return TRUE;
     }
+    return FALSE;
 }
 
 /**********************************************************************  
@@ -241,7 +245,10 @@ X_CISCO_COM_MTA_V6_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
-    COSA_MTA_DHCPv6_INFO              Info = {0};
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(pUlSize);
+    COSA_MTA_DHCPv6_INFO              Info;
+    memset(&Info, 0, sizeof(COSA_MTA_DHCPv6_INFO));
 
     /* collect value */
     if (CosaDmlMTAGetDHCPV6Info(NULL, &Info) != ANSC_STATUS_SUCCESS)
@@ -409,6 +416,10 @@ X_CISCO_COM_MTA_V6_Validate
         ULONG*                      puLength
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(pReturnParamName);
+    UNREFERENCED_PARAMETER(puLength);
+
     return TRUE;
 }
 
@@ -440,6 +451,7 @@ X_CISCO_COM_MTA_V6_Commit
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -472,6 +484,7 @@ X_CISCO_COM_MTA_V6_Rollback
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -532,6 +545,7 @@ X_CISCO_COM_MTA_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     PCOSA_DML_MTA_LOG               pCfg          = (PCOSA_DML_MTA_LOG   )&pMyObject->MtaLog;
@@ -661,6 +675,10 @@ X_CISCO_COM_MTA_GetParamIntValue
     /* check the parameter name and return the corresponding value */
 
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pInt);
+
     return FALSE;
 }
 
@@ -702,7 +720,9 @@ X_CISCO_COM_MTA_GetParamUlongValue
         ULONG*                      puLong
     )
 {
-    COSA_MTA_DHCP_INFO              Info = {0};
+    UNREFERENCED_PARAMETER(hInsContext);
+    COSA_MTA_DHCP_INFO              Info;
+    memset(&Info, 0, sizeof(COSA_MTA_DHCP_INFO));
 
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
@@ -922,7 +942,10 @@ X_CISCO_COM_MTA_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
-    COSA_MTA_DHCP_INFO              Info = {0};
+    UNREFERENCED_PARAMETER(hInsContext);
+    COSA_MTA_DHCP_INFO              Info;
+    memset(&Info, 0, sizeof(COSA_MTA_DHCP_INFO));
+
     errno_t                         rc   = -1;
     int                             ind  = -1;
     
@@ -1111,6 +1134,7 @@ X_CISCO_COM_MTA_SetParamBoolValue
         BOOL                        bValue
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     PCOSA_DML_MTA_LOG               pCfg          = (PCOSA_DML_MTA_LOG   )&pMyObject->MtaLog;
@@ -1227,6 +1251,10 @@ X_CISCO_COM_MTA_SetParamIntValue
     /* check the parameter name and set the corresponding value */
 
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(iValue);
+
     return FALSE;
 }
 
@@ -1268,6 +1296,7 @@ X_CISCO_COM_MTA_SetParamUlongValue
         ULONG                       uValue
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     errno_t                         rc            = -1;
@@ -1347,6 +1376,10 @@ X_CISCO_COM_MTA_SetParamStringValue
     /* check the parameter name and set the corresponding value */
 
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pString);
+
     return FALSE;
 }
 
@@ -1388,6 +1421,10 @@ X_CISCO_COM_MTA_Validate
         ULONG*                      puLength
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(pReturnParamName);
+    UNREFERENCED_PARAMETER(puLength);
+
     return TRUE;
 }
 
@@ -1419,6 +1456,7 @@ X_CISCO_COM_MTA_Commit
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
 
@@ -1457,6 +1495,7 @@ X_CISCO_COM_MTA_Rollback
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_PKTC                  pPktc         = (PCOSA_MTA_PKTC      )&pMyObject->Pktc;
     /*Coverity Fix CID:51944 CHECKED_RETURN */
@@ -1516,6 +1555,7 @@ LineTable_GetEntryCount
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA     )g_pCosaBEManager->hMTA;
     PCOSA_MTA_LINETABLE_INFO        pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
     ULONG                           ulCount;
@@ -1594,6 +1634,7 @@ LineTable_GetEntry
         ULONG*                      pInsNumber
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA     )g_pCosaBEManager->hMTA;
     PCOSA_MTA_LINETABLE_INFO        pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
 
@@ -1644,6 +1685,7 @@ LineTable_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     errno_t                         rc            = -1;
     int                             ind           = -1;
     /* check the parameter name and return the corresponding value */
@@ -1701,6 +1743,10 @@ LineTable_GetParamIntValue
     /* check the parameter name and return the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pInt);
+
     return FALSE;
 }
 
@@ -2059,6 +2105,10 @@ LineTable_SetParamIntValue
     /* check the parameter name and set the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(iValue);
+
     return FALSE;
 }
 
@@ -2103,6 +2153,10 @@ LineTable_SetParamUlongValue
     /* check the parameter name and set the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(uValue);
+
     return FALSE;
 }
 
@@ -2147,6 +2201,10 @@ LineTable_SetParamStringValue
     /* check the parameter name and set the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pString);
+
     return FALSE;
 }
 
@@ -2188,6 +2246,10 @@ LineTable_Validate
         ULONG*                      puLength
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(pReturnParamName);
+    UNREFERENCED_PARAMETER(puLength);
+
     return TRUE;
 }
 
@@ -2219,6 +2281,7 @@ LineTable_Commit
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -2251,6 +2314,7 @@ LineTable_Rollback
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -2310,7 +2374,8 @@ CALLP_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
-    COSA_MTA_CAPPL                  CALLP = {0};
+    COSA_MTA_CAPPL                  CALLP;
+    memset(&CALLP, 0, sizeof(COSA_MTA_CAPPL));
     PCOSA_MTA_LINETABLE_INFO        pInfo = (PCOSA_MTA_LINETABLE_INFO)hInsContext;
     ULONG                           nIndex = pInfo->InstanceNumber - 1;
     errno_t                         rc     = -1;
@@ -2418,6 +2483,7 @@ VQM_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
@@ -2473,6 +2539,7 @@ VQM_SetParamBoolValue
         BOOL                        bValue
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
@@ -2532,6 +2599,10 @@ VQM_Validate
         ULONG*                      puLength
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(pReturnParamName);
+    UNREFERENCED_PARAMETER(puLength);
+
     return TRUE;
 }
 
@@ -2563,6 +2634,7 @@ VQM_Commit
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -2595,6 +2667,7 @@ VQM_Rollback
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -3964,6 +4037,7 @@ ServiceClass_GetEntryCount
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     
     return pMyObject->ServiceClassNumber;
@@ -4007,6 +4081,7 @@ ServiceClass_GetEntry
         ULONG*                      pInsNumber
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if (nIndex < pMyObject->ServiceClassNumber)
@@ -4047,6 +4122,7 @@ ServiceClass_IsUpdated
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if ( !pMyObject->ServiceClassUpdateTime ) 
@@ -4096,6 +4172,7 @@ ServiceClass_Synchronize
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
 
@@ -4170,6 +4247,7 @@ ServiceClass_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     PCOSA_MTA_SERVICE_CLASS         pServiceClass = (PCOSA_MTA_SERVICE_CLASS)&pMyObject->pServiceClass;
     errno_t                         rc            = -1;
@@ -4237,6 +4315,7 @@ ServiceFlow_GetEntryCount
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     
     return pMyObject->ServiceFlowNumber;
@@ -4280,6 +4359,7 @@ ServiceFlow_GetEntry
         ULONG*                      pInsNumber
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if (nIndex < pMyObject->ServiceFlowNumber)
@@ -4320,6 +4400,7 @@ ServiceFlow_IsUpdated
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if ( !pMyObject->ServiceFlowUpdateTime ) 
@@ -4369,6 +4450,7 @@ ServiceFlow_Synchronize
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
 
@@ -4827,6 +4909,10 @@ Dect_GetParamIntValue
     /* check the parameter name and return the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pInt);
+
     return FALSE;
 }
 
@@ -4868,7 +4954,7 @@ Dect_GetParamUlongValue
         ULONG*                      puLong
     )
 {
-    PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
+    UNREFERENCED_PARAMETER(hInsContext);
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
@@ -5179,6 +5265,10 @@ Dect_Validate
         ULONG*                      puLength
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(pReturnParamName);
+    UNREFERENCED_PARAMETER(puLength);
+
     return TRUE;
 }
 
@@ -5210,6 +5300,7 @@ Dect_Commit
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -5242,6 +5333,7 @@ Dect_Rollback
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -5294,6 +5386,7 @@ Handsets_GetEntryCount
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA    )g_pCosaBEManager->hMTA;
     return pMyObject->HandsetsNumber;
 }
@@ -5336,6 +5429,7 @@ Handsets_GetEntry
         ULONG*                      pInsNumber
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if (nIndex < pMyObject->HandsetsNumber)
@@ -5355,6 +5449,7 @@ Handsets_IsUpdated
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if ( !pMyObject->HandsetsUpdateTime ) 
@@ -5382,6 +5477,7 @@ Handsets_Synchronize
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
 
@@ -5508,6 +5604,10 @@ Handsets_GetParamIntValue
     /* check the parameter name and return the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pInt);
+
     return FALSE;
 }
 
@@ -5552,6 +5652,10 @@ Handsets_GetParamUlongValue
     /* check the parameter name and return the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(puLong);
+
     return FALSE;
 }
 
@@ -5729,6 +5833,10 @@ Handsets_SetParamBoolValue
     /* check the parameter name and set the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(bValue);
+
     return FALSE;
 }
 
@@ -5773,6 +5881,10 @@ Handsets_SetParamIntValue
     /* check the parameter name and set the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(iValue);
+
     return FALSE;
 }
 
@@ -5817,6 +5929,10 @@ Handsets_SetParamUlongValue
     /* check the parameter name and set the corresponding value */
 
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(uValue);
+
     return FALSE;
 }
 
@@ -5920,6 +6036,10 @@ Handsets_Validate
         ULONG*                      puLength
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(pReturnParamName);
+    UNREFERENCED_PARAMETER(puLength);
+
     return TRUE;
 }
 
@@ -5987,6 +6107,7 @@ Handsets_Rollback
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     return 0;
 }
 
@@ -6031,6 +6152,7 @@ DSXLog_GetEntryCount
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     
     return pMyObject->DSXLogNumber;
@@ -6074,6 +6196,7 @@ DSXLog_GetEntry
         ULONG*                      pInsNumber
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if (nIndex < pMyObject->DSXLogNumber)
@@ -6114,6 +6237,7 @@ DSXLog_IsUpdated
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if ( !pMyObject->DSXLogUpdateTime ) 
@@ -6163,6 +6287,7 @@ DSXLog_Synchronize
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject    = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
 
@@ -6390,6 +6515,7 @@ MTALog_GetEntryCount
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     
     return pMyObject->MtaLogNumber;
@@ -6433,6 +6559,7 @@ MTALog_GetEntry
         ULONG*                      pInsNumber
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if (nIndex < pMyObject->MtaLogNumber)
@@ -6473,6 +6600,7 @@ MTALog_IsUpdated
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if ( !pMyObject->MtaLogUpdateTime ) 
@@ -6522,6 +6650,7 @@ MTALog_Synchronize
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     ANSC_STATUS                     ret       = ANSC_STATUS_SUCCESS;
     ULONG                           i         = 0;
@@ -6768,6 +6897,7 @@ DECTLog_GetEntryCount
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     
     return pMyObject->DectLogNumber;
@@ -6811,6 +6941,7 @@ DECTLog_GetEntry
         ULONG*                      pInsNumber
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if (nIndex < pMyObject->DectLogNumber)
@@ -6851,6 +6982,7 @@ DECTLog_IsUpdated
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
 
     if ( !pMyObject->DectLogUpdateTime ) 
@@ -6900,6 +7032,7 @@ DECTLog_Synchronize
         ANSC_HANDLE                 hInsContext
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMyObject = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     ANSC_STATUS                     ret           = ANSC_STATUS_SUCCESS;
 
@@ -7141,6 +7274,7 @@ Battery_GetParamBoolValue
         BOOL*                       pBool
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
@@ -7203,6 +7337,10 @@ Battery_GetParamIntValue
     /* check the parameter name and return the corresponding value */
 
     /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    UNREFERENCED_PARAMETER(hInsContext);
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pInt);
+
     return FALSE;
 }
 
@@ -7244,6 +7382,7 @@ Battery_GetParamUlongValue
         ULONG*                      puLong
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
@@ -7356,6 +7495,7 @@ Battery_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA      pMTA   = (PCOSA_DATAMODEL_MTA)g_pCosaBEManager->hMTA;
     PCOSA_DML_BATTERY_INFO          pInfo = (PCOSA_DML_BATTERY_INFO)&pMTA->MtaBatteryInfo;
     errno_t                         rc    = -1;
@@ -7533,6 +7673,7 @@ X_RDKCENTRAL_COM_MTA_GetParamUlongValue
         ULONG*                      puLong
     )
 {
+        UNREFERENCED_PARAMETER(hInsContext);
         errno_t                         rc            = -1;
         int                             ind           = -1;
 
@@ -7620,6 +7761,7 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
+       UNREFERENCED_PARAMETER(hInsContext);
        errno_t                         rc            = -1;
        int                             ind           = -1;
 
@@ -7635,7 +7777,8 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
 		CosaDmlMtaGetLineRegisterStatus( acLineRegisterStatus );
         if ( AnscSizeOfString( acLineRegisterStatus ) < *pUlSize)
         {
-            rc = strcpy_s(pValue, *pUlSize, acLineRegisterStatus);
+            char* pAcLineRegisterStatus = acLineRegisterStatus;
+            rc = strcpy_s(pValue, *pUlSize, pAcLineRegisterStatus);
             if (rc != EOK)
             {
                 ERR_CHK(rc);
@@ -7697,6 +7840,7 @@ BOOL EthernetWAN_MTA_SetParamIntValue
         int                         pInt
     )
 {
+        UNREFERENCED_PARAMETER(hInsContext);
         errno_t                         rc            = -1;
         int                             ind           = -1;
 
@@ -7754,6 +7898,7 @@ EthernetWAN_MTA_GetParamIntValue
         int*                        pInt
     )
 {
+    UNREFERENCED_PARAMETER(hInsContext);
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
@@ -7795,6 +7940,7 @@ EthernetWAN_MTA_GetParamStringValue
     )
 {
   /* check the parameter name and return the corresponding value */
+    UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject         = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
     char                            isEthEnabled[64]  ={'\0'};
     errno_t                         rc                = -1;
@@ -7876,6 +8022,7 @@ EthernetWAN_MTA_SetParamStringValue
         char*                       pString
     )
 {
+          UNREFERENCED_PARAMETER(hInsContext);
           MTA_IP_TYPE_TR ip_type;
           PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA )g_pCosaBEManager->hMTA;
           char isEthEnabled[64]={'\0'};
@@ -8017,6 +8164,7 @@ EthernetWAN_MTA_SetParamStringValue
 
                       return TRUE;
                   }
+                 return FALSE;
 
            } else {
                 AnscTraceWarning(("Eth_wan not enabled : Invalid request\n"));
@@ -8035,6 +8183,7 @@ X_RDKCENTRAL_COM_MTA_GetParamBoolValue
         BOOL*                       pBool
     )
 { 
+        UNREFERENCED_PARAMETER(hInsContext);
         errno_t                         rc            = -1;
         int                             ind           = -1;
         rc = strcmp_s("pktcMtaDevResetNow", strlen("pktcMtaDevResetNow"), ParamName, &ind );
@@ -8056,6 +8205,7 @@ X_RDKCENTRAL_COM_MTA_SetParamBoolValue
         BOOL*                       pBool
     )
 {
+        UNREFERENCED_PARAMETER(hInsContext);
         errno_t                         rc            = -1;
         int                             ind           = -1;
 
@@ -8063,7 +8213,7 @@ X_RDKCENTRAL_COM_MTA_SetParamBoolValue
                ERR_CHK(rc);
                if((!ind) && (rc == EOK))
 	{
-		if(pBool == true)
+		if(pBool && *pBool)
 		{
 			if(	ANSC_STATUS_SUCCESS == CosaDmlMtaResetNow(pBool)	)
 			{

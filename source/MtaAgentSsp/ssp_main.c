@@ -68,16 +68,26 @@ PCCSP_CCD_INTERFACE             pPnmCcdIf               = (PCCSP_CCD_INTERFACE  
 PCCC_MBI_INTERFACE              pPnmMbiIf               = (PCCC_MBI_INTERFACE         )NULL;
 BOOL                            g_bActive               = FALSE;
 
+void
+CcspBaseIf_deadlock_detection_log_print
+(
+    int sig
+);
+
+int 
+GetLogInfo
+(
+    ANSC_HANDLE bus_handle,
+    char *Subsytem,
+    char *pParameterName
+);
+
 int  cmd_dispatch(int  command)
 {
-    ULONG                           ulInsNumber        = 0;
-    parameterValStruct_t            val[3]             = {0};
     char*                           pParamNames[]      = {"Device.X_CISCO_COM_MTA."};
     parameterValStruct_t**          ppReturnVal        = NULL;
-    parameterInfoStruct_t**         ppReturnValNames   = NULL;
-    parameterAttributeStruct_t**    ppReturnvalAttr    = NULL;
-    ULONG                           ulReturnValCount   = 0;
-    ULONG                           i                  = 0;
+    int                             ulReturnValCount   = 0;
+    int                             i                  = 0;
 
     switch ( command )
     {
@@ -202,7 +212,6 @@ static void _print_stack_backtrace(void)
 
 #if defined(_ANSC_LINUX)
 static void daemonize(void) {
-	int fd;
 	switch (fork()) {
 	case 0:
 		break;
@@ -301,6 +310,7 @@ void sig_handler(int sig)
     }
 }
 
+#ifndef INCLUDE_BREAKPAD
 static int is_core_dump_opened(void)
 {
     FILE *fp;
@@ -328,6 +338,7 @@ static int is_core_dump_opened(void)
     fclose(fp);
     return 0;
 }
+#endif
 
 int write_pid_file(const char *file)
 {
@@ -347,12 +358,9 @@ int write_pid_file(const char *file)
 
 int main(int argc, char* argv[])
 {
-    ANSC_STATUS                     returnStatus       = ANSC_STATUS_SUCCESS;
     int                             cmdChar            = 0;
     BOOL                            bRunAsDaemon       = TRUE;
     int                             idx                = 0;
-    char                            cmd[1024]          = {0};
-    FILE                           *fd                 = NULL;
     DmErr_t                         err;
     char                            *subSys            = NULL;
     extern ANSC_HANDLE bus_handle;

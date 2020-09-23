@@ -808,6 +808,21 @@ ANSC_STATUS UpdateJsonParam
                 char*                   pSource,
                 char*                   pCurrentTime
     );
+
+ANSC_STATUS
+CosaDmlMTADectRegisterDectHandset
+    (
+        ANSC_HANDLE                 hContext,
+        ULONG                       uValue
+    );
+
+ANSC_STATUS
+CosaDmlMTADectDeregisterDectHandset
+    (
+        ANSC_HANDLE                 hContext,
+        ULONG                       uValue
+    );
+
 #endif /* _COSA_MTA_APIS_H */
 
 //#endif /* CONFIG_TI_PACM */

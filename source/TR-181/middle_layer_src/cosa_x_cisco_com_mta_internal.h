@@ -131,5 +131,11 @@ CosaMTARemove
         ANSC_HANDLE                 hThisObject
     );
 
+ANSC_STATUS
+CosaSetMTAHal
+    (
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro
+    );
+
 #endif
 // #endif

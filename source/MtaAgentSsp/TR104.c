@@ -16,6 +16,7 @@ int mta_hal_getTR104parameterNames(char ***parameterNamesList, int *parameterLis
 char MTA_status[4][20] = {"MTA_INIT", "MTA_START", "MTA_COMPLETE", "MTA_ERROR"};
 #define MTA_COMPLETE "MTA_COMPLETE"
 
+
 /* This function is to return ParamValue for all the elements in this partial path Query */
 rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inProperty, rbusGetHandlerOptions_t* opts)
 {
