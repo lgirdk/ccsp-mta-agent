@@ -200,7 +200,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 
 	 PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
          /*Coverity Fix CID 120992  NULL Check */
-	 if((pMyObject->pmtaprovinfo = (PCOSA_MTA_ETHWAN_PROV_INFO)AnscAllocateMemory(sizeof(COSA_MTA_ETHWAN_PROV_INFO))) == NULL);
+	 if((pMyObject->pmtaprovinfo = (PCOSA_MTA_ETHWAN_PROV_INFO)AnscAllocateMemory(sizeof(COSA_MTA_ETHWAN_PROV_INFO))) == NULL)
          {
              CcspTraceWarning(("%s:pMyObject->pmtaprovinfo attained NULL\n",__FUNCTION__));
               free(pMtaProv);
@@ -1015,7 +1015,7 @@ if(pMtaProv)
 			status = ANSC_STATUS_FAILURE;
 		}
                 free(pMtaProv);
-              
+                pMtaProv = NULL;              
 #endif
 }
 else
