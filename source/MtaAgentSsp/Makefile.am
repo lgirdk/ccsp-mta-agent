@@ -28,4 +28,4 @@ hardware_platform = i686-linux-gnu
 bin_PROGRAMS = CcspMtaAgentSsp
 CcspMtaAgentSsp_CPPFLAGS = -I$(top_srcdir)/source/TR-181/board_sbapi -I$(top_srcdir)/source/TR-181/middle_layer_src -I$(top_srcdir)/source/TR-181/include -I$(top_srcdir)/source/Custom $(CPPFLAGS)
 CcspMtaAgentSsp_SOURCES = ssp_messagebus_interface.c TR104.c ssp_main.c ssp_action.c dm_pack_datamodel.c
-CcspMtaAgentSsp_LDFLAGS = -lccsp_common -lhal_mta
+CcspMtaAgentSsp_LDFLAGS = -lccsp_common -lhal_mta -lsyscfg

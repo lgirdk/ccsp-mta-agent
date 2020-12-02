@@ -50,6 +50,7 @@
 #endif
 //#include <docsis_ext_interface.h>
 #include "safec_lib_common.h"
+#include "syscfg/syscfg.h"
 
 #define DEBUG_INI_NAME  "/etc/debug.ini"
 #ifdef MTA_TR104SUPPORT
@@ -520,13 +521,30 @@ int main(int argc, char* argv[])
     CcspTraceInfo(("TR104 does not supports in this build\n"));
 #endif
     cmd_dispatch('e');
-
-	#ifndef DISABLE_LOGAGENT
-	RDKLogEnable = GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
-	RDKLogLevel = (char)GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
-	MTA_RDKLogLevel = GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_MTA_LogLevel");
-	MTA_RDKLogEnable = (char)GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_MTA_LoggerEnable");
-	#endif
+    
+    syscfg_init();
+    CcspTraceInfo(("MTA_DBG:-------Read Log Info\n"));
+    char buffer[5] = {0};
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_LoggerEnable" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        RDKLogEnable = (BOOL)atoi(buffer);
+    }
+    memset(buffer, 0, sizeof(buffer));
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_LogLevel" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        RDKLogLevel = (ULONG )atoi(buffer);
+    }
+    memset(buffer, 0, sizeof(buffer));
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_MTA_LogLevel" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        MTA_RDKLogLevel = (ULONG)atoi(buffer);
+    }
+    memset(buffer, 0, sizeof(buffer));
+    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_MTA_LoggerEnable" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
+    {
+        MTA_RDKLogEnable = (BOOL)atoi(buffer);
+    }
+    CcspTraceInfo(("MTA_DBG:-------Log Info values RDKLogEnable:%d,RDKLogLevel:%u,MTA_RDKLogLevel:%u,MTA_RDKLogEnable:%d\n",RDKLogEnable,RDKLogLevel,MTA_RDKLogLevel, MTA_RDKLogEnable ));
 // printf("Calling Docsis\n");
 
     // ICC_init();
