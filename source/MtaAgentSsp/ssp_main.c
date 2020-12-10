@@ -52,12 +52,12 @@
 #include "safec_lib_common.h"
 
 #define DEBUG_INI_NAME  "/etc/debug.ini"
-
-
-
 #ifdef MTA_TR104SUPPORT
 #include "TR104.h"
+#include "syscfg/syscfg.h"
+#define TR104_ENABLE "TR104Enable"
 #endif
+
 PDSLH_CPE_CONTROLLER_OBJECT     pDslhCpeController      = NULL;
 PCOMPONENT_COMMON_DM            g_pComponent_Common_Dm  = NULL;
 char                            g_Subsystem[32]         = {0};
@@ -473,7 +473,52 @@ int main(int argc, char* argv[])
     printf("Registering PCD exception handler CcspMTAAgent\n");
     PCD_api_register_exception_handlers( argv[0], NULL );
 #endif
-
+#ifdef MTA_TR104SUPPORT
+    int retry=0;
+    rc = syscfg_init();
+    CcspTraceInfo(("rc of syscfg_init %d\n",rc));
+    while(rc && retry<5)
+    {
+        sleep(10);
+        retry++;
+        rc = syscfg_init();
+        CcspTraceInfo(("rc of syscfg_init %d\n",rc));
+    }
+    CcspTraceInfo(("TR104 supports in this build\n"));
+    char value[8] = {'\0'};
+    retry=0;
+    while(retry<5)
+    {
+        if( syscfg_get(NULL, TR104_ENABLE, value, sizeof(value)) == 0 )
+        {
+            if( strcmp(value, "true") == 0 )
+            {
+                if ( CCSP_Msg_IsRbus_enabled() )
+                {
+                    CcspTraceInfo(("RFC for TR104 is true\n"));
+                    err = TR104_open();
+                    CcspTraceInfo(("TR104_open returned %d\n", err));
+                }
+                else
+                {
+                    CcspTraceInfo(("TR104 will be available only in rbus mode\n"));
+                }
+            }
+            else
+            {
+                CcspTraceInfo(("RFC for TR104 is false \n"));
+            }
+            break;
+        }
+        else
+        {
+            CcspTraceError(("syscfg_get is failed\n"));
+            retry++;
+        }
+    }
+#else
+    CcspTraceInfo(("TR104 does not supports in this build\n"));
+#endif
     cmd_dispatch('e');
 
 	#ifndef DISABLE_LOGAGENT
@@ -498,7 +543,6 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Cdm_Init: %s\n", Cdm_StrError(err));
         exit(1);
     }
-
     system("touch /tmp/mta_initialized");
 
     CcspTraceWarning(("RDKB_SYSTEM_BOOT_UP_LOG : Entering MTA loop\n"));
