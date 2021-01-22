@@ -79,6 +79,10 @@
 #include "syscfg/syscfg.h"
 
 #define MAX_BUFF_SIZE 128
+#define MAX_IP_PREF_VAL 6
+#define MAX_IPV4_HEX_VAL 16
+#define MAX_IPV6_HEX_VAL 65
+
 static int sysevent_fd;
 static token_t sysevent_token;
 
@@ -140,7 +144,7 @@ ANSC_STATUS ConverStr2Hex(unsigned char buffer[])
 {
        /* Coverity Fix :CID 70174 Declare and Never Used */
 	int i = 0, len = 0;
-	char 	tbuffer [ 64 ] = { 0 };
+	char 	tbuffer [ MAX_IPV6_HEX_VAL ] = { 0 };
         errno_t rc = -1;
 			len = strlen((const char*)buffer);
                         rc = strcpy_s(tbuffer,sizeof(tbuffer), (const char*)buffer);
@@ -208,7 +212,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 	 rc = memset_s(pMyObject->pmtaprovinfo, sizeof(COSA_MTA_ETHWAN_PROV_INFO), 0, sizeof(COSA_MTA_ETHWAN_PROV_INFO));
          ERR_CHK(rc);
 
-	 char Ip_Pref [ 6 ] = { 0 }, Ipv4_Primary[16] = {0}, Ipv4_Secondary[16] = {0}, Ipv6_Primary[64] = {0} , Ipv6_Secondary[64] = {0};
+	 char Ip_Pref [MAX_IP_PREF_VAL] = { 0 }, Ipv4_Primary[MAX_IPV4_HEX_VAL] = {0}, Ipv4_Secondary[MAX_IPV4_HEX_VAL] = {0}, Ipv6_Primary[MAX_IPV6_HEX_VAL] = {0} , Ipv6_Secondary[MAX_IPV6_HEX_VAL] = {0};
 
          CosaMTAInitializeEthWanProvJournal(pMyObject->pmtaprovinfo);
 
@@ -218,11 +222,26 @@ CosaMTAInitializeEthWanProvDhcpOption
 	sysevent_get(sysevent_fd, sysevent_token, "MTA_DHCPv6_PrimaryAddress", Ipv6_Primary, sizeof(Ipv6_Primary));
 	sysevent_get(sysevent_fd, sysevent_token, "MTA_DHCPv6_SecondaryAddress", Ipv6_Secondary, sizeof(Ipv6_Secondary));
 
-    CcspTraceInfo(("%s MTA values returned from dhcp server are \n",__FUNCTION__));
+    	if ( Ip_Pref[MAX_IP_PREF_VAL-1] != '\0' )
+        	Ip_Pref[MAX_IP_PREF_VAL-1] = '\0' ;
 
-    CcspTraceInfo(("%s MTA_IP_PREF = %s \n",__FUNCTION__,Ip_Pref));
-    CcspTraceInfo(("%s MTA_DHCPv4_PrimaryAddress = %s,MTA_DHCPv4_SecondaryAddress = %s  \n",__FUNCTION__,Ipv4_Primary,Ipv4_Secondary));
-    CcspTraceInfo(("%s MTA_DHCPv6_PrimaryAddress = %s,MTA_DHCPv6_SecondaryAddress = %s  \n",__FUNCTION__,Ipv6_Primary,Ipv6_Secondary));
+    	if ( Ipv4_Primary[MAX_IPV4_HEX_VAL-1] != '\0' )
+        	Ipv4_Primary[MAX_IPV4_HEX_VAL-1] = '\0' ;
+
+    	if ( Ipv4_Secondary[MAX_IPV4_HEX_VAL-1] != '\0' )
+        	Ipv4_Secondary[MAX_IPV4_HEX_VAL-1] = '\0' ;
+
+    	if ( Ipv6_Primary[MAX_IPV6_HEX_VAL-1] != '\0' )
+        	Ipv6_Primary[MAX_IPV6_HEX_VAL-1] = '\0' ;
+
+    	if ( Ipv6_Secondary[MAX_IPV6_HEX_VAL-1] != '\0' )
+        	Ipv6_Secondary[MAX_IPV6_HEX_VAL-1] = '\0' ;
+
+    	CcspTraceInfo(("%s MTA values returned from dhcp server are \n",__FUNCTION__));
+
+    	CcspTraceInfo(("%s MTA_IP_PREF = %s \n",__FUNCTION__,Ip_Pref));
+    	CcspTraceInfo(("%s MTA_DHCPv4_PrimaryAddress = %s,MTA_DHCPv4_SecondaryAddress = %s  \n",__FUNCTION__,Ipv4_Primary,Ipv4_Secondary));
+    	CcspTraceInfo(("%s MTA_DHCPv6_PrimaryAddress = %s,MTA_DHCPv6_SecondaryAddress = %s  \n",__FUNCTION__,Ipv6_Primary,Ipv6_Secondary));
 
 	if ( ( 0 == strncmp(Ipv4_Primary,"00000000",8) ) || ( 0 == strncmp(Ipv6_Primary,"00000000",8) ) )
 	{
@@ -335,7 +354,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 				   }
 
 
-			rc = memset_s(pMtaProv->DhcpOption122Suboption2, sizeof(pMtaProv->DhcpOption122Suboption2), 0, MTA_DHCPOPTION122SUBOPTION2_MAX);
+			rc = memset_s(pMtaProv->DhcpOption122Suboption2, sizeof(pMtaProv->DhcpOption122Suboption2), 0, sizeof(pMtaProv->DhcpOption122Suboption2));
                         ERR_CHK(rc);
 			if (Ipv4_Secondary[0] != '\0' )
 			{
