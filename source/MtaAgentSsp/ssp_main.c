@@ -572,6 +572,10 @@ int main(int argc, char* argv[])
     }
     system("touch /tmp/mta_initialized");
 
+#ifdef ARRIS_XB3_PLATFORM_CHANGES
+    system("touch /rdklogs/logs/mtaEvents.log");
+#endif
+
     CcspTraceWarning(("RDKB_SYSTEM_BOOT_UP_LOG : Entering MTA loop\n"));
     printf("Entering MTA loop\n");
 
