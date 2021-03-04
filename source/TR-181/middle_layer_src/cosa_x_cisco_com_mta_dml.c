@@ -1559,39 +1559,56 @@ LineTable_GetEntryCount
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA     )g_pCosaBEManager->hMTA;
     PCOSA_MTA_LINETABLE_INFO        pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
     ULONG                           ulCount;
-    errno_t                         rc            = -1;
-    if ( pLineTable )
+
+    /*
+       Warning:
+
+       The lifetime of the pMyObject->pLineTable buffer is not very clear.
+       The buffer is allocated within LineTable_GetEntryCount() but used
+       (without NULL checks etc) elsewhere with no apparent synchronisation
+       to ensure that LineTable_GetEntryCount() is called first to allocate
+       the buffer before it's used.
+
+       In the upstream code upto rdkb-2020q2 a new buffer is allocated on
+       every call to LineTable_GetEntryCount() without any attempt to free
+       the original one (ie causing a memory leak). From rdkb-2020q3 upto at
+       least rdkb-2020q4, a fix has been added by Comcast to free the
+       original buffer before allocating a new one. However that still
+       leaves big concerns about the lifetime of the buffer and there have
+       been 3rd party reports that this has caused crashes (although details
+       of exactly how are not clear...).
+
+       To try to mitigate some of these concerns, the code has been updated
+       to allocate the buffer once and never free or reallocate it.
+
+       Warning: The new approach does not work if the number of lines can
+       change. CosaDmlMTALineTableGetNumberOfEntries() calls
+       mta_hal_LineTableGetNumberOfEntries() so more extensive updates will
+       be required on platforms where the HAL API doesn't simply return a
+       fixed constant. Fixme: more review required.
+    */
+
+    ulCount = CosaDmlMTALineTableGetNumberOfEntries (NULL);
+
+    fprintf(stderr, "### %s %d  ulCount=%ld\n", __func__, __LINE__, ulCount);
+
+    if ((pLineTable == NULL) && (ulCount != 0))
     {
-        if ( pLineTable->pCalls )
+        int i;
+
+        pLineTable = calloc (ulCount, sizeof(COSA_MTA_LINETABLE_INFO));
+        if (pLineTable == NULL)
         {
-            AnscFreeMemory(pLineTable->pCalls);
-            pLineTable->pCalls = NULL;
-        }
-        AnscFreeMemory(pLineTable);
-        pLineTable = NULL;
-        pMyObject->pLineTable = NULL;
-    }
-    ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
-fprintf(stderr, "### %s %d  ulCount=%ld\n", __func__, __LINE__, ulCount);
-    if ( ulCount != 0 )
-    {
-        pLineTable = AnscAllocateMemory(ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
-        if(pLineTable == NULL)
-        {
-            pMyObject->pLineTable = NULL;
             return 0;
         }
 
-        rc = memset_s( pLineTable, ulCount * sizeof(COSA_MTA_LINETABLE_INFO), 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
-        ERR_CHK(rc);
-       
+        for (i = 0; i < ulCount; i++)
+        {
+            pLineTable[i].InstanceNumber = i + 1;
+        }
 
-ULONG ul=0;
-for (ul=0; ul<ulCount; ul++) {
-pLineTable[ul].InstanceNumber = ul + 1;
-}
         pMyObject->pLineTable = pLineTable;
-    }    
+    }
 
     return ulCount;
 }
