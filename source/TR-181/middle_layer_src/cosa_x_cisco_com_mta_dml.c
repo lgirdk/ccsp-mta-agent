@@ -1576,12 +1576,12 @@ fprintf(stderr, "### %s %d  ulCount=%ld\n", __func__, __LINE__, ulCount);
     if ( ulCount != 0 )
     {
         pLineTable = AnscAllocateMemory(ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
-        
         if(pLineTable == NULL)
         {
-            pMyObject->pLineTable = pLineTable;
-            return ulCount;
+            pMyObject->pLineTable = NULL;
+            return 0;
         }
+
         rc = memset_s( pLineTable, ulCount * sizeof(COSA_MTA_LINETABLE_INFO), 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
         ERR_CHK(rc);
        
