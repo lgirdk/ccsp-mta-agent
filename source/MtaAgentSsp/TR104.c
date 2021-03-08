@@ -13,8 +13,8 @@ int mta_hal_getTR104parameterValues(char **parameterNamesList, int *parameterLis
 int mta_hal_freeTR104parameterValues(char **parameterValuesList, int  parameterListLen);
 int mta_hal_setTR104parameterValues(char **parameterValueList, int *parameterListLen);
 int mta_hal_getTR104parameterNames(char ***parameterNamesList, int *parameterListLen);
-char MTA_status[4][20] = {"MTA_INIT", "MTA_START", "MTA_COMPLETE", "MTA_ERROR"};
-#define MTA_COMPLETE "MTA_COMPLETE"
+char MTA_provision_status[2][20] = {"MTA_PROVISIONED", "MTA_NON_PROVISIONED"};
+#define MTA_PROVISIONED "MTA_PROVISIONED"
 
 
 /* This function is to return ParamValue for all the elements in this partial path Query */
@@ -27,15 +27,15 @@ rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inPro
     const char *pParamNameList = NULL;
     char **pParamValueList = NULL;
 
-    MTAMGMT_MTA_STATUS operationalStatus = 0;
-    if(mta_hal_getMtaOperationalStatus(&operationalStatus) != 0)
+    MTAMGMT_MTA_PROVISION_STATUS provisionStatus = 0;
+    if(mta_hal_getMtaProvisioningStatus(&provisionStatus) != 0)
     {
-        CcspTraceError(("%s mta_hal_getMtaOperationalStatus fail\n",__FUNCTION__));
+        CcspTraceError(("%s mta_hal_getMtaProvisioningStatus fail\n",__FUNCTION__));
         return RBUS_ERROR_DESTINATION_RESPONSE_FAILURE;
     }
-    if( strcmp(MTA_status[operationalStatus],MTA_COMPLETE) )
+    if( strcmp(MTA_provision_status[provisionStatus],MTA_PROVISIONED) )
     {
-        CcspTraceInfo(("%s operationalStatus = %s \n",__FUNCTION__,MTA_status[operationalStatus]));
+        CcspTraceInfo(("%s provisionStatus = %s \n",__FUNCTION__,MTA_provision_status[provisionStatus]));
         return RBUS_ERROR_ACCESS_NOT_ALLOWED;
     }
     pParamNameList = rbusProperty_GetName(inProperty);
@@ -147,15 +147,15 @@ rbusError_t TR104Services_GetHandler(rbusHandle_t handle, rbusProperty_t inPrope
     const char *pParamNameList = NULL;
     char **pParamValueList = NULL;
 
-    MTAMGMT_MTA_STATUS operationalStatus = 0;
-    if(mta_hal_getMtaOperationalStatus(&operationalStatus) != 0)
+    MTAMGMT_MTA_PROVISION_STATUS provisionStatus = 0;
+    if(mta_hal_getMtaProvisioningStatus(&provisionStatus) != 0)
     {
-        CcspTraceError(("%s mta_hal_getMtaOperationalStatus fail\n",__FUNCTION__));
+        CcspTraceError(("%s mta_hal_getMtaProvisioningStatus fail\n",__FUNCTION__));
         return RBUS_ERROR_DESTINATION_RESPONSE_FAILURE;
     }
-    if( strcmp(MTA_status[operationalStatus],MTA_COMPLETE) )
+    if( strcmp(MTA_provision_status[provisionStatus],MTA_PROVISIONED) )
     {
-        CcspTraceInfo(("%s operationalStatus = %s \n",__FUNCTION__, MTA_status[operationalStatus]));
+        CcspTraceInfo(("%s provisionStatus = %s \n",__FUNCTION__,MTA_provision_status[provisionStatus]));
         return RBUS_ERROR_ACCESS_NOT_ALLOWED;
     }
     rbusValue_t value;
@@ -248,15 +248,15 @@ rbusError_t TR104Services_SetHandler(rbusHandle_t handle, rbusProperty_t inPrope
     UNREFERENCED_PARAMETER(opts);
     int count = 1;
 
-    MTAMGMT_MTA_STATUS operationalStatus = 0;
-    if(mta_hal_getMtaOperationalStatus(&operationalStatus) != 0)
+    MTAMGMT_MTA_PROVISION_STATUS provisionStatus = 0;
+    if(mta_hal_getMtaProvisioningStatus(&provisionStatus) != 0)
     {
-        CcspTraceError(("mta_hal_getMtaOperationalStatus fail\n"));
+        CcspTraceError(("%s mta_hal_getMtaProvisioningStatus fail\n",__FUNCTION__));
         return RBUS_ERROR_DESTINATION_RESPONSE_FAILURE;
     }
-    if( strcmp(MTA_status[operationalStatus],MTA_COMPLETE) )
+    if( strcmp(MTA_provision_status[provisionStatus],MTA_PROVISIONED) )
     {
-        CcspTraceInfo(("operationalStatus = %s \n",MTA_status[operationalStatus]));
+        CcspTraceInfo(("%s provisionStatus = %s \n",__FUNCTION__,MTA_provision_status[provisionStatus]));
         return RBUS_ERROR_ACCESS_NOT_ALLOWED;
     }
     const char * name = rbusProperty_GetName(inProperty);
