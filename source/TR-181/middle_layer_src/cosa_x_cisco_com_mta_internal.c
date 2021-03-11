@@ -404,6 +404,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 
 				rc = memset_s(pMtaProv->DhcpOption2171CccV6DssID1, sizeof(pMtaProv->DhcpOption2171CccV6DssID1), 0, sizeof(pMtaProv->DhcpOption2171CccV6DssID1));
                                 ERR_CHK(rc);
+            pMtaProv->DhcpOption2171CccV6DssID1Len = 0;
 			if ( Ipv6_Primary[0] != '\0' ) 
 			{
                                 char* pIpv6Primary = Ipv6_Primary;
@@ -457,6 +458,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 
 				rc = memset_s(pMtaProv->DhcpOption2171CccV6DssID2, sizeof(pMtaProv->DhcpOption2171CccV6DssID2), 0, sizeof(pMtaProv->DhcpOption2171CccV6DssID2));
                                 ERR_CHK(rc);
+            pMtaProv->DhcpOption2171CccV6DssID2Len = 0;
 			if ( Ipv6_Secondary[0] != '\0' )   
 			{
                                 char* pIpv6Secondary = Ipv6_Secondary;

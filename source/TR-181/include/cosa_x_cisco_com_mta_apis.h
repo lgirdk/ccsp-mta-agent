@@ -730,7 +730,7 @@ CosaDmlMtaGetLineRegisterStatus
 typedef  struct
 _COSA_BOOTSTRAP_STR
 {
-    CHAR                    ActiveValue[64];
+    CHAR                    ActiveValue[65];
     CHAR		    UpdateSource[16];
 }
 COSA_BOOTSTRAP_STR;
