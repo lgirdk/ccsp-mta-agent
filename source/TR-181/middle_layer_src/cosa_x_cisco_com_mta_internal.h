@@ -78,6 +78,7 @@
     COSA_BASE_CONTENT                                                       \
     /* start of Lan config security object class content */                 \
     PCOSA_MTA_LINETABLE_INFO                    pLineTable;                 \
+    ULONG                                       LineTableCount;             \
     ULONG                                       ServiceClassNumber;         \
     PCOSA_MTA_SERVICE_CLASS                     pServiceClass;              \
     ULONG                                       ServiceClassUpdateTime;     \

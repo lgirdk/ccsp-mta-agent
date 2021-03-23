@@ -1557,43 +1557,7 @@ LineTable_GetEntryCount
 {
     UNREFERENCED_PARAMETER(hInsContext);
     PCOSA_DATAMODEL_MTA             pMyObject     = (PCOSA_DATAMODEL_MTA     )g_pCosaBEManager->hMTA;
-    PCOSA_MTA_LINETABLE_INFO        pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
-    ULONG                           ulCount;
-    errno_t                         rc            = -1;
-    if ( pLineTable )
-    {
-        if ( pLineTable->pCalls )
-        {
-            AnscFreeMemory(pLineTable->pCalls);
-            pLineTable->pCalls = NULL;
-        }
-        AnscFreeMemory(pLineTable);
-        pLineTable = NULL;
-        pMyObject->pLineTable = NULL;
-    }
-    ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
-fprintf(stderr, "### %s %d  ulCount=%ld\n", __func__, __LINE__, ulCount);
-    if ( ulCount != 0 )
-    {
-        pLineTable = AnscAllocateMemory(ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
-        
-        if(pLineTable == NULL)
-        {
-            pMyObject->pLineTable = pLineTable;
-            return ulCount;
-        }
-        rc = memset_s( pLineTable, ulCount * sizeof(COSA_MTA_LINETABLE_INFO), 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
-        ERR_CHK(rc);
-       
-
-ULONG ul=0;
-for (ul=0; ul<ulCount; ul++) {
-pLineTable[ul].InstanceNumber = ul + 1;
-}
-        pMyObject->pLineTable = pLineTable;
-    }    
-
-    return ulCount;
+    return pMyObject->LineTableCount;
 }
 
 /**********************************************************************  
@@ -1643,7 +1607,6 @@ LineTable_GetEntry
     pLineTable[nIndex].InstanceNumber = nIndex + 1;
 
     *pInsNumber = nIndex + 1;
-
     return &(pLineTable[nIndex]); /* return the handle */
 }
 

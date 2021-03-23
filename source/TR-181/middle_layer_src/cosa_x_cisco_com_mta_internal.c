@@ -629,6 +629,39 @@ void * Mta_Sysevent_thread_Dhcp_Option( void * hThisObject)
   }
 }
 
+ANSC_STATUS CosaMTALineTableInitialize
+    (
+        ANSC_HANDLE                 hThisObject
+    )
+{
+    PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
+    PCOSA_MTA_LINETABLE_INFO pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
+    ULONG ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
+	errno_t                         rc            = -1;
+
+    CcspTraceWarning(("%s %d\n",__FUNCTION__, ulCount)); 
+    pMyObject->LineTableCount = 0;
+    
+    if ( ulCount != 0 )
+    {
+        pLineTable = AnscAllocateMemory(ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
+        
+        if(pLineTable != NULL)
+        {
+            rc = memset_s( pLineTable, ulCount * sizeof(COSA_MTA_LINETABLE_INFO), 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
+            ERR_CHK(rc);
+            ULONG ul=0;
+            for (ul=0; ul<ulCount; ul++)
+            {
+                pLineTable[ul].InstanceNumber = ul + 1;
+            }
+            pMyObject->pLineTable = pLineTable;
+            pMyObject->LineTableCount = ulCount;
+        } 
+    }
+    return ANSC_STATUS_SUCCESS;
+}
+
 ANSC_STATUS
 CosaMTAInitializeEthWanProv
     (
@@ -1231,6 +1264,7 @@ CosaMTAInitialize
   //  CosaMTAInitializeEthWanProv(hThisObject);
 
 #endif
+    CosaMTALineTableInitialize(hThisObject);
     return returnStatus;
 }
 
