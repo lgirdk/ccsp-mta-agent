@@ -181,9 +181,6 @@ X_CISCO_COM_MTA_V6_GetParamUlongValue
         ULONG*                      puLong
     )
 {
-    errno_t                         rc            = -1;
-    int                             ind           = -1;
-
     UNREFERENCED_PARAMETER(hInsContext);
     COSA_MTA_DHCPv6_INFO              Info;
     memset(&Info, 0, sizeof(COSA_MTA_DHCPv6_INFO));
@@ -192,12 +189,7 @@ X_CISCO_COM_MTA_V6_GetParamUlongValue
     if (CosaDmlMTAGetDHCPV6Info(NULL, &Info) != ANSC_STATUS_SUCCESS)
         return FALSE;
 
-     /* check the parameter name and return the corresponding value */
-
-    rc =  strcmp_s("LeaseTimeRemaining",strlen("LeaseTimeRemaining"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "LeaseTimeRemaining") == 0)
     {
         *puLong = Info.LeaseTimeRemaining;
 
@@ -253,9 +245,6 @@ X_CISCO_COM_MTA_V6_GetParamStringValue
         ULONG*                      pUlSize
     )
 {
-    errno_t                         rc            = -1;
-    int                             ind           = -1;
- 
     UNREFERENCED_PARAMETER(hInsContext);
     UNREFERENCED_PARAMETER(pUlSize);
     COSA_MTA_DHCPv6_INFO              Info;
@@ -266,170 +255,119 @@ X_CISCO_COM_MTA_V6_GetParamStringValue
          return -1;
 
     /* check the parameter name and return the corresponding value */
-    rc =  strcmp_s( "IPV6Address",strlen("IPV6Address"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "IPV6Address") == 0)
     {
         AnscCopyString(pValue, Info.IPV6Address);
 
         return 0;
     }
 
-    rc =  strcmp_s( "Prefix",strlen("Prefix"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "Prefix") == 0)
     {
         AnscCopyString(pValue, Info.Prefix);
 
         return 0;
     }
 
-    rc =  strcmp_s( "BootFileName",strlen("BootFileName"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "BootFileName") == 0)
     {
         AnscCopyString(pValue, Info.BootFileName);
 
         return 0;
     }
 
-    rc =  strcmp_s( "FQDN",strlen("FQDN"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "FQDN") == 0)
     {
         AnscCopyString(pValue, Info.FQDN);
 
         return 0;
     }
 
-    rc =  strcmp_s( "Gateway",strlen("Gateway"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "Gateway") == 0)
     {
         AnscCopyString(pValue, Info.Gateway);
 
         return 0;
     }
 
-    rc =  strcmp_s( "RebindTimeRemaining",strlen("RebindTimeRemaining"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "RebindTimeRemaining") == 0)
     {
         AnscCopyString(pValue, Info.RebindTimeRemaining);
 
         return 0;
     }
 
-    rc =  strcmp_s( "RenewTimeRemaining",strlen("RenewTimeRemaining"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "RenewTimeRemaining") == 0)
     {
         AnscCopyString(pValue, Info.RenewTimeRemaining);
 
         return 0;
     }
 
-    rc =  strcmp_s( "PrimaryDNS",strlen("PrimaryDNS"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "PrimaryDNS") == 0)
     {
         AnscCopyString(pValue, Info.PrimaryDNS);
 
         return 0;
     }
 
-    rc =  strcmp_s( "SecondaryDNS",strlen("SecondaryDNS"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "SecondaryDNS") == 0)
     {
         AnscCopyString(pValue, Info.SecondaryDNS);
 
         return 0;
     }
 
-    rc =  strcmp_s( "DHCPOption3",strlen("DHCPOption3"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "DHCPOption3") == 0)
     {
         AnscCopyString(pValue, Info.DHCPOption3);
 
         return 0;
     }
 
-    rc =  strcmp_s( "DHCPOption6",strlen("DHCPOption6"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "DHCPOption6") == 0)
     {
         AnscCopyString(pValue, Info.DHCPOption6);
 
         return 0;
     }
 
-    rc =  strcmp_s( "DHCPOption7",strlen("DHCPOption7"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "DHCPOption7") == 0)
     {
         AnscCopyString(pValue, Info.DHCPOption7);
 
         return 0;
     }
 
-    rc =  strcmp_s( "DHCPOption8",strlen("DHCPOption8"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "DHCPOption8") == 0)
     {
         AnscCopyString(pValue, Info.DHCPOption8);
 
         return 0;
     }
 
-    rc =  strcmp_s( "PCVersion",strlen("PCVersion"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "PCVersion") == 0)
     {
         AnscCopyString(pValue, Info.PCVersion);
 
         return 0;
     }
 
-    rc =  strcmp_s( "MACAddress",strlen("MACAddress"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "MACAddress") == 0)
     {
         AnscCopyString(pValue, Info.MACAddress);
 
         return 0;
     }
 
-    rc =  strcmp_s( "PrimaryDHCPv6Server",strlen("PrimaryDHCPv6Server"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "PrimaryDHCPv6Server") == 0)
     {
         AnscCopyString(pValue, Info.PrimaryDHCPv6Server);
 
         return 0;
     }
 
-    rc =  strcmp_s( "SecondaryDHCPv6Server",strlen("SecondaryDHCPv6Server"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "SecondaryDHCPv6Server") == 0)
     {
         AnscCopyString(pValue, Info.SecondaryDHCPv6Server);
 
@@ -6862,11 +6800,7 @@ MTALog_GetParamStringValue
         AnscCopyString(pValue, pConf->Time);
         return 0;
     }
-
-    rc =  strcmp_s( "EventLevel",strlen("EventLevel"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "EventLevel") == 0)
     {
         /* collect value */
         if ( _ansc_strlen(pConf->EventLevel) >= *pUlSize )
@@ -7152,10 +7086,7 @@ DECTLog_GetParamUlongValue
         return TRUE;
     }
 
-    rc =  strcmp_s( "EventLevel",strlen("EventLevel"),ParamName, &ind);
-    ERR_CHK(rc);
-
-    if((!ind) && (rc == EOK))
+    if (strcmp(ParamName, "EventLevel") == 0)
     {
         /* collect value */
         *puLong = pConf->EventLevel; 
