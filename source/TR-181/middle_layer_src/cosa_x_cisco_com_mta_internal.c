@@ -510,6 +510,14 @@ CosaMTAInitializeEthWanProvDhcpOption
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
 			CcspTraceError(("mta_hal_start_provisioning succeded '%s'\n", __FUNCTION__));
+            if (syscfg_set(NULL, "MTA_PROVISION","true") != 0)
+            {
+                CcspTraceWarning(("%s: syscfg_set failed\n", __FUNCTION__));
+            }
+            else
+            {
+                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n"));
+            }
                         /*Coverity Fix  CID:120996 RESOURCE_LEAK */
                         free(pMtaProv);
 			return ANSC_STATUS_SUCCESS;
@@ -856,6 +864,14 @@ if(pMtaProv)
 		// call hal to start provisioning
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
+            if (syscfg_set(NULL, "MTA_PROVISION","true") != 0)
+            {
+                CcspTraceWarning(("%s: syscfg_set failed\n", __FUNCTION__));
+            }
+            else
+            {
+                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n"));
+            }
                         /* Coverity Fix CID:74083 RESOURCE_LEAK */
                         free(pMtaProv);
 			return ANSC_STATUS_SUCCESS;
@@ -1074,6 +1090,14 @@ if(pMtaProv)
 		// call hal to start provisioning
 		if(mta_hal_start_provisioning(pMtaProv) == RETURN_OK)
 		{
+            if (syscfg_set(NULL, "MTA_PROVISION","true") != 0)
+            {
+                CcspTraceWarning(("%s: syscfg_set failed\n", __FUNCTION__));
+            }
+            else
+            {
+                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n"));
+            }
 			status = ANSC_STATUS_SUCCESS;
                    
 		}

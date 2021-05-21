@@ -51,11 +51,10 @@
 //#include <docsis_ext_interface.h>
 #include "safec_lib_common.h"
 #include "syscfg/syscfg.h"
-
+#include "secure_wrapper.h"
 #define DEBUG_INI_NAME  "/etc/debug.ini"
 #ifdef MTA_TR104SUPPORT
 #include "TR104.h"
-#include "syscfg/syscfg.h"
 #define TR104_ENABLE "TR104Enable"
 #endif
 
@@ -483,55 +482,40 @@ int main(int argc, char* argv[])
     printf("Registering PCD exception handler CcspMTAAgent\n");
     PCD_api_register_exception_handlers( argv[0], NULL );
 #endif
-#ifdef MTA_TR104SUPPORT
-    int retry=0;
+    CcspTraceInfo(("calling syscfg_init\n"));
     rc = syscfg_init();
-    CcspTraceInfo(("rc of syscfg_init %d\n",rc));
-    while(rc && retry<5)
+    CcspTraceInfo(("syscfg_returned=%d\n",rc));
+    char eth_wan_enabled[8] = {'\0'};
+    for(rc=0;rc<6;rc++)
     {
-        sleep(10);
-        retry++;
-        rc = syscfg_init();
-        CcspTraceInfo(("rc of syscfg_init %d\n",rc));
-    }
-    CcspTraceInfo(("TR104 supports in this build\n"));
-    char value[8] = {'\0'};
-    retry=0;
-    while(retry<5)
-    {
-        if( syscfg_get(NULL, TR104_ENABLE, value, sizeof(value)) == 0 )
+        if(syscfg_get(NULL,"eth_wan_enabled",eth_wan_enabled,sizeof(eth_wan_enabled)) ==0 )
         {
-            if( strcmp(value, "true") == 0 )
+            if (strcmp(eth_wan_enabled,"true") == 0)
             {
-                if ( CCSP_Msg_IsRbus_enabled() )
+                CcspTraceInfo(("Box is in ETHWAN mode\n"));
+                if(syscfg_set(NULL, "MTA_PROVISION","false") != 0)
                 {
-                    CcspTraceInfo(("RFC for TR104 is true\n"));
-                    err = TR104_open();
-                    CcspTraceInfo(("TR104_open returned %d\n", err));
+                    CcspTraceWarning(("%s: syscfg_set failed\n", __FUNCTION__));
                 }
                 else
                 {
-                    CcspTraceInfo(("TR104 will be available only in rbus mode\n"));
+                    CcspTraceInfo(("%s: syscfg_set sucess\n"));
                 }
             }
             else
             {
-                CcspTraceInfo(("RFC for TR104 is false \n"));
+                CcspTraceInfo(("Box is in DOCSIS mode\n"));
             }
             break;
         }
         else
         {
-            CcspTraceError(("syscfg_get is failed\n"));
-            retry++;
+            sleep(5);
+            CcspTraceWarning(("%s: syscfg_get failed\n", __FUNCTION__));
         }
     }
-#else
-    CcspTraceInfo(("TR104 does not supports in this build\n"));
-#endif
     cmd_dispatch('e');
     
-    syscfg_init();
     CcspTraceInfo(("MTA_DBG:-------Read Log Info\n"));
     char buffer[5] = {0};
     if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_LoggerEnable" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
@@ -570,15 +554,123 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Cdm_Init: %s\n", Cdm_StrError(err));
         exit(1);
     }
-    system("touch /tmp/mta_initialized");
+     v_secure_system("touch /tmp/mta_initialized");
 
 #ifdef ARRIS_XB3_PLATFORM_CHANGES
-    system("touch /rdklogs/logs/mtaEvents.log");
+     v_secure_system("touch /rdklogs/logs/mtaEvents.log");
 #endif
 
     CcspTraceWarning(("RDKB_SYSTEM_BOOT_UP_LOG : Entering MTA loop\n"));
     printf("Entering MTA loop\n");
-
+#ifdef MTA_TR104SUPPORT
+    int retry=0,retry1=0;
+    CcspTraceInfo(("TR104 supports in this build\n"));
+    char value[8] = {'\0'};
+    if (strcmp(eth_wan_enabled,"true") == 0)
+    {
+        CcspTraceInfo(("Device is in ETHWAN mode\n"));
+        char Provision_status[8] = {'\0'};
+        while(retry<5)
+        {
+            if( syscfg_get(NULL, TR104_ENABLE, value, sizeof(value)) == 0 )
+            {
+                if( strcmp(value, "true") == 0 )
+                {
+                    CcspTraceInfo(("RFC for TR104 is true\n"));
+                    if ( CCSP_Msg_IsRbus_enabled() )
+                    {
+                        while(retry1<24)
+                        {
+                            if( syscfg_get(NULL, "MTA_PROVISION", Provision_status, sizeof(Provision_status)) == 0 && strcmp(Provision_status,"true") == 0 )
+                            {
+                                rc = 0;
+retry:
+                                sleep(4);
+                                err = TR104_open();
+                                CcspTraceInfo(("TR104_open returned %d during %d iteration\n", err,retry1));
+                                if(err == 0)
+                                {
+                                    CcspTraceInfo(("TR104_open returned %d and restarting CcspTr069PaSsp\n", err));
+                                    v_secure_system("systemctl restart CcspTr069PaSsp &");
+                                    break;
+                                }
+                                else
+                                {
+                                    if(rc > 6)
+                                    {
+                                        CcspTraceWarning(("TR104_open is failing for %d times so breaking the loop\n",rc));
+                                        break;
+                                    }
+                                    rc++;
+                                    goto retry;
+                                }
+                            }
+                            retry1++;
+                            sleep(10);
+                        }
+                    }
+                    else
+                    {
+                        CcspTraceInfo(("TR104 will be available only in rbus mode\n"));
+                    }
+                }
+                else
+                {
+                    CcspTraceInfo(("RFC for TR104 is false \n"));
+                }
+                break;
+            }
+            else
+            {
+                CcspTraceError(("syscfg_get is failed\n"));
+                retry++;
+            }
+        }
+    }
+    else
+    {
+        while(retry<5)
+        {
+            if( syscfg_get(NULL, TR104_ENABLE, value, sizeof(value)) == 0 )
+            {
+                if( strcmp(value, "true") == 0 )
+                {
+                    CcspTraceInfo(("RFC for TR104 is true\n"));
+                    if ( CCSP_Msg_IsRbus_enabled() )
+                    {
+                        while(retry1<24)
+                        {
+                            err = TR104_open();
+                            CcspTraceInfo(("TR104_open returned %d during %d iteration\n", err,retry1));
+                            if(err == 0)
+                            {
+                                CcspTraceInfo(("TR104_open returned %d and restarting CcspTr069PaSsp\n", err));
+                                v_secure_system("systemctl restart CcspTr069PaSsp &");
+                                break;
+                            }
+                            retry1++;
+                            sleep(10);
+                        }
+                    }
+                    else
+                    {
+                        CcspTraceInfo(("TR104 will be available only in rbus mode\n"));
+                    }
+                }
+                else
+                {
+                    CcspTraceInfo(("RFC for TR104 is false \n"));
+                }
+                break;
+            }
+            else
+            {
+                CcspTraceError(("syscfg_get is failed\n"));
+                retry++;
+            }
+        }
+    }
+#endif
     if ( bRunAsDaemon )
     {
         while(1)

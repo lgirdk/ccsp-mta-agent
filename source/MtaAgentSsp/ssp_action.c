@@ -227,16 +227,16 @@ ssp_engage_pnm
 
     returnStatus =
         pDslhCpeController->RegisterCcspDataModel2
-            (
-                (ANSC_HANDLE)pDslhCpeController,
-                CrName,                             /* CCSP CR ID */
-                DMPackCreateDataModelXML,           /* Comcast generated code to create XML. */                
-                pStartCfg->ComponentName,           /* Component Name    */
-                pStartCfg->Version,                 /* Component Version */
-                pStartCfg->DbusPath,                /* Component Path    */
-                g_Subsystem                         /* Component Prefix  */
-            );
-
+        (
+         (ANSC_HANDLE)pDslhCpeController,
+         CrName,                             /* CCSP CR ID */
+         DMPackCreateDataModelXML,           /* Comcast generated code to create XML. */                
+         pStartCfg->ComponentName,           /* Component Name    */
+         pStartCfg->Version,                 /* Component Version */
+         pStartCfg->DbusPath,                /* Component Path    */
+         g_Subsystem                         /* Component Prefix  */
+        );
+    
     if ( returnStatus == ANSC_STATUS_SUCCESS || returnStatus == CCSP_SUCCESS )
     {
         /* System is fully initialized */

@@ -41,7 +41,7 @@ rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inPro
     pParamNameList = rbusProperty_GetName(inProperty);
 
     retParamSize = 1;
-    CcspTraceInfo(("calling HAL get\n"));
+    CcspTraceInfo(("calling HAL get from %s with %s\n",__FUNCTION__,pParamNameList));
     /* Get Data From HAL and return in as rbusProperty_t */
     if(mta_hal_getTR104parameterValues((char**)&pParamNameList, &retParamSize, &pParamValueList) == 0 )
     {
@@ -50,6 +50,7 @@ rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inPro
         rbusProperty_t lastProp = inProperty;
         for (loopCnt = 0; loopCnt < retParamSize; loopCnt++)
         {
+            CcspTraceDebug(("%s: mta_hal_getTR104parameterValues returned %s\n",__FUNCTION__,pParamValueList[loopCnt]));
             rbusValue_t value = NULL;
             /* Tokenize the returns value list and set the tlv and pass it to inProperty */
             char *pPropName = NULL;
@@ -76,7 +77,7 @@ rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inPro
                 {
                     pPropValue = "";
                 }
-
+                CcspTraceDebug(("%s: pPropName=%s\t pPropType=%s\t pPropValue=%s\n",__FUNCTION__,pPropName,pPropType,pPropValue));
                 rbusValue_Init(&value);
                 /* Parse the incoming data */
                 if(strcasecmp (pPropType, "boolean") == 0)
@@ -85,7 +86,14 @@ rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inPro
                 }
                 else if(strcasecmp (pPropType, "dateTime") == 0)
                 {
-                    rbusValue_SetFromString(value, RBUS_DATETIME, pPropValue);
+                    if(0 != strncmp(pPropValue,"0-",2))
+                    {
+                        rbusValue_SetFromString(value, RBUS_DATETIME, pPropValue);
+                    }
+                    else
+                    {
+                        rbusValue_SetFromString(value, RBUS_DATETIME, "0000-");
+                    }
                 }
                 else if(strcasecmp (pPropType, "int") == 0)
                 {
@@ -128,6 +136,7 @@ rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inPro
             free (pStr);
         }
         /* Free the memory */
+        CcspTraceDebug(("%s: calling mta_hal_freeTR104parameterValues for %s values and rc = %d\n",__FUNCTION__,pParamNameList,rc));
         mta_hal_freeTR104parameterValues(pParamValueList, retParamSize);
     }
     else
@@ -164,11 +173,12 @@ rbusError_t TR104Services_GetHandler(rbusHandle_t handle, rbusProperty_t inPrope
     pParamNameList = rbusProperty_GetName(inProperty);
 
     retParamSize = 1;
-    CcspTraceInfo(("calling HAL get\n"));
+    CcspTraceInfo(("calling HAL get from %s with %s\n",__FUNCTION__,pParamNameList)); 
     /* Get Data From HAL and return in as rbusProperty_t */
     if(mta_hal_getTR104parameterValues((char**)&pParamNameList, &retParamSize, &pParamValueList) == 0 )
     {
         /* Tokenize the returns value list and set the tlv and pass it to inProperty */
+        CcspTraceDebug(("%s: mta_hal_getTR104parameterValues returned %s from %s\n",__FUNCTION__,pParamValueList[0],__FUNCTION__));
         char *pTmp = NULL;
         char *pStr = strdup (pParamValueList[0]);
         pTmp = strtok(pStr, ",");
@@ -185,7 +195,7 @@ rbusError_t TR104Services_GetHandler(rbusHandle_t handle, rbusProperty_t inPrope
                 CcspTraceError(("ccspMtaAgentTR104Hal: The pre-defined formatted string is not present\n"));
                 rc = RBUS_ERROR_INVALID_INPUT; 
             }
-
+            CcspTraceDebug(("%s: pTmp=%s\t pType=%s\t pValue=%s\n",__FUNCTION__,pTmp,pType,pValue));
             if (rc == RBUS_ERROR_SUCCESS)
             {
                 /* Parse the Value  */
@@ -196,7 +206,14 @@ rbusError_t TR104Services_GetHandler(rbusHandle_t handle, rbusProperty_t inPrope
                 }
                 else if(strcasecmp (pType, "dateTime") == 0)
                 {
-                    rbusValue_SetFromString(value, RBUS_DATETIME, pValue);
+                    if(0 != strncmp(pValue,"0-",2))
+                    {
+                        rbusValue_SetFromString(value, RBUS_DATETIME, pValue);
+                    }
+                    else
+                    {
+                        rbusValue_SetFromString(value, RBUS_DATETIME, "0000-");
+                    }
                 }
                 else if(strcasecmp (pType, "int") == 0)
                 {
@@ -232,6 +249,7 @@ rbusError_t TR104Services_GetHandler(rbusHandle_t handle, rbusProperty_t inPrope
         }
         /* Free the memory */
         free (pStr);
+        CcspTraceDebug(("%s: calling mta_hal_freeTR104parameterValues for %s values and rc = %d\n",__FUNCTION__,pParamNameList,rc));
         mta_hal_freeTR104parameterValues(pParamValueList, retParamSize);
     }
     else
