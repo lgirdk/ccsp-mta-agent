@@ -788,7 +788,7 @@ CosaDmlMTASetSecondaryDhcpServerOptions
 ANSC_STATUS
 CosaDmlMtaResetNow
     (
-		BOOLEAN	*pBool
+		BOOLEAN  bValue
     );
 
 void 

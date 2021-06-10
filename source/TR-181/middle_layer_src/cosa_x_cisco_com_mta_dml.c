@@ -8165,37 +8165,38 @@ X_RDKCENTRAL_COM_MTA_SetParamBoolValue
     (
         ANSC_HANDLE                 hInsContext,
         char*                       ParamName,
-        BOOL*                       pBool
+        BOOL                       bValue
     )
 {
         UNREFERENCED_PARAMETER(hInsContext);
         errno_t                         rc            = -1;
         int                             ind           = -1;
-
-        rc = strcmp_s("pktcMtaDevResetNow", strlen("pktcMtaDevResetNow"), ParamName, &ind );
+        
+        rc = strcmp_s("pktcMtaDevResetNow", strlen("pktcMtaDevResetNow"), ParamName, &ind );       
                ERR_CHK(rc);
-               if((!ind) && (rc == EOK))
+        if((!ind) && (rc == EOK))
 	{
-		if(pBool && *pBool)
+		//if(pBool && *pBool)
+                if(bValue)
 		{
-			if(	ANSC_STATUS_SUCCESS == CosaDmlMtaResetNow(pBool)	)
-			{
-				AnscTraceWarning(("MTA Module is Reset ParamName: '%s'  Value: '%d' \n",ParamName,pBool));
+			if(	ANSC_STATUS_SUCCESS == CosaDmlMtaResetNow(bValue)	)
+			{                    
+				AnscTraceWarning(("MTA Module is Reset ParamName: '%s'  Value: '%d' \n",ParamName,bValue));
 				CosaDmlMtaProvisioningStatusGet();
 				return TRUE;
 			}
 			else
-			{
-				AnscTraceWarning(("MTA Module is not Reset ParamName: '%s'  Value: '%d' \n",ParamName,pBool));
+			{                        
+				AnscTraceWarning(("MTA Module is not Reset ParamName: '%s'  Value: '%d' \n",ParamName,bValue));
 				return FALSE;
 			}
 		}
 		else
 		{
-			AnscTraceWarning(("parameter '%s' value: '%d' \n", ParamName,pBool));
+                	AnscTraceWarning(("parameter '%s' value: '%d' \n", ParamName,bValue));
 			return TRUE;
 		}
 	}
+	
 	return FALSE;
-
 }

@@ -414,7 +414,7 @@ X_RDKCENTRAL_COM_MTA_SetParamBoolValue
     (
         ANSC_HANDLE                 hInsContext,
         char*                       ParamName,
-        BOOL*                       pBool
+        BOOL                       bValue
     );
 
 #endif /* _COSA_MTA_DML_H */

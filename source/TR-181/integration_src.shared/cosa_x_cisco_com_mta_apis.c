@@ -1018,12 +1018,12 @@ CosaDmlMTASetSecondaryDhcpServerOptions
 ANSC_STATUS
 CosaDmlMtaResetNow
     (
-		BOOLEAN	*pBool
+		BOOLEAN	 bValue
     )
 {
-        UNREFERENCED_PARAMETER(pBool);
+        UNREFERENCED_PARAMETER(bValue);
 #ifdef _CBR_PRODUCT_REQ_
-	if( RETURN_OK == mta_hal_devResetNow(*pBool) )
+	if( RETURN_OK == mta_hal_devResetNow(bValue) )
 #else
 	if( /*RETURN_OK == mta_hal_devResetNow(pBool)*/ 1 )
 #endif /* _CBR_PRODUCT_REQ_ */
@@ -1031,9 +1031,10 @@ CosaDmlMtaResetNow
 		AnscTraceWarning(("MTA reset is successful \n"));
 		return ANSC_STATUS_SUCCESS;
 	}
-
-	return ANSC_STATUS_FAILURE;
-
+	else
+	{
+		return ANSC_STATUS_FAILURE;
+	}
 }
 
 /*Coverity fix CID 56740 argument type mismatch */
