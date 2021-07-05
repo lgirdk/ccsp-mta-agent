@@ -729,6 +729,26 @@ X_CISCO_COM_MTA_GetParamUlongValue
     errno_t                         rc            = -1;
     int                             ind           = -1;
 
+    rc = strcmp_s("MTAResetCount", strlen("MTAResetCount"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        if (CosaDmlMtaGetResetCount(NULL,MTA_RESET,puLong) != ANSC_STATUS_SUCCESS)
+        return FALSE;
+
+        return TRUE;
+    }
+
+    rc = strcmp_s("LineResetCount", strlen("LineResetCount"), ParamName, &ind);
+    ERR_CHK(rc);
+    if((!ind) && (rc == EOK))
+    {
+        if (CosaDmlMtaGetResetCount(NULL,LINE_RESET,puLong) != ANSC_STATUS_SUCCESS)
+        return FALSE;
+
+        return TRUE;
+    }
+
     /* check the parameter name and return the corresponding value */
     rc = strcmp_s("pktc",  strlen("pktc"), ParamName, &ind);
     ERR_CHK(rc);
@@ -860,26 +880,6 @@ X_CISCO_COM_MTA_GetParamUlongValue
             // AnscCopyString(pValue, Info.SecondaryDHCPServer);
             return TRUE;
         }
-    }
-
-    rc = strcmp_s("MTAResetCount", strlen("MTAResetCount"), ParamName, &ind);
-    ERR_CHK(rc);
-    if((!ind) && (rc == EOK))
-    {
-	if (CosaDmlMtaGetResetCount(NULL,MTA_RESET,puLong) != ANSC_STATUS_SUCCESS)
-	return FALSE;
-
-	return TRUE;
-    }
-
-    rc = strcmp_s("LineResetCount", strlen("LineResetCount"), ParamName, &ind);
-    ERR_CHK(rc);
-    if((!ind) && (rc == EOK))
-    {
-	if (CosaDmlMtaGetResetCount(NULL,LINE_RESET,puLong) != ANSC_STATUS_SUCCESS)
-	return FALSE;
-
-	return TRUE;
     }
 
     rc = strcmp_s("ClearLineStats", strlen("ClearLineStats"), ParamName, &ind);
