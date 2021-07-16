@@ -416,7 +416,7 @@ X_RDKCENTRAL_COM_MTA_SetParamBoolValue
         char*                       ParamName,
         BOOL                       bValue
     );
-
+int CosaDmlTR104DataSet(char* pString,int bootup);
 #endif /* _COSA_MTA_DML_H */
 
 // #endif /* CONFIG_TI_PACM */

@@ -7761,6 +7761,45 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
     return -1;
 }
 
+BOOL VoiceService_SetParamStringValue(ANSC_HANDLE hInsContext, char* ParamName, char* pString)
+{
+    UNREFERENCED_PARAMETER(hInsContext);
+    BOOL ret = FALSE;
+#ifdef MTA_TR104SUPPORT
+    if(CCSP_Msg_IsRbus_enabled())
+    {
+        char value[8] = {'\0'};
+        if((syscfg_get(NULL,"TR104Enable", value, sizeof(value)) == 0) && (strcmp(value, "true") == 0))
+        {
+            if( AnscEqualString(ParamName, "Data", TRUE) )
+            {
+                if ( 0 == CosaDmlTR104DataSet(pString,0) )
+                {
+                    CcspTraceInfo(("%s Success in parsing web config blob.. with pString=%s\n",__FUNCTION__,pString));
+                    ret = TRUE;
+                }
+                else
+                {
+                    CcspTraceError(("%s Failed to parse webconfig blob..\n",__FUNCTION__));
+                }
+            }
+        }
+        else
+        {
+            CcspTraceWarning(("Skipping webconfig parsing as RFC for TR104 is false\n"));
+        }
+    }
+    else
+    {
+        CcspTraceWarning(("TR104 works only in rbus mode\n"));
+    }
+#else
+    UNREFERENCED_PARAMETER(ParamName);
+    UNREFERENCED_PARAMETER(pString);
+#endif
+    return ret;
+}
+
 #define BS_SOURCE_WEBPA_STR "webpa"
 #define BS_SOURCE_RFC_STR "rfc"
 #define  PARTNER_ID_LEN  64

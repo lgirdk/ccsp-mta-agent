@@ -56,6 +56,8 @@
 #ifdef MTA_TR104SUPPORT
 #include "TR104.h"
 #define TR104_ENABLE "TR104Enable"
+#include "webconfig_framework.h"
+int CosaDmlTR104DataSet(char *pString,int bootup);
 #endif
 
 PDSLH_CPE_CONTROLLER_OBJECT     pDslhCpeController      = NULL;
@@ -592,6 +594,29 @@ retry:
                                 {
                                     CcspTraceInfo(("TR104_open returned %d and restarting CcspTr069PaSsp\n", err));
                                     v_secure_system("systemctl restart CcspTr069PaSsp &");
+                                    FILE* fptr= fopen("/nvram/.vsb64.txt","rb");
+                                    if (fptr)
+                                    {
+                                        CcspTraceDebug(("file present and about to read\n"));
+                                        char* buffer=0;
+                                        int length;
+                                        fseek(fptr, 0, SEEK_END);
+                                        length = ftell (fptr);
+                                        fseek(fptr, 0, SEEK_SET);
+                                        buffer = (char*)malloc(length+1);
+                                        if (buffer)
+                                        {
+                                            fread(buffer, 1, length+1, fptr);
+                                            CcspTraceDebug(("buffer=%s\n",buffer));
+                                            CosaDmlTR104DataSet(buffer,1);
+                                            free(buffer);
+                                        }
+                                        fclose(fptr);
+                                    }
+                                    else
+                                    {
+                                      CcspTraceInfo(("file not present\n"));
+                                    }
                                     break;
                                 }
                                 else
@@ -646,6 +671,29 @@ retry:
                             {
                                 CcspTraceInfo(("TR104_open returned %d and restarting CcspTr069PaSsp\n", err));
                                 v_secure_system("systemctl restart CcspTr069PaSsp &");
+                                FILE* fptr= fopen("/nvram/.vsb64.txt","rb");
+                                if (fptr)
+                                {
+                                    CcspTraceDebug(("file present and about to read\n"));
+                                    char* buffer=0;
+                                    int length;
+                                    fseek (fptr, 0, SEEK_END);
+                                    length = ftell (fptr);
+                                    fseek (fptr, 0, SEEK_SET);
+                                    buffer = (char*)malloc (length+1);
+                                    if (buffer)
+                                    {
+                                        fread (buffer, 1, length+1, fptr);
+                                        CcspTraceDebug(("buffer=%s\n",buffer));
+                                        CosaDmlTR104DataSet(buffer,1);
+                                        free(buffer);
+                                    }
+                                    fclose (fptr);
+                                }
+                                else
+                                {
+                                    CcspTraceDebug(("file not present\n"));
+                                }
                                 break;
                             }
                             retry1++;
@@ -670,6 +718,7 @@ retry:
             }
         }
     }
+    check_component_crash("/tmp/mta_initialized");
 #endif
     if ( bRunAsDaemon )
     {

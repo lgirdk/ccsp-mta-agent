@@ -18,23 +18,11 @@
 */ 
 
 #ifdef MTA_TR104SUPPORT
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include <LatticeMtaTR104.h>
 #include "TR104.h"
-#include <rbus.h>
-#include "ccsp_trace.h"
-#include "ansc_platform.h"
-#include "mta_hal.h"
-
-int mta_hal_getTR104parameterValues(char **parameterNamesList, int *parameterListLen, char ***parameterValuesList);
-int mta_hal_freeTR104parameterValues(char **parameterValuesList, int  parameterListLen);
-int mta_hal_setTR104parameterValues(char **parameterValueList, int *parameterListLen);
-int mta_hal_getTR104parameterNames(char ***parameterNamesList, int *parameterListLen);
 char MTA_provision_status[2][20] = {"MTA_PROVISIONED", "MTA_NON_PROVISIONED"};
 #define MTA_PROVISIONED "MTA_PROVISIONED"
 
+ANSC_STATUS init_TR104_web_config();
 
 /* This function is to return ParamValue for all the elements in this partial path Query */
 rbusError_t TR104Services_TableHandler(rbusHandle_t handle, rbusProperty_t inProperty, rbusGetHandlerOptions_t* opts)
@@ -414,6 +402,7 @@ int TR104_open()
         }
         CcspTraceInfo(("registered successfully\n"));
         free(dataElements);
+        init_TR104_web_config();
         return RBUS_ERROR_SUCCESS;
     }
 

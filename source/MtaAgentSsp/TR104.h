@@ -16,9 +16,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */ 
-
-#include "stdio.h"
-#include "stdlib.h"
-#include "rbus.h"
+#ifdef MTA_TR104SUPPORT
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#ifndef INTEL_PUMA7
+#include <LatticeMtaTR104.h>
+#endif //INTEL_PUMA7
+#include <rbus.h>
+#include "ccsp_trace.h"
+#include "ansc_platform.h"
+#include "mta_hal.h"
+int mta_hal_getTR104parameterValues(char **parameterNamesList, int *parameterListLen, char ***parameterValuesList);
+int mta_hal_freeTR104parameterValues(char **parameterValuesList, int  parameterListLen);
+int mta_hal_setTR104parameterValues(char **parameterValueList, int *parameterListLen);
+int mta_hal_getTR104parameterNames(char ***parameterNamesList, int *parameterListLen);
 int TR104_open();
-
+#endif

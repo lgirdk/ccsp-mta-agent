@@ -2487,6 +2487,36 @@
       </objects>
       
     </object>
+   
+    <object>
+
+      <name>VoiceService</name>
+
+      <objectType>object</objectType>
+
+      <functions>
+
+        <func_SetParamStringValue>VoiceService_SetParamStringValue</func_SetParamStringValue>
+
+      </functions>
+
+      <parameters>
+
+        <parameter>
+
+            <name>Data</name>
+
+            <type>string</type>
+
+            <syntax>string</syntax>
+
+            <writable>true</writable>
+
+        </parameter>
+
+      </parameters>
+
+    </object>
 
     <object>
       
