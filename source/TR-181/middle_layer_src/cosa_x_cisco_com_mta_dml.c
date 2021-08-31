@@ -750,10 +750,10 @@ X_CISCO_COM_MTA_GetParamUlongValue
     }
 
     /* check the parameter name and return the corresponding value */
-    rc = strcmp_s("pktc",  strlen("pktc"), ParamName, &ind);
+    rc = strncmp("pktc", ParamName, strlen("pktc"));
     ERR_CHK(rc);
     
-    if((!ind) && (rc == EOK))
+    if (rc == EOK)
     {
         /* collect value */
         if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS) 
@@ -891,7 +891,7 @@ X_CISCO_COM_MTA_GetParamUlongValue
 	return TRUE;
     }
 
-    /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    /*AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName));*/ 
     return FALSE;
 }
 
