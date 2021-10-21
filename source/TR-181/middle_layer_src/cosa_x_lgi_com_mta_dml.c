@@ -78,6 +78,233 @@ X_LGI_COM_MTA_GetParamStringValue
     return -1;
 }
 
+/**********************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        BOOL
+        X_LGI_COM_MTA_GetParamBoolValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                BOOL*                       pBool
+            );
+
+    description:
+
+        This function is called to retrieve Boolean parameter value;
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                BOOL*                       pBool
+                The buffer of returned boolean value;
+
+    return:     TRUE if succeeded.
+
+**********************************************************************/
+
+
+BOOL
+X_LGI_COM_MTA_GetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL*                       pBool
+    )
+{
+    PCOSA_DATAMODEL_LGI_MTA       pMyObject     = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+
+    /* check the parameter name and return the corresponding value */
+    if (strcmp(ParamName, "SpeedUpMTA-RFLossDetection") == 0)
+    {
+        *pBool = pMyObject->RFLossDetection;
+        return TRUE;
+    }
+
+    /* AnscTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
+    return FALSE;
+}
+
+
+
+
+
+
+/**********************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        BOOL
+        X_LGI_COM_MTA_SetParamBoolValue
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       ParamName,
+                BOOL                        bValue
+            );
+
+    description:
+
+        This function is called to set BOOL parameter value;
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       ParamName,
+                The parameter name;
+
+                BOOL                        bValue
+                The updated BOOL value;
+
+    return:     TRUE if succeeded.
+
+**********************************************************************/
+
+
+BOOL
+X_LGI_COM_MTA_SetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL                        bValue
+    )
+{
+    PCOSA_DATAMODEL_LGI_MTA       pMyObject     = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+
+    /* check the parameter name and return the corresponding value */
+    if (strcmp(ParamName, "SpeedUpMTA-RFLossDetection") == 0)
+    {
+        pMyObject->RFLossDetection = bValue;
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+
+
+/**********************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        BOOL
+        X_LGI_COM_MTA_Validate
+            (
+                ANSC_HANDLE                 hInsContext,
+                char*                       pReturnParamName,
+                ULONG*                      puLength
+            );
+
+    description:
+
+        This function is called to finally commit all the update.
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+                char*                       pReturnParamName,
+                The buffer (128 bytes) of parameter name if there's a validation.
+
+                ULONG*                      puLength
+                The output length of the param name.
+
+    return:     TRUE if there's no validation.
+
+**********************************************************************/
+
+
+BOOL
+X_LGI_COM_MTA_Validate
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       pReturnParamName,
+        ULONG*                      puLength
+    )
+{
+    return TRUE;
+}
+
+
+/**********************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        ULONG
+        X_LGI_COM_MTA_Commit
+            (
+                ANSC_HANDLE                 hInsContext
+            );
+
+    description:
+
+        This function is called to finally commit all the update.
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+    return:     The status of the operation.
+
+**********************************************************************/
+
+ULONG
+X_LGI_COM_MTA_Commit
+    (
+        ANSC_HANDLE                 hInsContext
+    )
+{
+    PCOSA_DATAMODEL_LGI_MTA       pMyObject     = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+
+    CosaDmlMTABasicInfoSetSpeedUpMTARFLossDetection(pMyObject->RFLossDetection);
+    return 0;
+}
+
+
+/*********************************************************************
+
+    caller:     owner of this object
+
+    prototype:
+
+        ULONG
+        X_LGI_COM_MTA_Rollback
+            (
+                ANSC_HANDLE                 hInsContext
+            );
+
+    description:
+
+        This function is called to roll back the update whenever there's a
+        validation found.
+
+    argument:   ANSC_HANDLE                 hInsContext,
+                The instance handle;
+
+    return:     The status of the operation.
+
+**********************************************************************/
+
+ULONG
+X_LGI_COM_MTA_Rollback
+    (
+        ANSC_HANDLE                 hInsContext
+    )
+{
+    PCOSA_DATAMODEL_LGI_MTA       pMyObject     = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+    pMyObject->RFLossDetection = CosaDmlMTABasicInfoGetSpeedUpMTARFLossDetection(NULL);
+    return 0;
+}
+
 /***********************************************************************
 
  APIs for Object:
