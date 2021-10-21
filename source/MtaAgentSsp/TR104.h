@@ -23,7 +23,7 @@
 #ifndef INTEL_PUMA7
 #include <LatticeMtaTR104.h>
 #endif //INTEL_PUMA7
-#include <rbus.h>
+#include <rbus/rbus.h>
 #include "ccsp_trace.h"
 #include "ansc_platform.h"
 #include "mta_hal.h"
