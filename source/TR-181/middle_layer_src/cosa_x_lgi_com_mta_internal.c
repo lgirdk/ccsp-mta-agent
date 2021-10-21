@@ -93,6 +93,7 @@ CosaLgiMTAInitialize
 
     /* Initiation all functions */
 
+    pMyObject->RFLossDetection = CosaDmlMTABasicInfoGetSpeedUpMTARFLossDetection(NULL);
     CosaDmlLgiMTAInit(NULL, (PANSC_HANDLE)pMyObject);
 
     return returnStatus;
