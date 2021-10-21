@@ -78,6 +78,56 @@ X_LGI_COM_MTA_GetParamStringValue
     return -1;
 }
 
+
+BOOL X_LGI_COM_MTA_GetParamBoolValue ( ANSC_HANDLE hInsContext, char* ParamName, BOOL* pBool )
+{
+    PCOSA_DATAMODEL_LGI_MTA pMyObject = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+
+    if (strcmp(ParamName, "SpeedUpMTA-RFLossDetection") == 0)
+    {
+        *pBool = pMyObject->RFLossDetection;
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+BOOL X_LGI_COM_MTA_SetParamBoolValue ( ANSC_HANDLE hInsContext, char* ParamName, BOOL bValue )
+{
+    PCOSA_DATAMODEL_LGI_MTA pMyObject = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+
+    if (strcmp(ParamName, "SpeedUpMTA-RFLossDetection") == 0)
+    {
+        pMyObject->RFLossDetection = bValue;
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+BOOL X_LGI_COM_MTA_Validate ( ANSC_HANDLE hInsContext, char* pReturnParamName, ULONG* puLength )
+{
+    return TRUE;
+}
+
+ULONG X_LGI_COM_MTA_Commit ( ANSC_HANDLE hInsContext )
+{
+    PCOSA_DATAMODEL_LGI_MTA pMyObject = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+
+    CosaDmlMTABasicInfoSetSpeedUpMTARFLossDetection(pMyObject->RFLossDetection);
+
+    return 0;
+}
+
+ULONG X_LGI_COM_MTA_Rollback ( ANSC_HANDLE hInsContext )
+{
+    PCOSA_DATAMODEL_LGI_MTA pMyObject = (PCOSA_DATAMODEL_LGI_MTA)g_pCosaBEManager->hLgiMTA;
+
+    pMyObject->RFLossDetection = CosaDmlMTABasicInfoGetSpeedUpMTARFLossDetection(NULL);
+
+    return 0;
+}
+
 /***********************************************************************
 
  APIs for Object:
