@@ -11,6 +11,7 @@
     /* start of Lan config security object class content */                 \
     PCOSA_LGI_MTA_LINEINFO                      pLineInfo;                  \
     ULONG                                       PacketCableRegion;          \
+    BOOL                                        RFLossDetection;            \
 
 typedef  struct
 _COSA_DATAMODEL_LGI_MTA_CLASS_CONTENT
