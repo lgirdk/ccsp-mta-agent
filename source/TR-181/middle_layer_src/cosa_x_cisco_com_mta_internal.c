@@ -516,7 +516,7 @@ CosaMTAInitializeEthWanProvDhcpOption
             }
             else
             {
-                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n"));
+                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n", __FUNCTION__));
             }
                         /*Coverity Fix  CID:120996 RESOURCE_LEAK */
                         free(pMtaProv);
@@ -870,7 +870,7 @@ if(pMtaProv)
             }
             else
             {
-                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n"));
+                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n", __FUNCTION__));
             }
                         /* Coverity Fix CID:74083 RESOURCE_LEAK */
                         free(pMtaProv);
@@ -1096,7 +1096,7 @@ if(pMtaProv)
             }
             else
             {
-                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n"));
+                CcspTraceInfo(("%s: syscfg MTA_PROVISION successfully set to true\n", __FUNCTION__));
             }
 			status = ANSC_STATUS_SUCCESS;
                    
