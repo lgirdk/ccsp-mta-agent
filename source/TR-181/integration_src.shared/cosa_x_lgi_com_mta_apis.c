@@ -2,6 +2,7 @@
 //!!!  So it uses casting from one to the other
 #include "cosa_x_lgi_com_mta_apis.h"
 #include "mta_hal.h"
+#include <syscfg/syscfg.h>
 
 ANSC_STATUS
 CosaDmlLgiMTAInit
@@ -66,3 +67,34 @@ CosaDmlMTALineInfoSetAdminStatus
     else
         return ANSC_STATUS_FAILURE;
 }
+
+BOOL
+CosaDmlMTABasicInfoGetSpeedUpMTARFLossDetection
+    (
+        ANSC_HANDLE                 hContext
+    )
+{
+    char buf[BUFFER_LEN];
+    BOOL value = FALSE;
+    memset(buf, 0, sizeof(buf));
+    syscfg_get(NULL, "mta_rf_loss_detection", buf, sizeof(buf));
+    value = (strcmp(buf, "1") == 0);
+
+    return value;
+}
+
+int
+CosaDmlMTABasicInfoSetSpeedUpMTARFLossDetection
+    (
+        BOOL                 bValue
+    )
+{
+
+    if( syscfg_set(NULL, "mta_rf_loss_detection", bValue ? "1" : "0") == 0)
+    {
+        syscfg_commit();
+    }
+
+    return platform_hal_SetSpeedUpMTARFLossDetection(bValue);
+}
+
