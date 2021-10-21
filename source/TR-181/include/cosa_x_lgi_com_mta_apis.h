@@ -59,6 +59,8 @@ CosaDmlMTALineInfoSetAdminStatus
         ULONG                       ulValue
     );
 
+BOOL CosaDmlMTABasicInfoGetSpeedUpMTARFLossDetection ( ANSC_HANDLE hContext );
+int CosaDmlMTABasicInfoSetSpeedUpMTARFLossDetection ( BOOL bValue );
 
 #endif /* _COSA_LGI_MTA_APIS_H */
 
