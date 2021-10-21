@@ -4,6 +4,7 @@
 #include "cosa_apis.h"
 #include "plugin_main_apis.h"
 
+#define BUFFER_LEN               8
 /**********************************************************************
                 STRUCTURE AND CONSTANT DEFINITIONS
 **********************************************************************/
@@ -59,6 +60,16 @@ CosaDmlMTALineInfoSetAdminStatus
         ULONG                       ulValue
     );
 
+BOOL
+CosaDmlMTABasicInfoGetSpeedUpMTARFLossDetection
+    (
+        ANSC_HANDLE                 hContext
+    );
+int
+CosaDmlMTABasicInfoSetSpeedUpMTARFLossDetection
+    (
+        BOOL               bValue
+    );
 
 #endif /* _COSA_LGI_MTA_APIS_H */
 

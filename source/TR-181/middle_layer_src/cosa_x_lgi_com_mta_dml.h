@@ -1,6 +1,7 @@
 
 #ifndef  _COSA_LGI_MTA_DML_H
 #define  _COSA_LGI_MTA_DML_H
+#include "cosa_x_lgi_com_mta_apis.h"
 
 /***********************************************************************
 
@@ -20,6 +21,52 @@ X_LGI_COM_MTA_GetParamStringValue
         ULONG*                      pUlSize
     );
 
+/***********************************************************************
+
+ APIs for Object:
+   X_LGI_COM_MTA
+
+    *  X_LGI_COM_MTA_GetParamBoolValue
+    *  X_LGI_COM_MTA_SetParamBoolValue
+    *  X_LGI_COM_MTA_Validate
+    *  X_LGI_COM_MTA_Commit
+    *  X_LGI_COM_MTA_Rollback
+
+***********************************************************************/
+BOOL
+X_LGI_COM_MTA_GetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL*                       pBool
+    );
+BOOL
+X_LGI_COM_MTA_SetParamBoolValue
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       ParamName,
+        BOOL                        bValue
+    );
+BOOL
+X_LGI_COM_MTA_Validate
+    (
+        ANSC_HANDLE                 hInsContext,
+        char*                       pReturnParamName,
+        ULONG*                      puLength
+    );
+
+ULONG
+X_LGI_COM_MTA_Commit
+    (
+        ANSC_HANDLE                 hInsContext
+    );
+
+ULONG
+X_LGI_COM_MTA_Rollback
+    (
+        ANSC_HANDLE                 hInsContext
+    );
+    
 
 /***********************************************************************
 

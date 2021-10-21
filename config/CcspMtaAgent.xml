@@ -2643,6 +2643,11 @@
         <objectType>object</objectType>
         <functions>
             <func_GetParamStringValue>X_LGI_COM_MTA_GetParamStringValue</func_GetParamStringValue>
+            <func_GetParamBoolValue>X_LGI_COM_MTA_GetParamBoolValue</func_GetParamBoolValue>
+            <func_SetParamBoolValue>X_LGI_COM_MTA_SetParamBoolValue</func_SetParamBoolValue>
+            <func_Validate>X_LGI_COM_MTA_Validate</func_Validate>
+            <func_Commit>X_LGI_COM_MTA_Commit</func_Commit>
+            <func_Rollback>X_LGI_COM_MTA_Rollback</func_Rollback>
         </functions>
         <parameters>
             <parameter>
@@ -2650,6 +2655,16 @@
                 <type>string(64)</type>
                 <syntax>string</syntax>
                 <writable>false</writable>
+            </parameter>
+            <parameter>
+                 <name>SpeedUpMTA-RFLossDetection</name>
+                 <description>
+                      Control the ability for MTA to faster detect the loss
+                      of RF connectivity and consequentially drop dial tone.
+                  </description>
+                  <type>boolean</type>
+                  <syntax>bool</syntax>
+                  <writable>true</writable>
             </parameter>
         </parameters>
         <objects>
