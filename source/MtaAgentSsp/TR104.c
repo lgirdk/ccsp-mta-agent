@@ -21,6 +21,7 @@
 #include "TR104.h"
 char MTA_provision_status[2][20] = {"MTA_PROVISIONED", "MTA_NON_PROVISIONED"};
 #define MTA_PROVISIONED "MTA_PROVISIONED"
+#define PARAM_BUF_SIZE 128+8192  //DMCLI object name + type + string parameter (8192 bytes from TR104 spec) 
 
 ANSC_STATUS init_TR104_web_config();
 
@@ -291,7 +292,7 @@ rbusError_t TR104Services_SetHandler(rbusHandle_t handle, rbusProperty_t inPrope
     char *aParamDetail = NULL;
     CcspTraceInfo(("calling HAL set\n"));
     /* Arrive at length and do malloc; for now 512; */
-    aParamDetail = calloc (1, 512);
+    aParamDetail = calloc (1, PARAM_BUF_SIZE);
     if( aParamDetail != NULL )
     {
         char* pStrValue = rbusValue_ToString(value, NULL, 0);
@@ -299,33 +300,33 @@ rbusError_t TR104Services_SetHandler(rbusHandle_t handle, rbusProperty_t inPrope
         if (type == RBUS_BOOLEAN)
         {
             if (rbusValue_GetBoolean(value) == true)
-                sprintf(aParamDetail, "%s,%s,%s", name, "boolean", "true");
+                snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "boolean", "true");
             else
-                sprintf(aParamDetail, "%s,%s,%s", name, "boolean", "false");
+                snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "boolean", "false");
         }
         else if (type == RBUS_INT32)
         {
-            sprintf(aParamDetail, "%s,%s,%s", name, "int", pStrValue);
+            snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "int", pStrValue);
         }
         else if (type == RBUS_UINT32)
         {
-            sprintf(aParamDetail, "%s,%s,%s", name, "unsignedInt", pStrValue);
+            snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "unsignedInt", pStrValue);
         }
         else if (type == RBUS_INT64)
         {
-            sprintf(aParamDetail, "%s,%s,%s", name, "long", pStrValue);
+            snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "long", pStrValue);
         }
         else if (type == RBUS_UINT64)
         {
-            sprintf(aParamDetail, "%s,%s,%s", name, "unsignedLong", pStrValue);
+            snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "unsignedLong", pStrValue);
         }
         else if (type == RBUS_STRING)
         {
-            sprintf(aParamDetail, "%s,%s,%s", name, "string", pStrValue);
+            snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "string", pStrValue);
         }
         else if (type == RBUS_DATETIME)
         {
-            sprintf(aParamDetail, "%s,%s,%s", name, "dateTime", pStrValue);
+            snprintf(aParamDetail, PARAM_BUF_SIZE-1, "%s,%s,%s", name, "dateTime", pStrValue);
         }
 
         /* Free the pStrValue */
