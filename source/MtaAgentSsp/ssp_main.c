@@ -501,7 +501,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    CcspTraceInfo(("%s: syscfg_set success\n",__FUNCTION__));
+                    CcspTraceInfo(("%s: syscfg_set sucess\n", __FUNCTION__));
                 }
             }
             else

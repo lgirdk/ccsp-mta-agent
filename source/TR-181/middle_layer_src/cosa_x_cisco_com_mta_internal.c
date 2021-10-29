@@ -647,7 +647,7 @@ ANSC_STATUS CosaMTALineTableInitialize
     ULONG ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
 	errno_t                         rc            = -1;
 
-    CcspTraceWarning(("%s %d\n",__FUNCTION__, ulCount)); 
+    CcspTraceWarning(("%s %lu\n",__FUNCTION__, ulCount));
     pMyObject->LineTableCount = 0;
     
     if ( ulCount != 0 )

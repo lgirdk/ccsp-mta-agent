@@ -85,14 +85,14 @@ void TR104_free_TR181_resources(int total_params,char** aParamDetail)
     {
         if(aParamDetail[i])
         {
-            CcspTraceDebug(("%s:%d freeing aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,i,aParamDetail[i],sizeof(aParamDetail[i])));
+            CcspTraceDebug(("%s:%d freeing aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,i,aParamDetail[i],sizeof(aParamDetail[i])));
             free(aParamDetail[i]);
             aParamDetail[i]=NULL;
         }
     }
     if(aParamDetail)
     {
-        CcspTraceDebug(("%s:%d freeing aParamDetail at %p with size = %lu\n",__FUNCTION__,__LINE__,aParamDetail,sizeof(aParamDetail)));
+        CcspTraceDebug(("%s:%d freeing aParamDetail at %p with size = %u\n",__FUNCTION__,__LINE__,aParamDetail,sizeof(aParamDetail)));
         free(aParamDetail);
         aParamDetail=NULL;
     }
@@ -110,7 +110,7 @@ void TR104_Process_free_resources(void *arg)
     TR104_WebConfig_t* pTR104_WebConfig = (TR104_WebConfig_t*)blob_exec_data->user_data;
     if(blob_exec_data)
     {
-        CcspTraceDebug(("%s:%d freeing blob_exec_data at %p with size=%lu\n",__FUNCTION__,__LINE__,blob_exec_data,sizeof(blob_exec_data)));
+        CcspTraceDebug(("%s:%d freeing blob_exec_data at %p with size=%u\n",__FUNCTION__,__LINE__,blob_exec_data,sizeof(blob_exec_data)));
         free(blob_exec_data);
         blob_exec_data=NULL;
     }
@@ -125,28 +125,28 @@ void TR104_Process_free_resources(void *arg)
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].profileTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].profileTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].profileTable at %p with size = %lu\n",i,pTR104_WebConfig->voiceserviceTable[i].profileTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].profileTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].profileTable at %p with size = %u\n",i,pTR104_WebConfig->voiceserviceTable[i].profileTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].profileTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].profileTable);
                     pTR104_WebConfig->voiceserviceTable[i].profileTable=NULL;
                 }
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].potsTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].potsTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].potsTable at %p with size=%lu\n",i,pTR104_WebConfig->voiceserviceTable[i].potsTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].potsTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].potsTable at %p with size=%u\n",i,pTR104_WebConfig->voiceserviceTable[i].potsTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].potsTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].potsTable);
                     pTR104_WebConfig->voiceserviceTable[i].potsTable=NULL;
                 }
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].fxsTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].fxsTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].fxsTable at %p with size=%lu\n",i,pTR104_WebConfig->voiceserviceTable[i].fxsTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].fxsTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].fxsTable at %p with size=%u\n",i,pTR104_WebConfig->voiceserviceTable[i].fxsTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].fxsTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].fxsTable);
                     pTR104_WebConfig->voiceserviceTable[i].fxsTable=NULL;
                 }
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].neteworkTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].networkTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].networkTable at %p with size=%lu\n",i,pTR104_WebConfig->voiceserviceTable[i].networkTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].networkTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].networkTable at %p with size=%u\n",i,pTR104_WebConfig->voiceserviceTable[i].networkTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].networkTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].networkTable);
                     pTR104_WebConfig->voiceserviceTable[i].networkTable=NULL;
 
@@ -154,37 +154,37 @@ void TR104_Process_free_resources(void *arg)
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].operatorTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].operatorTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].operatorTable at %p with size=%lu\n",i,pTR104_WebConfig->voiceserviceTable[i].operatorTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].operatorTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].operatorTable at %p with size=%u\n",i,pTR104_WebConfig->voiceserviceTable[i].operatorTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].operatorTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].operatorTable);
                     pTR104_WebConfig->voiceserviceTable[i].operatorTable=NULL;
                 }
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].clientTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].clientTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].clientTable at %p with size = %lu\n",i,pTR104_WebConfig->voiceserviceTable[i].clientTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].clientTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].clientTable at %p with size = %u\n",i,pTR104_WebConfig->voiceserviceTable[i].clientTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].clientTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].clientTable);
                     pTR104_WebConfig->voiceserviceTable[i].clientTable=NULL;
                 }
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].lineTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].lineTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].lineTable at %p with size = %lu\n",i,pTR104_WebConfig->voiceserviceTable[i].lineTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].lineTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].lineTable at %p with size = %u\n",i,pTR104_WebConfig->voiceserviceTable[i].lineTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].lineTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].lineTable);
                     pTR104_WebConfig->voiceserviceTable[i].lineTable=NULL;
                 }
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].setTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].setTable)
                 {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].setTable at %p with size = %lu\n",i,pTR104_WebConfig->voiceserviceTable[i].setTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].setTable)));
+                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].setTable at %p with size = %u\n",i,pTR104_WebConfig->voiceserviceTable[i].setTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].setTable)));
                     free(pTR104_WebConfig->voiceserviceTable[i].setTable);
                     pTR104_WebConfig->voiceserviceTable[i].setTable=NULL;
                 }
             }
         }
-        CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable at %p with size = %lu\n",pTR104_WebConfig->voiceserviceTable,sizeof(pTR104_WebConfig->voiceserviceTable)));
+        CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable at %p with size = %u\n",pTR104_WebConfig->voiceserviceTable,sizeof(pTR104_WebConfig->voiceserviceTable)));
         free(pTR104_WebConfig->voiceserviceTable);
         pTR104_WebConfig->voiceserviceTable=NULL;
-        CcspTraceDebug(("freeing pTR104_WebConfig at %p with size = %lu\n",pTR104_WebConfig,sizeof(pTR104_WebConfig)));
+        CcspTraceDebug(("freeing pTR104_WebConfig at %p with size = %u\n",pTR104_WebConfig,sizeof(pTR104_WebConfig)));
         free(pTR104_WebConfig);
         pTR104_WebConfig=NULL;
         CcspTraceInfo(("%s:Success in Clearing TR104 webconfig resources\n",__FUNCTION__));
@@ -249,7 +249,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
         return execRetVal;
 
     }
-    CcspTraceDebug(("%s:%d allocated memory for aParamDetail at %p with size = %lu\n",__FUNCTION__,__LINE__,aParamDetail,sizeof(aParamDetail)));
+    CcspTraceDebug(("%s:%d allocated memory for aParamDetail at %p with size = %u\n",__FUNCTION__,__LINE__,aParamDetail,sizeof(aParamDetail)));
     CcspTraceInfo(("aParamDetail has been allocated memory for %d char pointers\n",total_params));
     for(i=0;i<pTR104_WebConfig->voiceservice_count;i++)
     {
@@ -259,7 +259,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.POTS.X_RDKCENTRAL-COM_LocalTimeZone",i+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].potsTable[j].LocalTimeZone);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -276,7 +276,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.RegistrarServer",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].RegistrarServer);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -290,7 +290,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.RegistrarServerPort",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%d","unsignedInt",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].RegistrarServerPort);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -304,7 +304,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.ProxyServer",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].ProxyServer);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -318,7 +318,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.ProxyServerPort",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%d","unsignedInt",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].ProxyServerPort);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -335,7 +335,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.X_RDKCENTRAL-COM_Operator.%d.Domain",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].operatorTable[j].Domain);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -352,7 +352,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Client.%d.X_RDKCENTRAL-COM_IMPU.IMPUId",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].IMPUId);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -366,7 +366,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Client.%d.AuthUserName",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].AuthUserName);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -380,7 +380,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Client.%d.AuthPassword",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].AuthPassword);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -397,7 +397,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.CallControl.Line.%d.Enable",i+1,j+1);
                 if(pTR104_WebConfig->voiceserviceTable[i].lineTable[j].Enable == true)
                 {
@@ -425,7 +425,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.CallControl.CallingFeatures.Set.%d.CallWaitingEnable",i+1,j+1);
                 if(pTR104_WebConfig->voiceserviceTable[i].setTable[j].CallWaitingEnable == true)
                 {
@@ -452,7 +452,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.VoIPProfile.%d.X_RDKCENTRAL-COM_Device.DevEnabled",i+1,j+1);
                 if(pTR104_WebConfig->voiceserviceTable[i].profileTable[j].DevEnabled == true)
                 {
@@ -478,7 +478,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             aParamDetail[index] = (char*)malloc(512*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %lu\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
+                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.POTS.FXS.%d.Enable",i+1,j+1);
                 if(pTR104_WebConfig->voiceserviceTable[i].fxsTable[j].Enable == true)
                 {
@@ -560,7 +560,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
                     fread (buffer, 1, length+1, fptr_dummy);
                     fputs(buffer,fptr);
                 }
-                CcspTraceDebug(("%s:base64 has been copied to original file with length=%lu\n",__FUNCTION__,length));
+                CcspTraceDebug(("%s:base64 has been copied to original file with length=%u\n",__FUNCTION__,length));
                 fclose(fptr_dummy);
                 remove("/nvram/.vsb64_temp.txt");
                 free(buffer);
@@ -990,7 +990,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                     e->profile_count=0;
                     return RETURN_ERR;
                 }
-                CcspTraceDebug(("%s:%d allocated memory for profileTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->profileTable,sizeof(e->profileTable)));
+                CcspTraceDebug(("%s:%d allocated memory for profileTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->profileTable,sizeof(e->profileTable)));
                 CcspTraceDebug(("Profile Table Count=%d\n",e->profile_count));
                 memset( e->profileTable,0,sizeof(VoIPProfile_Table_t)*e->profile_count);
                 for(j=0;j<e->profile_count;j++)
@@ -1020,7 +1020,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                 }
                 CcspTraceDebug(("FXS Table count = %d\n",e->fxs_count));
                 memset(e->fxsTable,0,sizeof(FXS_Table_t)*e->fxs_count);
-                CcspTraceDebug(("%s:%d allocated memory for fxsTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->fxsTable,sizeof(e->fxsTable)));
+                CcspTraceDebug(("%s:%d allocated memory for fxsTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->fxsTable,sizeof(e->fxsTable)));
                 for(j=0;j<e->fxs_count;j++)
                 {
                     if( MSGPACK_OBJECT_MAP != p->val.via.array.ptr[j].type )
@@ -1048,7 +1048,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                 }
                 CcspTraceDebug(("Network Table count = %d\n",e->network_count));
                 memset(e->networkTable,0,sizeof(Network_Table_t)*e->network_count);
-                CcspTraceDebug(("%s:%d allocated memory for networkTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->networkTable,sizeof(e->networkTable)));
+                CcspTraceDebug(("%s:%d allocated memory for networkTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->networkTable,sizeof(e->networkTable)));
                 for(j=0;j<e->network_count;j++)
                 {
                     if( MSGPACK_OBJECT_MAP != p->val.via.array.ptr[j].type )
@@ -1076,7 +1076,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                 }
                 CcspTraceDebug(("Operator Table count = %d\n",e->operator_count));
                 memset(e->operatorTable,0,sizeof(Operator_Table_t)*e->operator_count);
-                CcspTraceDebug(("%s:%d allocated memory for operatorTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->operatorTable,sizeof(e->operatorTable)));
+                CcspTraceDebug(("%s:%d allocated memory for operatorTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->operatorTable,sizeof(e->operatorTable)));
                 for(j=0;j<e->operator_count;j++)
                 {
                     if( MSGPACK_OBJECT_MAP != p->val.via.array.ptr[j].type )
@@ -1104,7 +1104,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                 }
                 CcspTraceDebug(("Client Table count = %d\n",e->client_count));
                 memset(e->clientTable,0,sizeof(Client_Table_t)*e->client_count);
-                CcspTraceDebug(("%s:%d allocated memory for clientTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->clientTable,sizeof(e->clientTable)));
+                CcspTraceDebug(("%s:%d allocated memory for clientTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->clientTable,sizeof(e->clientTable)));
                 CcspTraceDebug(("Client Table memset completed\n"));
                 for(j=0;j<e->client_count;j++)
                 {
@@ -1133,7 +1133,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                 }
                 CcspTraceDebug(("Line Table count = %d\n",e->line_count));
                 memset(e->lineTable,0,sizeof(Line_Table_t)*e->line_count);
-                CcspTraceDebug(("%s:%d allocated memory for lineTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->lineTable,sizeof(e->lineTable)));
+                CcspTraceDebug(("%s:%d allocated memory for lineTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->lineTable,sizeof(e->lineTable)));
                 for(j=0;j<e->line_count;j++)
                 {
                     if( MSGPACK_OBJECT_MAP != p->val.via.array.ptr[j].type )
@@ -1161,7 +1161,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                 }
                 CcspTraceDebug(("Set Table count = %d\n",e->set_count));
                 memset(e->setTable,0,sizeof(Set_Table_t)*e->set_count);
-                CcspTraceDebug(("%s:%d allocated memory for setTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->setTable,sizeof(e->setTable)));
+                CcspTraceDebug(("%s:%d allocated memory for setTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->setTable,sizeof(e->setTable)));
                 for(j=0;j<e->set_count;j++)
                 {
                     if( MSGPACK_OBJECT_MAP != p->val.via.array.ptr[j].type )
@@ -1194,7 +1194,7 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
                     return RETURN_ERR;
                 }
                 e->pots_count=1;
-                CcspTraceDebug(("%s:%d allocated memory for potsTable at %p with size = %lu\n",__FUNCTION__,__LINE__,e->potsTable,sizeof(POTS_Table_t)));
+                CcspTraceDebug(("%s:%d allocated memory for potsTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->potsTable,sizeof(POTS_Table_t)));
                 memset( e->potsTable,0,sizeof(POTS_Table_t));
                 if( MSGPACK_OBJECT_MAP != p->val.type )
                 {
@@ -1245,7 +1245,7 @@ int CosaDmlTR104DataSet(char* pString,int bootup)
         return RETURN_ERR;
     }
 
-    CcspTraceInfo(("%s:Msg unpack success. Offset is %lu pString=%s\n", __FUNCTION__,offset,pString));
+    CcspTraceInfo(("%s:Msg unpack success. Offset is %u pString=%s\n", __FUNCTION__,offset,pString));
     msgpack_object obj = msg.data;
 
     map = &msg.data.via.map;
@@ -1268,7 +1268,7 @@ int CosaDmlTR104DataSet(char* pString,int bootup)
     /* Allocate memory for TR104 structure*/
 
     pWebConfig = (TR104_WebConfig_t *) malloc(sizeof(TR104_WebConfig_t));
-    CcspTraceDebug(("%s:%d allocated memory for pWebConfig at %p with size = %lu\n",__FUNCTION__,__LINE__,pWebConfig,sizeof(pWebConfig)));
+    CcspTraceDebug(("%s:%d allocated memory for pWebConfig at %p with size = %u\n",__FUNCTION__,__LINE__,pWebConfig,sizeof(pWebConfig)));
     if ( pWebConfig == NULL )
     {
         CcspTraceError(("%s: TR104 Struct malloc error\n",__FUNCTION__));
@@ -1292,7 +1292,7 @@ int CosaDmlTR104DataSet(char* pString,int bootup)
         else if (strncmp(map_ptr->key.via.str.ptr, "version", map_ptr->key.via.str.size) == 0) {
             if (map_ptr->val.type == MSGPACK_OBJECT_POSITIVE_INTEGER) {
                 pWebConfig->version = (uint64_t) map_ptr->val.via.u64;
-                CcspTraceInfo(("Version type %d version %lu\n",map_ptr->val.type,pWebConfig->version));
+                CcspTraceInfo(("Version type %d version %llu\n",map_ptr->val.type,pWebConfig->version));
             }
         }
         else if (strncmp(map_ptr->key.via.str.ptr, "transaction_id", map_ptr->key.via.str.size) == 0) {
@@ -1312,7 +1312,7 @@ int CosaDmlTR104DataSet(char* pString,int bootup)
                 free(pWebConfig);
                 return RETURN_ERR;
             }
-            CcspTraceDebug(("%s:%d allocated memory for pWebConfig->voiceserviceTable at %p with size = %lu\n",__FUNCTION__,__LINE__,pWebConfig->voiceserviceTable,sizeof(pWebConfig->voiceserviceTable)));
+            CcspTraceDebug(("%s:%d allocated memory for pWebConfig->voiceserviceTable at %p with size = %u\n",__FUNCTION__,__LINE__,pWebConfig->voiceserviceTable,sizeof(pWebConfig->voiceserviceTable)));
             CcspTraceDebug(("voiceserviceTable count = %d\n",pWebConfig->voiceservice_count));
             memset(pWebConfig->voiceserviceTable,0,sizeof(VoiceService_Table_t)*pWebConfig->voiceservice_count);
             for(j=0;j<pWebConfig->voiceservice_count;j++)
@@ -1426,7 +1426,7 @@ ANSC_STATUS init_TR104_web_config()
         return RETURN_ERR;
     }
     memset(blobData, 0, TR104_SUBDOC_COUNT*sizeof(blobRegInfo));
-    CcspTraceDebug(("%s:%d allocated memory for blobData at %p with size %lu\n",__FUNCTION__,__LINE__,blobData,sizeof(blobData)));
+    CcspTraceDebug(("%s:%d allocated memory for blobData at %p with size %u\n",__FUNCTION__,__LINE__,blobData,sizeof(blobData)));
     blobDataPointer = blobData;
     for ( i = 0; i < TR104_SUBDOC_COUNT; i++ )
     {
