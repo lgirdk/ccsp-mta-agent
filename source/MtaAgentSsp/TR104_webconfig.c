@@ -228,14 +228,22 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             execRetVal->ErrorCode = TR104_HAL_FAILURE;
             sleep(30);
         }
-        if( strcmp(mta_provision_status[provisionStatus],MTA_PROVISIONED) )
+        else
         {
-            CcspTraceInfo(("%s %d provisionStatus = %s \n",__FUNCTION__,i,mta_provision_status[provisionStatus]));
-            execRetVal->ErrorCode = BLOB_EXEC_FAILURE;
-            sleep(30);
+            if( strcmp(mta_provision_status[provisionStatus],MTA_PROVISIONED) )
+            {
+                CcspTraceInfo(("%s %d provisionStatus = %s \n",__FUNCTION__,i,mta_provision_status[provisionStatus]));
+                execRetVal->ErrorCode = BLOB_EXEC_FAILURE;
+                sleep(30);
+            }
+            else
+            {
+                break;
+            }
         }
         if(i==9)
         {
+            CcspTraceError(("Tried for 10 times but it seems box is not MTA provisioned/ api is not able to provide the information\n"));
             return execRetVal;
         }
     }
@@ -510,7 +518,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             //retry logic is not needed if configuration is pushed through webconfig server
             if(isbootup==1)
             {
-                if(i==9)
+                if(j==9)
                 {
                     CcspTraceError(("hal api set for 10 times.So giving up as of now\n"));
                     TR104_free_TR181_resources(total_params,aParamDetail);
@@ -523,6 +531,7 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             {
                 TR104_free_TR181_resources(total_params,aParamDetail);
                 remove("/nvram/.vsb64_temp.txt");
+                CcspTraceError(("hal api set failed\n"));
                 return execRetVal;
             }
         }
