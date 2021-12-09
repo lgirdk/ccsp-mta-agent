@@ -7932,17 +7932,17 @@ EthernetWAN_MTA_GetParamIntValue
     if((!ind) && (rc == EOK))
     {
         /* collect value */
-            char isEthEnabled[64]={'\0'};
+            char isEthEnabled[64];
 
           if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
             {
                *pInt = pMyObject->pmtaprovinfo->StartupIPMode.ActiveValue;
-                return TRUE;
             } else {
+               *pInt = 0;
                 AnscTraceWarning(("Eth_wan not enabled : Invalid request\n"));
-                return FALSE;
-             }
+            }
+            return TRUE;
     }
     /* CcspTraceWarning(("Unsupported parameter '%s'\n", ParamName)); */
     return FALSE;
