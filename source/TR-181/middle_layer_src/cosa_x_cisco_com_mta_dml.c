@@ -7800,6 +7800,19 @@ BOOL VoiceService_SetParamStringValue(ANSC_HANDLE hInsContext, char* ParamName, 
     return ret;
 }
 
+ULONG VoiceService_GetParamStringValue ( ANSC_HANDLE hInsContext, char* ParamName, char* pValue, ULONG* pUlSize )
+{
+    UNREFERENCED_PARAMETER(hInsContext);
+
+    if (strcmp(ParamName, "Data") == 0)
+    {
+        snprintf(pValue, *pUlSize, "%s", "");
+        return 0;
+    }
+
+    return -1;
+}
+
 #define BS_SOURCE_WEBPA_STR "webpa"
 #define BS_SOURCE_RFC_STR "rfc"
 #define  PARTNER_ID_LEN  64
