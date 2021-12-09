@@ -2497,6 +2497,7 @@
       <functions>
 
         <func_SetParamStringValue>VoiceService_SetParamStringValue</func_SetParamStringValue>
+        <func_GetParamStringValue>VoiceService_GetParamStringValue</func_GetParamStringValue>
 
       </functions>
 
