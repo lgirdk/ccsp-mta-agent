@@ -261,7 +261,6 @@ void sig_handler(int sig)
 {
 
     CcspBaseIf_deadlock_detection_log_print(sig);
-	extern ANSC_HANDLE bus_handle;
     if ( sig == SIGINT ) {
     	signal(SIGINT, sig_handler); /* reset it to this function */
     	CcspTraceInfo(("SIGINT received!\n"));
@@ -270,12 +269,6 @@ void sig_handler(int sig)
     else if ( sig == SIGUSR1 ) {
     	signal(SIGUSR1, sig_handler); /* reset it to this function */
     	CcspTraceInfo(("SIGUSR1 received!\n"));
-	#ifndef DISABLE_LOGAGENT
-		RDKLogEnable = GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LoggerEnable");
-		RDKLogLevel = (char)GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_LogLevel");
-		MTA_RDKLogLevel = GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_MTA_LogLevel");
-		MTA_RDKLogEnable = (char)GetLogInfo(bus_handle,"eRT.","Device.LogAgent.X_RDKCENTRAL-COM_MTA_LoggerEnable");
-		#endif
     }
     else if ( sig == SIGUSR2 ) {
     	CcspTraceInfo(("SIGUSR2 received!\n"));
@@ -518,28 +511,6 @@ int main(int argc, char* argv[])
     }
     cmd_dispatch('e');
     
-    CcspTraceInfo(("MTA_DBG:-------Read Log Info\n"));
-    char buffer[5] = {0};
-    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_LoggerEnable" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
-    {
-        RDKLogEnable = (BOOL)atoi(buffer);
-    }
-    memset(buffer, 0, sizeof(buffer));
-    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_LogLevel" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
-    {
-        RDKLogLevel = (ULONG )atoi(buffer);
-    }
-    memset(buffer, 0, sizeof(buffer));
-    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_MTA_LogLevel" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
-    {
-        MTA_RDKLogLevel = (ULONG)atoi(buffer);
-    }
-    memset(buffer, 0, sizeof(buffer));
-    if( 0 == syscfg_get( NULL, "X_RDKCENTRAL-COM_MTA_LoggerEnable" , buffer, sizeof( buffer ) ) &&  ( buffer[0] != '\0' ) )
-    {
-        MTA_RDKLogEnable = (BOOL)atoi(buffer);
-    }
-    CcspTraceInfo(("MTA_DBG:-------Log Info values RDKLogEnable:%d,RDKLogLevel:%u,MTA_RDKLogLevel:%u,MTA_RDKLogEnable:%d\n",RDKLogEnable,RDKLogLevel,MTA_RDKLogLevel, MTA_RDKLogEnable ));
 // printf("Calling Docsis\n");
 
     // ICC_init();
