@@ -66,8 +66,14 @@
         01/11/2011    initial revision.
 
 **************************************************************************/
+/*
+   Define USE_PARTNER_ID to use partner ID to access some parameters
+*/
+//#define USE_PARTNER_ID
 
+#ifdef USE_PARTNER_ID
 #include <cjson/cJSON.h>
+#endif
 
 //!!!  This code assumes that all data structures are the SAME in middle-layer APIs and HAL layer APIs
 //!!!  So it uses casting from one to the other
@@ -77,8 +83,10 @@
 
 // #include "cosa_x_cisco_com_mta_internal.h"
 
+#ifdef USE_PARTNER_ID
 #define PARTNERS_INFO_FILE              "/nvram/partners_defaults.json"
 #define BOOTSTRAP_INFO_FILE             "/nvram/bootstrap.json"
+#endif
 
 ANSC_STATUS
 CosaDmlMTAInit
@@ -1112,6 +1120,8 @@ void CosaDmlMtaProvisioningStatusGet()
 
 }
 
+#ifdef USE_PARTNER_ID
+
 #define PARTNER_ID_LEN 64
 ANSC_STATUS fillCurrentPartnerId
         (
@@ -1578,3 +1588,38 @@ ANSC_STATUS UpdateJsonParam
 
          return ANSC_STATUS_SUCCESS;
 }
+
+#else
+
+static void FillParamUpdateSource (char *key, char *paramUpdateSource)
+{
+    char value_buf[128];
+    int ret;
+
+    ret = syscfg_get (NULL, key, value_buf, sizeof(value_buf));
+
+    if ((ret == 0) && (value_buf[0] != '\0'))
+    {
+        AnscCopyString(paramUpdateSource, value_buf);
+    }
+}
+
+ANSC_STATUS CosaMTAInitializeEthWanProvJournal (PCOSA_MTA_ETHWAN_PROV_INFO pmtaethpro)
+{
+    FillParamUpdateSource("StartupIPMode", pmtaethpro->StartupIPMode.UpdateSource);
+    FillParamUpdateSource("IPv4PrimaryDhcpServerOptions", pmtaethpro->IPv4PrimaryDhcpServerOptions.UpdateSource);
+    FillParamUpdateSource("IPv4SecondaryDhcpServerOptions", pmtaethpro->IPv4SecondaryDhcpServerOptions.UpdateSource);
+    FillParamUpdateSource("IPv6PrimaryDhcpServerOptions", pmtaethpro->IPv6PrimaryDhcpServerOptions.UpdateSource);
+    FillParamUpdateSource("IPv6SecondaryDhcpServerOptions", pmtaethpro->IPv6SecondaryDhcpServerOptions.UpdateSource);
+
+    return ANSC_STATUS_SUCCESS;
+}
+
+ANSC_STATUS UpdateJsonParam (char *pKey, char *PartnerId, char *pValue, char *pSource, char *pCurrentTime)
+{
+    CcspTraceWarning(("%s-%d : Skip updating to Partner JSON file... \n" , __FUNCTION__, __LINE__));
+
+    return ANSC_STATUS_FAILURE;
+}
+
+#endif // #ifdef USE_PARTNER_ID
