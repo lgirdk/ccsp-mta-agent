@@ -484,9 +484,6 @@ int main(int argc, char* argv[])
     printf("Registering PCD exception handler CcspMTAAgent\n");
     PCD_api_register_exception_handlers( argv[0], NULL );
 #endif
-    CcspTraceInfo(("calling syscfg_init\n"));
-    rc = syscfg_init();
-    CcspTraceInfo(("syscfg_returned=%d\n",rc));
     char eth_wan_enabled[8] = {'\0'};
     for(rc=0;rc<6;rc++)
     {
