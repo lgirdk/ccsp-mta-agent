@@ -94,7 +94,6 @@ int  cmd_dispatch(int  command)
     {
             case	'e' :
 
-#ifdef _ANSC_LINUX
                 CcspTraceInfo(("Connect to bus daemon...\n"));
 
             {
@@ -117,7 +116,6 @@ int  cmd_dispatch(int  command)
                     );
             }
 
-#endif
 
                 ssp_create_pnm(gpPnmStartCfg);
                 ssp_engage_pnm(gpPnmStartCfg);
@@ -211,7 +209,6 @@ static void _print_stack_backtrace(void)
 #endif
 }
 
-#if defined(_ANSC_LINUX)
 static void daemonize(void) {
 	switch (fork()) {
 	case 0:
@@ -355,7 +352,6 @@ int write_pid_file(const char *file)
     return 0;
 }
 
-#endif
 
 int main(int argc, char* argv[])
 {
@@ -420,31 +416,6 @@ int main(int argc, char* argv[])
          }
     }
 
-#if  defined(_ANSC_WINDOWSNT)
-
-    AnscStartupSocketWrapper(NULL);
-
-    display_info();
-
-    cmd_dispatch('e');
-
-    while ( cmdChar != 'q' )
-    {
-        cmdChar = getchar();
-        /*Coverity Fix CID:79619 CHECKED_RETURN */
-           if (cmdChar == EOF ) 
-           {  
-                  CcspTraceWarning(("Error:%s:%d cmdChar return as EOF \n",__FUNCTION__,__LINE__));
-                  
-           }
-           else
-           {
-                 cmd_dispatch(cmdChar);
-           }
-                    
-    }
-    
-#elif defined(_ANSC_LINUX)
 
     if ( bRunAsDaemon )
         daemonize();
@@ -746,7 +717,6 @@ retry:
       
         }
     }
-#endif
 
     err = Cdm_Term();
     if (err != CCSP_SUCCESS)
