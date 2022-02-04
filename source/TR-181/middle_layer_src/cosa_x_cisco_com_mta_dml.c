@@ -7860,12 +7860,8 @@ BOOL EthernetWAN_MTA_SetParamIntValue
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
             {
 		       snprintf(buff,sizeof(buff),"%d",pInt);
-               if (syscfg_set(NULL, "StartupIPMode", buff) != 0) {
+               if (syscfg_set_commit(NULL, "StartupIPMode", buff) != 0) {
                    AnscTraceWarning(("syscfg_set failed\n"));
-               } else {
-                   if (syscfg_commit() != 0) {
-                      AnscTraceWarning(("syscfg_commit failed\n"));
-                   }
                }
                CosaDmlMTASetStartUpIpMode(pMyObject->pmtaprovinfo, pInt);
                
@@ -8042,14 +8038,9 @@ EthernetWAN_MTA_SetParamStringValue
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv4PrimaryDhcpServerOptions.UpdateSource);
 
-                      if (syscfg_set(NULL, "IPv4PrimaryDhcpServerOptions", pString) != 0) 
+                      if (syscfg_set_commit(NULL, "IPv4PrimaryDhcpServerOptions", pString) != 0)
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
-                          } else {
-                             if (syscfg_commit() != 0) 
-                                {
-                                   AnscTraceWarning(("syscfg_commit failed\n"));
-                                }
                           }
                       CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
@@ -8074,14 +8065,9 @@ EthernetWAN_MTA_SetParamStringValue
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv4SecondaryDhcpServerOptions.UpdateSource);
 
-                      if (syscfg_set(NULL, "IPv4SecondaryDhcpServerOptions", pString) != 0) 
+                      if (syscfg_set_commit(NULL, "IPv4SecondaryDhcpServerOptions", pString) != 0)
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
-                          } else {
-                             if (syscfg_commit() != 0) 
-                                {
-                                   AnscTraceWarning(("syscfg_commit failed\n"));
-                                }
                           }
                       CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
@@ -8107,14 +8093,9 @@ EthernetWAN_MTA_SetParamStringValue
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv6PrimaryDhcpServerOptions.UpdateSource);
 
-                      if (syscfg_set(NULL, "IPv6PrimaryDhcpServerOptions", pString) != 0)
+                      if (syscfg_set_commit(NULL, "IPv6PrimaryDhcpServerOptions", pString) != 0)
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
-                          } else {
-                             if (syscfg_commit() != 0)
-                                {
-                                   AnscTraceWarning(("syscfg_commit failed\n"));
-                                }
                           }
                       CosaDmlMTASetPrimaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
@@ -8138,14 +8119,9 @@ EthernetWAN_MTA_SetParamStringValue
                   {
                       IS_UPDATE_ALLOWED_IN_JSON(ParamName, requestorStr, pMyObject->pmtaprovinfo->IPv6SecondaryDhcpServerOptions.UpdateSource);
 
-                      if (syscfg_set(NULL, "IPv6SecondaryDhcpServerOptions", pString) != 0)
+                      if (syscfg_set_commit(NULL, "IPv6SecondaryDhcpServerOptions", pString) != 0)
                           {
                               AnscTraceWarning(("syscfg_set failed\n"));
-                          } else {
-                             if (syscfg_commit() != 0)
-                                {
-                                   AnscTraceWarning(("syscfg_commit failed\n"));
-                                }
                           }
                       CosaDmlMTASetSecondaryDhcpServerOptions(pMyObject->pmtaprovinfo, pString, ip_type);
 
