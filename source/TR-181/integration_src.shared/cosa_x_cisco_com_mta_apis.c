@@ -1180,16 +1180,9 @@ void FillMissingSyscfgParam(cJSON *partnerObj, char *key, char *syscfgParam)
 		valuestr = paramObjVal->valuestring;
 	    if (valuestr != NULL)
 	    {
-		if (syscfg_set(NULL, syscfgParam, valuestr) != 0)
+		if (syscfg_set_commit(NULL, syscfgParam, valuestr) != 0)
 		{
 		    CcspTraceError(("%s - syscfg_set %s failed\n", __FUNCTION__,syscfgParam));
-		}
-		else
-		{
-		    if (syscfg_commit() != 0)
-		    {
-			CcspTraceError(("%s - syscfg_commit failed\n", __FUNCTION__));
-		    }
 		}
 	    }
 	    else
