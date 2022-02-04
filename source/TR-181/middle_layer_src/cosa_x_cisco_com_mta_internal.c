@@ -1255,11 +1255,6 @@ CosaMTAInitialize
     /* Initialize middle layer for Device.DeviceInfo.  */
     CosaDmlMTAInit(NULL, (PANSC_HANDLE)pMyObject);
 
-    if (syscfg_init() != 0)
-    {
-        CcspTraceError(("syscfg init Failed '%s'\n", __FUNCTION__));
-    }
-
    #ifdef ENABLE_ETH_WAN
    char isEthEnabled[64]={'\0'};
    if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) && ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
