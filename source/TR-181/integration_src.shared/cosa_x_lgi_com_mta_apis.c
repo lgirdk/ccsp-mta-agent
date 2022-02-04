@@ -81,10 +81,7 @@ BOOL CosaDmlMTABasicInfoGetSpeedUpMTARFLossDetection ( ANSC_HANDLE hContext )
 
 int CosaDmlMTABasicInfoSetSpeedUpMTARFLossDetection ( BOOL bValue )
 {
-    if (syscfg_set(NULL, "mta_rf_loss_detection", bValue ? "1" : "0") == 0)
-    {
-        syscfg_commit();
-    }
+    syscfg_set_commit(NULL, "mta_rf_loss_detection", bValue ? "1" : "0");
 
     return platform_hal_SetSpeedUpMTARFLossDetection(bValue);
 }
