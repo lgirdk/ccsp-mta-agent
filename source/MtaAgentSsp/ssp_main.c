@@ -55,7 +55,7 @@
 #define DEBUG_INI_NAME  "/etc/debug.ini"
 #ifdef MTA_TR104SUPPORT
 #include "TR104.h"
-#define TR104_ENABLE "TR104Enable"
+#define TR104_ENABLE "TR104enable"
 #include "webconfig_framework.h"
 int CosaDmlTR104DataSet(char *pString,int bootup);
 #endif

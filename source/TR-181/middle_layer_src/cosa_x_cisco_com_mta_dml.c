@@ -7769,7 +7769,7 @@ BOOL VoiceService_SetParamStringValue(ANSC_HANDLE hInsContext, char* ParamName, 
     if(CCSP_Msg_IsRbus_enabled())
     {
         char value[8] = {'\0'};
-        if((syscfg_get(NULL,"TR104Enable", value, sizeof(value)) == 0) && (strcmp(value, "true") == 0))
+        if((syscfg_get(NULL,"TR104enable", value, sizeof(value)) == 0) && (strcmp(value, "true") == 0))
         {
             if( AnscEqualString(ParamName, "Data", TRUE) )
             {
