@@ -125,8 +125,6 @@ CosaMTACreate
         return  (ANSC_HANDLE)NULL;
     }
 
-    AnscZeroMemory(pMyObject, sizeof(COSA_DATAMODEL_MTA));
-
     /*
      * Initialize the common variables and functions for a container object.
      */
@@ -209,8 +207,6 @@ CosaMTAInitializeEthWanProvDhcpOption
               free(pMtaProv);
              return ANSC_STATUS_FAILURE;
          }    
-	 rc = memset_s(pMyObject->pmtaprovinfo, sizeof(COSA_MTA_ETHWAN_PROV_INFO), 0, sizeof(COSA_MTA_ETHWAN_PROV_INFO));
-         ERR_CHK(rc);
 
 	 char Ip_Pref [MAX_IP_PREF_VAL] = { 0 }, Ipv4_Primary[MAX_IPV4_HEX_VAL] = {0}, Ipv4_Secondary[MAX_IPV4_HEX_VAL] = {0}, Ipv6_Primary[MAX_IPV6_HEX_VAL] = {0} , Ipv6_Secondary[MAX_IPV6_HEX_VAL] = {0};
 
@@ -645,7 +641,6 @@ ANSC_STATUS CosaMTALineTableInitialize
     PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
     PCOSA_MTA_LINETABLE_INFO pLineTable    = (PCOSA_MTA_LINETABLE_INFO)pMyObject->pLineTable;
     ULONG ulCount = CosaDmlMTALineTableGetNumberOfEntries(NULL);
-	errno_t                         rc            = -1;
 
     CcspTraceWarning(("%s %lu\n",__FUNCTION__, ulCount));
     pMyObject->LineTableCount = 0;
@@ -656,8 +651,6 @@ ANSC_STATUS CosaMTALineTableInitialize
         
         if(pLineTable != NULL)
         {
-            rc = memset_s( pLineTable, ulCount * sizeof(COSA_MTA_LINETABLE_INFO), 0, ulCount * sizeof(COSA_MTA_LINETABLE_INFO));
-            ERR_CHK(rc);
             ULONG ul=0;
             for (ul=0; ul<ulCount; ul++)
             {
@@ -689,8 +682,6 @@ CosaMTAInitializeEthWanProv
 
  PCOSA_DATAMODEL_MTA      pMyObject    = (PCOSA_DATAMODEL_MTA)hThisObject;
  pMyObject->pmtaprovinfo = (PCOSA_MTA_ETHWAN_PROV_INFO)AnscAllocateMemory(sizeof(COSA_MTA_ETHWAN_PROV_INFO));
- rc = memset_s(pMyObject->pmtaprovinfo,sizeof(COSA_MTA_ETHWAN_PROV_INFO), 0, sizeof(COSA_MTA_ETHWAN_PROV_INFO));
- ERR_CHK(rc);
 
  CosaMTAInitializeEthWanProvJournal(pMyObject->pmtaprovinfo);
 
