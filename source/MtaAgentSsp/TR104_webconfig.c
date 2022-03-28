@@ -26,8 +26,8 @@ typedef struct
 }FXS_Table_t;
 typedef struct
 {
-    char RegistrarServer[64];
-    int RegistrarServerPort;
+/* NETWORK_TABLE_MEMBER_COUNT has to be updated accordance with number of members of the structure */
+#define NETWORK_TABLE_MEMBER_COUNT 2
     char ProxyServer[64];
     int ProxyServerPort;
 }Network_Table_t;
@@ -37,14 +37,12 @@ typedef struct
 }Operator_Table_t;
 typedef struct
 {
+/* CLIENT_TABLE_MEMBER_COUNT has to be updated accordance with number of members of the structure */
+#define CLIENT_TABLE_MEMBER_COUNT 3
     char IMPUId[64];
     char AuthUserName[64];
     char AuthPassword[64];
 }Client_Table_t;
-typedef struct
-{
-    bool Enable;
-}Line_Table_t;
 typedef struct
 {
     bool CallWaitingEnable;
@@ -63,8 +61,6 @@ typedef struct
     Operator_Table_t* operatorTable;
     int client_count;
     Client_Table_t* clientTable;
-    int line_count;
-    Line_Table_t* lineTable;
     int set_count;
     Set_Table_t* setTable;
 }VoiceService_Table_t;
@@ -165,13 +161,6 @@ void TR104_Process_free_resources(void *arg)
                     free(pTR104_WebConfig->voiceserviceTable[i].clientTable);
                     pTR104_WebConfig->voiceserviceTable[i].clientTable=NULL;
                 }
-                CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].lineTable is null or not\n",i));
-                if(pTR104_WebConfig->voiceserviceTable[i].lineTable)
-                {
-                    CcspTraceDebug(("freeing pTR104_WebConfig->voiceserviceTable[%d].lineTable at %p with size = %u\n",i,pTR104_WebConfig->voiceserviceTable[i].lineTable,sizeof(pTR104_WebConfig->voiceserviceTable[i].lineTable)));
-                    free(pTR104_WebConfig->voiceserviceTable[i].lineTable);
-                    pTR104_WebConfig->voiceserviceTable[i].lineTable=NULL;
-                }
                 CcspTraceDebug(("check pTR104_WebConfig->voiceserviceTable[%d].setTable is null or not\n",i));
                 if(pTR104_WebConfig->voiceserviceTable[i].setTable)
                 {
@@ -198,8 +187,8 @@ int param_count(TR104_WebConfig_t* pTR104_WebConfig)
     CcspTraceDebug(("voiceservice_count=%d\n",pTR104_WebConfig->voiceservice_count));
     for(i=0;i<pTR104_WebConfig->voiceservice_count;i++)
     {
-        CcspTraceDebug(("profile_count=%d\npots_count=%d\nfxs_count=%d\nnetwok_count=%d\nclient_count=%d\noperator_count=%d\nline_count=%d\nset_count=%d\n",pTR104_WebConfig->voiceserviceTable[i].profile_count,pTR104_WebConfig->voiceserviceTable[i].pots_count,pTR104_WebConfig->voiceserviceTable[i].fxs_count,(pTR104_WebConfig->voiceserviceTable[i].network_count*4),(pTR104_WebConfig->voiceserviceTable[i].client_count*3),pTR104_WebConfig->voiceserviceTable[i].operator_count,pTR104_WebConfig->voiceserviceTable[i].line_count,pTR104_WebConfig->voiceserviceTable[i].set_count));
-        count+=pTR104_WebConfig->voiceserviceTable[i].profile_count+pTR104_WebConfig->voiceserviceTable[i].fxs_count+(pTR104_WebConfig->voiceserviceTable[i].network_count*4)+(pTR104_WebConfig->voiceserviceTable[i].client_count*3)+pTR104_WebConfig->voiceserviceTable[i].operator_count+pTR104_WebConfig->voiceserviceTable[i].line_count+pTR104_WebConfig->voiceserviceTable[i].set_count+pTR104_WebConfig->voiceserviceTable[i].pots_count;
+        CcspTraceDebug(("profile_count=%d\npots_count=%d\nfxs_count=%d\nnetwok_count=%d\nclient_count=%d\noperator_count=%d\nset_count=%d\n",pTR104_WebConfig->voiceserviceTable[i].profile_count,pTR104_WebConfig->voiceserviceTable[i].pots_count,pTR104_WebConfig->voiceserviceTable[i].fxs_count,(pTR104_WebConfig->voiceserviceTable[i].network_count*NETWORK_TABLE_MEMBER_COUNT),(pTR104_WebConfig->voiceserviceTable[i].client_count*CLIENT_TABLE_MEMBER_COUNT),pTR104_WebConfig->voiceserviceTable[i].operator_count,pTR104_WebConfig->voiceserviceTable[i].set_count));
+        count+=pTR104_WebConfig->voiceserviceTable[i].profile_count+pTR104_WebConfig->voiceserviceTable[i].fxs_count+(pTR104_WebConfig->voiceserviceTable[i].network_count*NETWORK_TABLE_MEMBER_COUNT)+(pTR104_WebConfig->voiceserviceTable[i].client_count*CLIENT_TABLE_MEMBER_COUNT)+pTR104_WebConfig->voiceserviceTable[i].operator_count+pTR104_WebConfig->voiceserviceTable[i].set_count+pTR104_WebConfig->voiceserviceTable[i].pots_count;
     }
     CcspTraceInfo(("total number of parameters received from blob=%d\n",count));
     return count;
@@ -285,34 +274,6 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.RegistrarServer",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].RegistrarServer);
-                CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
-                index++;
-            }
-            else
-            {
-                TR104_free_TR181_resources(total_params,aParamDetail);
-                return execRetVal;
-            }
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
-            if( aParamDetail[index] != NULL )
-            {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.RegistrarServerPort",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%d","unsignedInt",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].RegistrarServerPort);
-                CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
-                index++;
-            }
-            else
-            {
-                TR104_free_TR181_resources(total_params,aParamDetail);
-                return execRetVal;
-            }
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
-            if( aParamDetail[index] != NULL )
-            {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.ProxyServer",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].ProxyServer);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
@@ -392,34 +353,6 @@ pErr TR104_Process_Webconfig_Request(void *Data)
                 sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Client.%d.AuthPassword",i+1,j+1);
                 sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].AuthPassword);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
-                index++;
-            }
-            else
-            {
-                TR104_free_TR181_resources(total_params,aParamDetail);
-                return execRetVal;
-            }
-        }
-        for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].line_count;j++)
-        {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
-            if( aParamDetail[index] != NULL )
-            {
-                CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.CallControl.Line.%d.Enable",i+1,j+1);
-                if(pTR104_WebConfig->voiceserviceTable[i].lineTable[j].Enable == true)
-                {
-                    CcspTraceDebug(("%s:%d sending value true to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]), ",%s,%s", "boolean","true");
-                    CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
-                }
-                else if(pTR104_WebConfig->voiceserviceTable[i].lineTable[j].Enable == false)
-                {
-                    CcspTraceDebug(("%s:%d sending value false to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]), ",%s,%s", "boolean","false");
-                    CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
-                }
-
                 index++;
             }
             else
@@ -712,34 +645,9 @@ int WebConfig_Process_network_Params(Network_Table_t* e,msgpack_object_map *map)
     {
         if (strncmp(p->key.via.str.ptr,"RegistrarServer",p->key.via.str.size) == 0)
         {
-            if (p->val.type == MSGPACK_OBJECT_STR)
-            {
-                strncpy(e->RegistrarServer,p->val.via.str.ptr,p->val.via.str.size);
-                e->RegistrarServer[p->val.via.str.size]='\0';
-                CcspTraceDebug(("String %s copied to RegistrarSrver\n",e->RegistrarServer));
-            }
-            else
-            {
-                CcspTraceError(("%s: object type is not string\n",__FUNCTION__));
-                return VALIDATION_FALIED;
-            }
         }
         else if(strncmp(p->key.via.str.ptr,"RegistrarServerPort",p->key.via.str.size) == 0)
         {
-            if(p->val.type == MSGPACK_OBJECT_POSITIVE_INTEGER)
-            {
-                CcspTraceDebug(("assigning the positive integer value to RegistrarServerPort\n"));
-                e->RegistrarServerPort=p->val.via.u64;
-            }
-            else if(p->val.type == MSGPACK_OBJECT_NEGATIVE_INTEGER)
-            {
-                CcspTraceDebug(("assigning the negative integer value to RegistrarServerPort\n"));
-                e->RegistrarServerPort=p->val.via.i64;
-            }
-            else
-            {
-                CcspTraceDebug(("RegistrarServerPort neither +ve nor -ve\n"));
-            }
         }
         else if(strncmp(p->key.via.str.ptr,"ProxyServer",p->key.via.str.size) == 0)
         {
@@ -886,47 +794,6 @@ int WebConfig_Process_client_Params(Client_Table_t* e,msgpack_object_map *map)
         }
         CcspTraceDebug(("i=%d\n",i));
         p++;
-    }
-    return RETURN_OK;
-}
-
-int WebConfig_Process_line_Params(Line_Table_t* e,msgpack_object_map *map)
-{
-    CcspTraceDebug(("Entering %s...\n",__FUNCTION__));
-    msgpack_object_kv *p = map->ptr;
-
-    //Validate param
-    if( NULL == p )
-    {
-        CcspTraceError(("%s Invalid Pointer\n", __FUNCTION__));
-        return RETURN_ERR;
-    }
-    CcspTraceDebug(("comparing Enable\n"));
-    if (strncmp(p->key.via.str.ptr,"Enable",p->key.via.str.size) == 0)
-    {
-        if (p->val.type == MSGPACK_OBJECT_BOOLEAN)
-        {
-            if (p->val.via.boolean)
-            {
-                CcspTraceDebug(("assigning true value to enable\n"));
-                e->Enable = true;
-            }
-            else
-            {
-                CcspTraceDebug(("assigning false to enable\n"));
-                e->Enable = false;
-            }
-        }
-        else
-        {
-            CcspTraceError(("object type is not boolean\n"));
-            return VALIDATION_FALIED;
-        }
-    }
-    else
-    {
-        CcspTraceError(("object name mismatch\n"));
-        return VALIDATION_FALIED;
     }
     return RETURN_OK;
 }
@@ -1132,31 +999,6 @@ int WebConfig_Process_voiceservice_Params(VoiceService_Table_t* e, msgpack_objec
             }
             else if(strncmp(p->key.via.str.ptr, "Line",p->key.via.str.size) == 0)
             {
-                CcspTraceDebug(("Line comparision success at i=%d\n",i));
-                e->line_count=p->val.via.array.size;
-                e->lineTable=(Line_Table_t*)malloc(sizeof(Line_Table_t)*e->line_count);
-                if(e->lineTable==NULL)
-                {
-                    e->line_count=0;
-                    return RETURN_ERR;
-                }
-                CcspTraceDebug(("Line Table count = %d\n",e->line_count));
-                memset(e->lineTable,0,sizeof(Line_Table_t)*e->line_count);
-                CcspTraceDebug(("%s:%d allocated memory for lineTable at %p with size = %u\n",__FUNCTION__,__LINE__,e->lineTable,sizeof(e->lineTable)));
-                for(j=0;j<e->line_count;j++)
-                {
-                    if( MSGPACK_OBJECT_MAP != p->val.via.array.ptr[j].type )
-                    {
-                        CcspTraceError(("%s %d - Invalid OBJECT \n",__FUNCTION__,__LINE__));
-                        return VALIDATION_FALIED;
-                    }
-                    CcspTraceDebug(("calling WebConfig_Process_line_Params for %d time\n",j+1));
-                    rc = WebConfig_Process_line_Params(&e->lineTable[j], &p->val.via.array.ptr[j].via.map);
-                    if( RETURN_OK != rc)
-                    {
-                        return rc;
-                    }
-                }
             }
             else if(strncmp(p->key.via.str.ptr, "Set",p->key.via.str.size) == 0)
             {
