@@ -749,11 +749,8 @@ X_CISCO_COM_MTA_GetParamUlongValue
         return TRUE;
     }
 
-    /* check the parameter name and return the corresponding value */
-    rc = strncmp("pktc", ParamName, strlen("pktc"));
-    ERR_CHK(rc);
-    
-    if (rc == EOK)
+    /* check the parameter name and return the corresponding value */   
+    if ((strncmp("pktc", ParamName, strlen("pktc"))) == 0)
     {
         /* collect value */
         if (CosaDmlMTAGetPktc(NULL, pPktc) != ANSC_STATUS_SUCCESS) 
@@ -814,7 +811,7 @@ X_CISCO_COM_MTA_GetParamUlongValue
             *puLong = pPktc->pktcMtaDevRealmPkinitGracePeriod;
             return TRUE;
         }    
-    } 
+    }
     else 
     {
         if (CosaDmlMTAGetDHCPInfo(NULL, &Info) != ANSC_STATUS_SUCCESS)
