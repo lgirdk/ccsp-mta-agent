@@ -242,6 +242,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 	if ( ( 0 == strncmp(Ipv4_Primary,"00000000",8) ) || ( 0 == strncmp(Ipv6_Primary,"00000000",8) ) )
 	{
 	    CcspTraceWarning(("%s Received 0's from dhcp sever ,not initializing MTA \n",__FUNCTION__));
+		free(pMtaProv);
 		return ANSC_STATUS_FAILURE;
 	} 
       
