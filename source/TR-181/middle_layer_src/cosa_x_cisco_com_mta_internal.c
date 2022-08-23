@@ -526,8 +526,6 @@ CosaMTAInitializeEthWanProvDhcpOption
                         free(pMtaProv);
 			return ANSC_STATUS_FAILURE;
 		}
-     #else
-                free(pMtaProv);
      #endif
      free(pMtaProv);
      return ANSC_STATUS_SUCCESS;
