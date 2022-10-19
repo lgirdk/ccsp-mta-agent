@@ -993,9 +993,10 @@ CosaDmlMTASetPrimaryDhcpServerOptions
 {
     if(type == MTA_IPV4_TR)
         {
-           AnscCopyMemory(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue));
+           /*CID :173127 Out-of-bounds access (OVERRUN) */
+           AnscCopyMemory(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue)-1);
         } else if(type == MTA_IPV6_TR) {
-           AnscCopyMemory(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue));
+           AnscCopyMemory(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue)-1);
         } 
   return ANSC_STATUS_SUCCESS;
 }
@@ -1010,9 +1011,10 @@ CosaDmlMTASetSecondaryDhcpServerOptions
 {
     if(type == MTA_IPV4_TR)
         {
-            AnscCopyMemory(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue));
+	    /* CID :173125 Out-of-bounds access (OVERRUN) */
+            AnscCopyMemory(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue)-1);
         }  else if (type == MTA_IPV6_TR) {
-            AnscCopyMemory(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue));
+            AnscCopyMemory(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue)-1);
         }
      return ANSC_STATUS_SUCCESS;
 }
@@ -1276,7 +1278,8 @@ CosaMTAInitializeEthWanProvJournal
                /*Coverity CID Fix :60325 CHECKED_RETURN */
                if( fread( data, 1, len, fileRead ) < (len*sizeof(char)) )
                      CcspTraceWarning(("%s-%d : fread  failed \n", __FUNCTION__, __LINE__));
-
+	       /*CID :135523 String not null terminated (STRING_NULL) */
+               data[len] = '\0';
 			
          }
          else

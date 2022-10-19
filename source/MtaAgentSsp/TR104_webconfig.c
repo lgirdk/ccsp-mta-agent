@@ -1224,6 +1224,9 @@ int CosaDmlTR104DataSet(char* pString,int bootup)
         }
     }
     AnscFreeMemory(webConf);
+    /* CID :190016  Resource leak (RESOURCE_LEAK) */
+    free(pWebConfig);
+    pWebConfig = NULL;
     return RETURN_OK;
 }
 unsigned int getTr104DataBlobVersion(char *pSubDoc)

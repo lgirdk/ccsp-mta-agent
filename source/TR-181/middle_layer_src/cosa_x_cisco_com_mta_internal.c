@@ -694,9 +694,10 @@ if(pMtaProv)
 	   {
 		sscanf( buffer, "%d", &MtaIPMode );
 		printf("MtaIPMode = %d\n",MtaIPMode);
-		pMtaProv->MtaIPMode = MtaIPMode;
 	   }
 	}
+	/* CID 173808: Uninitialized scalar variable*/
+	pMtaProv->MtaIPMode = MtaIPMode;
         CosaDmlMTASetStartUpIpMode(pMyObject->pmtaprovinfo,MtaIPMode);
         ip_type = MTA_IPV4_TR;
 		rc = memset_s(buffer, sizeof(buffer), 0, sizeof(buffer));
