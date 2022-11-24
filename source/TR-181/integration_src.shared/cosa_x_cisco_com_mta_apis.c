@@ -1026,11 +1026,11 @@ CosaDmlMtaResetNow
     )
 {
         UNREFERENCED_PARAMETER(bValue);
-#ifdef _CBR_PRODUCT_REQ_
+#if defined (_XB6_PRODUCT_REQ_) || defined (_CBR_PRODUCT_REQ_)
 	if( RETURN_OK == mta_hal_devResetNow(bValue) )
 #else
-	if( /*RETURN_OK == mta_hal_devResetNow(pBool)*/ 1 )
-#endif /* _CBR_PRODUCT_REQ_ */
+    if( 1 )
+#endif /* _CBR_PRODUCT_REQ_ || _XB6_PRODUCT_REQ_*/
 	{
 		AnscTraceWarning(("MTA reset is successful \n"));
 		return ANSC_STATUS_SUCCESS;
@@ -1048,10 +1048,10 @@ void * MtaProvisioningStatusGetFunc(void * arg)
 	
 	pthread_detach(pthread_self());
 
-#ifdef _CBR_PRODUCT_REQ_
+#if defined (_XB6_PRODUCT_REQ_) || defined (_CBR_PRODUCT_REQ_)
         /*Coverity Fix CID 62657 55626 */
         unsigned int ProvisioningStatus;
-        char counter=0;
+        int counter=0;
 	while(1)
 	{
 		if(	RETURN_OK != mta_hal_getMtaOperationalStatus(&ProvisioningStatus) )
@@ -1094,7 +1094,7 @@ void * MtaProvisioningStatusGetFunc(void * arg)
 		}
         }
         pthread_exit(NULL);
-#endif /* _CBR_PRODUCT_REQ_ */
+#endif /* _CBR_PRODUCT_REQ_ || _XB6_PRODUCT_REQ_*/
         return arg;    
 }
 
