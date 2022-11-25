@@ -771,16 +771,16 @@ ANSC_STATUS
 CosaDmlMTASetPrimaryDhcpServerOptions
     (
         PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,
-        CHAR          		    buf[64],
-        MTA_IP_TYPE_TR                 type			    
+        char                       *buf,
+        MTA_IP_TYPE_TR              type
     );
 
 ANSC_STATUS
 CosaDmlMTASetSecondaryDhcpServerOptions
     (
         PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,
-        CHAR                        buf[64],
-        MTA_IP_TYPE_TR                 type         
+        char                       *buf,
+        MTA_IP_TYPE_TR              type
     );
 
 ANSC_STATUS
