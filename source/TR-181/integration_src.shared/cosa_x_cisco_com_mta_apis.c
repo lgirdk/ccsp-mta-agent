@@ -986,37 +986,41 @@ CosaDmlMTASetStartUpIpMode
 ANSC_STATUS
 CosaDmlMTASetPrimaryDhcpServerOptions
     (
-       PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,       
-       CHAR                        buf[64],
-       MTA_IP_TYPE_TR              type
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,
+        char                       *buf,
+        MTA_IP_TYPE_TR              type
     )
 {
-    if(type == MTA_IPV4_TR)
-        {
-           /*CID :173127 Out-of-bounds access (OVERRUN) */
-           AnscCopyMemory(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue)-1);
-        } else if(type == MTA_IPV6_TR) {
-           AnscCopyMemory(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue)-1);
-        } 
-  return ANSC_STATUS_SUCCESS;
+    if (type == MTA_IPV4_TR)
+    {
+        snprintf(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue, sizeof(pmtaethpro->IPv4PrimaryDhcpServerOptions.ActiveValue), "%s", buf);
+    }
+    else if (type == MTA_IPV6_TR)
+    {
+        snprintf(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue, sizeof(pmtaethpro->IPv6PrimaryDhcpServerOptions.ActiveValue), "%s", buf);
+    }
+
+    return ANSC_STATUS_SUCCESS;
 }
 
 ANSC_STATUS
 CosaDmlMTASetSecondaryDhcpServerOptions
     (
-        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,  
-        CHAR                        buf[64],
-        MTA_IP_TYPE_TR                 type
+        PCOSA_MTA_ETHWAN_PROV_INFO  pmtaethpro,
+        char                       *buf,
+        MTA_IP_TYPE_TR              type
     )
 {
-    if(type == MTA_IPV4_TR)
-        {
-	    /* CID :173125 Out-of-bounds access (OVERRUN) */
-            AnscCopyMemory(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue)-1);
-        }  else if (type == MTA_IPV6_TR) {
-            AnscCopyMemory(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue, buf, sizeof(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue)-1);
-        }
-     return ANSC_STATUS_SUCCESS;
+    if (type == MTA_IPV4_TR)
+    {
+        snprintf(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue, sizeof(pmtaethpro->IPv4SecondaryDhcpServerOptions.ActiveValue), "%s", buf);
+    }
+    else if (type == MTA_IPV6_TR)
+    {
+        snprintf(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue, sizeof(pmtaethpro->IPv6SecondaryDhcpServerOptions.ActiveValue), "%s", buf);
+    }
+
+    return ANSC_STATUS_SUCCESS;
 }
 
 ANSC_STATUS
