@@ -7908,6 +7908,13 @@ EthernetWAN_MTA_GetParamIntValue
         AnscTraceWarning(("Unsupported parameter - MTA Object not available"));
         return FALSE;
     }
+
+    if(pMyObject->pmtaprovinfo == NULL)
+    {
+        AnscTraceWarning(("EthernetWAN_MTA_GetParamIntValue: MTA NOT provisioned - Unable to retrieve %s\n",ParamName ));
+        return FALSE;
+    }
+
     rc = strcmp_s("StartupIPMode", strlen("StartupIPMode"), ParamName, &ind );
     ERR_CHK(rc);
     if((!ind) && (rc == EOK))
@@ -7944,6 +7951,12 @@ EthernetWAN_MTA_GetParamStringValue
     char                            isEthEnabled[64]  ={'\0'};
     errno_t                         rc                = -1;
     int                             ind               = -1;
+
+    if(pMyObject->pmtaprovinfo == NULL)
+    {
+        AnscTraceWarning(("EthernetWAN_MTA_GetParamStringValue: MTA NOT provisioned - Unable to retrieve %s\n",ParamName ));
+        return -1;
+    }
 
     if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) &&
                       ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))   
