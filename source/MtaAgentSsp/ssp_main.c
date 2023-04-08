@@ -101,11 +101,12 @@ int  cmd_dispatch(int  command)
 
                 if ( g_Subsystem[0] != 0 )
                 {
-                    _ansc_sprintf(CName, "%s%s", g_Subsystem, gpPnmStartCfg->ComponentId);
+                    /* CID 62739 Calling risky function */
+		    _ansc_snprintf(CName, sizeof(g_Subsystem)+sizeof(gpPnmStartCfg->ComponentId), "%s%s", g_Subsystem, gpPnmStartCfg->ComponentId);
                 }
                 else
                 {
-                    _ansc_sprintf(CName, "%s", gpPnmStartCfg->ComponentId);
+                    _ansc_snprintf(CName, sizeof(gpPnmStartCfg->ComponentId), "%s", gpPnmStartCfg->ComponentId);
                 }
 
                 ssp_PnmMbi_MessageBusEngage

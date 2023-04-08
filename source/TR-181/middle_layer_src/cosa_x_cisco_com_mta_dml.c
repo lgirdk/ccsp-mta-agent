@@ -79,6 +79,8 @@
 
 extern ULONG g_currentBsUpdate;
 
+#define MAX_LINE_REG 256
+
 #define IS_UPDATE_ALLOWED_IN_DM(paramName, requestorStr) ({                                                                                                  \
     if ( g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_firmware ||                                                                                     \
          (g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_rfcUpdate && !AnscEqualString(requestorStr, BS_SOURCE_RFC_STR, TRUE)))                         \
@@ -7730,7 +7732,8 @@ X_RDKCENTRAL_COM_MTA_GetParamStringValue
     ERR_CHK(rc);
     if((!ind) && (rc == EOK))
     {
-		CHAR acLineRegisterStatus[ 128 ] = { 0 };
+	    /* CID 91923 Calling risky function fix */
+	    CHAR acLineRegisterStatus[ MAX_LINE_REG ] = { 0 };
 
         /* collect value */
 

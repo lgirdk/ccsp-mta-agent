@@ -6,6 +6,8 @@
 char mta_provision_status[2][20] = {"MTA_PROVISIONED", "MTA_NON_PROVISIONED"};
 #define TR104_SUBDOC_COUNT 1
 #define MTA_PROVISIONED "MTA_PROVISIONED"
+#define MTA_MAX_DETAIL_SIZE 512
+
 int CosaDmlTR104DataSet(char* pString,int bootup);
 
 FILE* fptr_dummy;
@@ -253,12 +255,13 @@ pErr TR104_Process_Webconfig_Request(void *Data)
 
         for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].pots_count;j++)
         {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.POTS.X_RDKCENTRAL-COM_LocalTimeZone",i+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].potsTable[j].LocalTimeZone);
+                /* CID 190022  Calling risky function fix */
+		snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE, "Device.Services.VoiceService.%d.POTS.X_RDKCENTRAL-COM_LocalTimeZone",i+1);
+                snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE, ",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].potsTable[j].LocalTimeZone);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 index++;
             }
@@ -270,12 +273,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
         }
         for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].network_count;j++)
         {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.ProxyServer",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].ProxyServer);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE, "Device.Services.VoiceService.%d.SIP.Network.%d.ProxyServer",i+1,j+1);
+                snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE,",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].ProxyServer);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 index++;
             }
@@ -284,12 +287,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
                 TR104_free_TR181_resources(total_params,aParamDetail);
                 return execRetVal;
             }
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Network.%d.ProxyServerPort",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%d","unsignedInt",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].ProxyServerPort);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE, "Device.Services.VoiceService.%d.SIP.Network.%d.ProxyServerPort",i+1,j+1);
+                snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE,",%s,%d","unsignedInt",pTR104_WebConfig->voiceserviceTable[i].networkTable[j].ProxyServerPort);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 index++;
             }
@@ -301,12 +304,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
         }
         for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].operator_count;j++)
         {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.X_RDKCENTRAL-COM_Operator.%d.Domain",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].operatorTable[j].Domain);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE,"Device.Services.VoiceService.%d.SIP.X_RDKCENTRAL-COM_Operator.%d.Domain",i+1,j+1);
+                snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE,",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].operatorTable[j].Domain);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 index++;
             }
@@ -318,12 +321,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
         }
         for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].client_count;j++)
         {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Client.%d.X_RDKCENTRAL-COM_IMPU.IMPUId",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].IMPUId);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE,"Device.Services.VoiceService.%d.SIP.Client.%d.X_RDKCENTRAL-COM_IMPU.IMPUId",i+1,j+1);
+                snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE,",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].IMPUId);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 index++;
             }
@@ -332,12 +335,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
                 TR104_free_TR181_resources(total_params,aParamDetail);
                 return execRetVal;
             }
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Client.%d.AuthUserName",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].AuthUserName);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE,"Device.Services.VoiceService.%d.SIP.Client.%d.AuthUserName",i+1,j+1);
+                snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE,",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].AuthUserName);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 index++;
             }
@@ -346,12 +349,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
                 TR104_free_TR181_resources(total_params,aParamDetail);
                 return execRetVal;
             }
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.SIP.Client.%d.AuthPassword",i+1,j+1);
-                sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].AuthPassword);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE,"Device.Services.VoiceService.%d.SIP.Client.%d.AuthPassword",i+1,j+1);
+                snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE,",%s,%s","string",pTR104_WebConfig->voiceserviceTable[i].clientTable[j].AuthPassword);
                 CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 index++;
             }
@@ -363,21 +366,21 @@ pErr TR104_Process_Webconfig_Request(void *Data)
         }
         for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].set_count;j++)
         {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.CallControl.CallingFeatures.Set.%d.CallWaitingEnable",i+1,j+1);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE,"Device.Services.VoiceService.%d.CallControl.CallingFeatures.Set.%d.CallWaitingEnable",i+1,j+1);
                 if(pTR104_WebConfig->voiceserviceTable[i].setTable[j].CallWaitingEnable == true)
                 {
                     CcspTraceDebug(("%s:%d sending value true to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]), ",%s,%s", "boolean","true");
+                    snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE, ",%s,%s", "boolean","true");
                     CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 }
                 else if(pTR104_WebConfig->voiceserviceTable[i].setTable[j].CallWaitingEnable == false)
                 {
                     CcspTraceDebug(("%s:%d sending value false to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]), ",%s,%s","boolean","false");
+                    snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE, ",%s,%s","boolean","false");
                     CcspTraceDebug(("%s:%d aParamDetail[%d]=%s\n",__FUNCTION__,__LINE__,index,aParamDetail[index]));
                 }
                 index++;
@@ -390,20 +393,20 @@ pErr TR104_Process_Webconfig_Request(void *Data)
         }
         for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].profile_count;j++)
         {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.VoIPProfile.%d.X_RDKCENTRAL-COM_Device.DevEnabled",i+1,j+1);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE,"Device.Services.VoiceService.%d.VoIPProfile.%d.X_RDKCENTRAL-COM_Device.DevEnabled",i+1,j+1);
                 if(pTR104_WebConfig->voiceserviceTable[i].profileTable[j].DevEnabled == true)
                 {
                     CcspTraceDebug(("%s:%d sending value true to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]), ",%s,%s","boolean","true");
+                    snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE, ",%s,%s","boolean","true");
                 }
                 else if(pTR104_WebConfig->voiceserviceTable[i].profileTable[j].DevEnabled == false)
                 {
                     CcspTraceDebug(("%s:%d sending value false to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]),",%s,%s","boolean","false");
+                    snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE,",%s,%s","boolean","false");
                 }
                 CcspTraceDebug(("%d:aParamDetail[%d]=%s\n",__LINE__,index,aParamDetail[index]));
                 index++;
@@ -416,20 +419,20 @@ pErr TR104_Process_Webconfig_Request(void *Data)
         }
         for(j=0;j<pTR104_WebConfig->voiceserviceTable[i].fxs_count;j++)
         {
-            aParamDetail[index] = (char*)malloc(512*sizeof(char));
+            aParamDetail[index] = (char*)malloc(MTA_MAX_DETAIL_SIZE*sizeof(char));
             if( aParamDetail[index] != NULL )
             {
                 CcspTraceDebug(("%s:%d allocated memory for aParamDetail[%d] at %p with size = %u\n",__FUNCTION__,__LINE__,index,aParamDetail[index],sizeof(aParamDetail[index])));
-                sprintf(aParamDetail[index],"Device.Services.VoiceService.%d.POTS.FXS.%d.Enable",i+1,j+1);
+                snprintf(aParamDetail[index], MTA_MAX_DETAIL_SIZE,"Device.Services.VoiceService.%d.POTS.FXS.%d.Enable",i+1,j+1);
                 if(pTR104_WebConfig->voiceserviceTable[i].fxsTable[j].Enable == true)
                 {
                     CcspTraceDebug(("%s:%d sending value true to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]), ",%s,%s","boolean","true");
+                    snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE, ",%s,%s","boolean","true");
                 }
                 else if(pTR104_WebConfig->voiceserviceTable[i].fxsTable[j].Enable == false)
                 {
                     CcspTraceDebug(("%s:%d sending value false to hal\n",__FUNCTION__,__LINE__));
-                    sprintf(aParamDetail[index]+strlen(aParamDetail[index]), ",%s,%s","boolean","false");
+                    snprintf(aParamDetail[index]+strlen(aParamDetail[index]), MTA_MAX_DETAIL_SIZE, ",%s,%s","boolean","false");
                 }
                 CcspTraceDebug(("%d:aParamDetail[%d]=%s\n",__LINE__,index,aParamDetail[index]));
                 index++;
@@ -455,7 +458,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
                 {
                     CcspTraceError(("hal api set for 10 times.So giving up as of now\n"));
                     TR104_free_TR181_resources(total_params,aParamDetail);
-                    remove("/nvram/.vsb64_temp.txt");
+		    /* CID 190026 Unchecked return value from library */
+		    int retrmv =  remove("/nvram/.vsb64_temp.txt");
+		    if(retrmv != 0)
+		    {
+			    CcspTraceError(("Error in removing /nvram/.vsb64_temp.txt \n"));
+		    }
                     return execRetVal;
                 }
                 sleep(15);
@@ -463,7 +471,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
             else
             {
                 TR104_free_TR181_resources(total_params,aParamDetail);
-                remove("/nvram/.vsb64_temp.txt");
+		/* CID 190026 Unchecked return value from library */
+		int retrmv =  remove("/nvram/.vsb64_temp.txt");
+		if(retrmv != 0)
+		{
+			CcspTraceError(("Error in removing /nvram/.vsb64_temp.txt \n"));
+		}
                 CcspTraceError(("hal api set failed\n"));
                 return execRetVal;
             }
@@ -504,7 +517,12 @@ pErr TR104_Process_Webconfig_Request(void *Data)
                 }
                 CcspTraceDebug(("%s:base64 has been copied to original file with length=%u\n",__FUNCTION__,length));
                 fclose(fptr_dummy);
-                remove("/nvram/.vsb64_temp.txt");
+		/* CID 190026 Unchecked return value from library */
+		int retrmv =  remove("/nvram/.vsb64_temp.txt");
+		if(retrmv != 0)
+		{
+			CcspTraceError(("Error in removing /nvram/.vsb64_temp.txt \n"));
+		}
                 free(buffer);
             }
             else
@@ -1202,8 +1220,16 @@ int CosaDmlTR104DataSet(char* pString,int bootup)
         execDataPf->freeResources = TR104_Process_free_resources;
         isbootup=bootup;
         if(bootup == 1)
-        {
-            TR104_Process_Webconfig_Request(pWebConfig);
+	{
+            /* CID 190028 Resource leak fix */
+            pErr execRetVal = NULL;
+	    execRetVal = TR104_Process_Webconfig_Request(pWebConfig);
+	    if(execRetVal != NULL)
+	    {
+		    CcspTraceDebug(("%s:%d Webconfig request error :  %s\n",__FUNCTION__,__LINE__,execRetVal->ErrorMsg));
+		    free(execRetVal);
+		    execRetVal = NULL;
+	    }
             TR104_Process_free_resources(execDataPf);
         }
         else

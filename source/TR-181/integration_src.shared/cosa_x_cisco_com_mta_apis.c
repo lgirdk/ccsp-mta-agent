@@ -79,6 +79,7 @@
 
 #define PARTNERS_INFO_FILE              "/nvram/partners_defaults.json"
 #define BOOTSTRAP_INFO_FILE             "/nvram/bootstrap.json"
+#define MAX_LINE_REG 256
 
 ANSC_STATUS
 CosaDmlMTAInit
@@ -529,8 +530,12 @@ CosaDmlMTAGetDSXLogs
              free(pInfo);
             return ANSC_STATUS_FAILURE;  
         }
-        AnscCopyMemory(*ppDSXLog, pInfo, sizeof(MTAMGMT_MTA_DSXLOG)*(*pulCount));
-        free(pInfo);
+        /* CID 160180 Dereference after null check fix */
+	if(pInfo != NULL)
+	{
+		AnscCopyMemory(*ppDSXLog, pInfo, sizeof(MTAMGMT_MTA_DSXLOG)*(*pulCount));
+		free(pInfo);
+	}
     }
     return ANSC_STATUS_SUCCESS;
 
@@ -953,7 +958,8 @@ CosaDmlMtaGetLineRegisterStatus
 
 	if ( RETURN_OK == mta_hal_getLineRegisterStatus( output_status_array, max_number_of_line ) )
 	{
-		sprintf( pcLineRegisterStatus, "%s,%s,%s,%s,%s,%s,%s,%s", aoutput_status_array_string[ output_status_array[ 0 ] ],
+		/* CID 91923 Calling risky function fix */
+		snprintf( pcLineRegisterStatus, MAX_LINE_REG, "%s,%s,%s,%s,%s,%s,%s,%s", aoutput_status_array_string[ output_status_array[ 0 ] ],
 																  aoutput_status_array_string[ output_status_array[ 1 ] ],
 																  aoutput_status_array_string[ output_status_array[ 2 ] ],
 																  aoutput_status_array_string[ output_status_array[ 3 ] ],
@@ -965,7 +971,8 @@ CosaDmlMtaGetLineRegisterStatus
 	else
 #endif /* _CBR_PRODUCT_REQ_ */
 	{	
-		sprintf( pcLineRegisterStatus,"%s", "" );
+		/* CID 91923 Calling risky function fix */
+		snprintf( pcLineRegisterStatus, MAX_LINE_REG,"%s", "" );
 	}
 
     return ANSC_STATUS_SUCCESS;
@@ -1125,19 +1132,20 @@ ANSC_STATUS fillCurrentPartnerId
         PULONG                      pulSize
     )
 {
-        char buf[PARTNER_ID_LEN];
-        memset(buf, 0, sizeof(buf));
-    if(ANSC_STATUS_SUCCESS == syscfg_get( NULL, "PartnerID", buf, sizeof(buf)))
-    {
-                if( buf != NULL )
+        char buf[PARTNER_ID_LEN] = {'\0'} ;
+    	if(ANSC_STATUS_SUCCESS == syscfg_get( NULL, "PartnerID", buf, sizeof(buf)))
+    	{
+	    	/* CID 66248 Array compared against NULL fix */
+                if( buf[0] != '\0' )
                 {
                         strncpy(pValue ,buf,strlen(buf));
-            *pulSize = AnscSizeOfString(pValue);
+                        *pulSize = AnscSizeOfString(pValue);
                         return ANSC_STATUS_SUCCESS;
                 }
+		/* CID 56187 Logically dead code fix with CID 66248 */		
                 else
                         return ANSC_STATUS_FAILURE;
-    }
+    	}
         else
                 return ANSC_STATUS_FAILURE;
 
@@ -1293,7 +1301,8 @@ CosaMTAInitializeEthWanProvJournal
                 CcspTraceWarning(("%s-%d : fileRead failed \n", __FUNCTION__, __LINE__));
                 return ANSC_STATUS_FAILURE;
          }
-         else if ( strlen(data) != 0)
+	 /* CID 135523 String not null terminated fix */
+         else if ( strnlen(data,len) != 0)
          {
                  json = cJSON_Parse( data );
                  if( !json )
@@ -1403,7 +1412,8 @@ ANSC_STATUS UpdateJsonParamLegacy
 		CcspTraceWarning(("%s-%d : fileRead failed \n", __FUNCTION__, __LINE__));
 		return ANSC_STATUS_FAILURE;
 	 }
-	 else if ( strlen(data) != 0)
+	 /* CID 135238 String not null terminated fix */
+	 else if ( strnlen(data,len) != 0)
 	 {
 		 json = cJSON_Parse( data );
 		 if( !json ) 
@@ -1514,7 +1524,8 @@ ANSC_STATUS UpdateJsonParam
                 CcspTraceWarning(("%s-%d : fileRead failed \n", __FUNCTION__, __LINE__));
                 return ANSC_STATUS_FAILURE;
          }
-         else if ( strlen(data) != 0)
+	 /* CID 135285 String not null terminated fix */
+         else if ( strnlen(data,len) != 0)
          {
                  json = cJSON_Parse( data );
                  if( !json )
@@ -1547,6 +1558,9 @@ ANSC_STATUS UpdateJsonParam
                                                  CcspTraceWarning(( "Failed to update value for %s partner\n",PartnerId));
                                                  CcspTraceWarning(( "Param:%s\n",pKey));
                                                  cJSON_Delete(json);
+						 /* CID 72622 Resource leak fix */
+						 free(data);
+						 data = NULL;
                                                  return ANSC_STATUS_FAILURE;
                                         }
                                  }
@@ -1554,6 +1568,9 @@ ANSC_STATUS UpdateJsonParam
                                 {
                                         CcspTraceWarning(("%s - OBJECT  Value is NULL %s\n", pKey,__FUNCTION__ ));
                                         cJSON_Delete(json);
+					/* CID 72622 Resource leak fix */
+					free(data);
+					data = NULL;
                                         return ANSC_STATUS_FAILURE;
                                 }
 
@@ -1562,6 +1579,9 @@ ANSC_STATUS UpdateJsonParam
                          {
                                 CcspTraceWarning(("%s - PARTNER ID OBJECT Value is NULL\n", __FUNCTION__ ));
                                 cJSON_Delete(json);
+				/* CID 72622 Resource leak fix */
+				free(data);
+				data = NULL;
                                 return ANSC_STATUS_FAILURE;
                          }
                         cJSON_Delete(json);

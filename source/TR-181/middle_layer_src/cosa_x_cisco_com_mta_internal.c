@@ -242,8 +242,9 @@ CosaMTAInitializeEthWanProvDhcpOption
 	if ( ( 0 == strncmp(Ipv4_Primary,"00000000",8) ) || ( 0 == strncmp(Ipv6_Primary,"00000000",8) ) )
 	{
 	    CcspTraceWarning(("%s Received 0's from dhcp sever ,not initializing MTA \n",__FUNCTION__));
-		free(pMtaProv);
-		return ANSC_STATUS_FAILURE;
+	    /* CID 120995 Resource leak */	
+	    free(pMtaProv);
+	    return ANSC_STATUS_FAILURE;
 	} 
       
 	if(Ip_Pref[0] != '\0') {
@@ -527,7 +528,7 @@ CosaMTAInitializeEthWanProvDhcpOption
 			return ANSC_STATUS_FAILURE;
 		}
      #endif
-     free(pMtaProv);
+     /* CID 121017 Structurally dead code fix */
      return ANSC_STATUS_SUCCESS;
 }
 
@@ -669,7 +670,6 @@ CosaMTAInitializeEthWanProv
     )
 {
 
- ANSC_STATUS ret = ANSC_STATUS_SUCCESS;
  MTA_IP_TYPE_TR ip_type;
  char 	buffer [ 128 ] = { 0 };
  int	MtaIPMode = 0;
@@ -686,6 +686,8 @@ CosaMTAInitializeEthWanProv
 
 if(pMtaProv)
 {
+	/* CID  173808  Uninitialized scalar variable */
+	pMtaProv->MtaIPMode = MTA_IPV4;
 
 	if( 0 == syscfg_get( NULL, "StartupIPMode", buffer, sizeof(buffer)))
 	{
@@ -875,8 +877,6 @@ if(pMtaProv)
 		}
                
      #endif
-     free(pMtaProv);
-     return ret;
 }
 else
 	{
@@ -884,6 +884,10 @@ else
 		CcspTraceError(("Memory Alloction Failed '%s'\n", __FUNCTION__));
 		return ANSC_STATUS_FAILURE;
 	}  
+
+/* CID 92066 Structurally dead code fix */
+free(pMtaProv);
+return ANSC_STATUS_SUCCESS;
 }
 
 ANSC_STATUS

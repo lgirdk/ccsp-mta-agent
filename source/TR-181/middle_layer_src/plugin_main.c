@@ -454,15 +454,15 @@ COSA_Unload
 
     returnStatus  =  CosaBackEndManagerRemove(g_pCosaBEManager);
         
-    if ( returnStatus == ANSC_STATUS_SUCCESS )
+    if ( returnStatus != ANSC_STATUS_SUCCESS )
     {
-        g_pCosaBEManager = NULL;
+	    CcspTraceWarning(( " %s Remove cosa manager object failed [%d] \n", __FUNCTION__,__LINE__));
     }
-    else
-    {
-        /* print error trace*/
-        g_pCosaBEManager = NULL;
-    }
+
+    /* CID 66571  Identical code for different branches fix */
+    /* print error trace*/
+    g_pCosaBEManager = NULL;
+
 }
 
 void ANSC_EXPORT_API
@@ -472,20 +472,21 @@ COSA_MemoryCheck
     )
 {
     ANSC_STATUS                     returnStatus            = ANSC_STATUS_SUCCESS;
+
     PCOSA_PLUGIN_INFO               pPlugInfo               = (PCOSA_PLUGIN_INFO)g_pCosaBEManager->hCosaPluginInfo;
 
     /* unload the memory here */
 
     returnStatus  =  CosaBackEndManagerRemove(g_pCosaBEManager);
-        
-    if ( returnStatus == ANSC_STATUS_SUCCESS )
+
+    if(returnStatus != ANSC_STATUS_SUCCESS)
     {
-        g_pCosaBEManager = NULL;
+	    CcspTraceWarning(( " %s Remove cosa manager object failed [%d] \n", __FUNCTION__,__LINE__));
     }
-    else
-    {
-        g_pCosaBEManager = NULL;
-    }
+
+    
+    /* CID 66571  Identical code for different branches fix */    
+    g_pCosaBEManager = NULL;
 
     COSA_MemoryUsage();
     COSA_MemoryTable();

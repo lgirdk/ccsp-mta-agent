@@ -207,11 +207,12 @@ ssp_engage_pnm
 
     if ( g_Subsystem[0] != 0 )
     {
-        _ansc_sprintf(CrName, "%s%s", g_Subsystem, CCSP_DBUS_INTERFACE_CR);
+	/* CID 70065 Calling risky function */
+        _ansc_snprintf(CrName, sizeof(g_Subsystem)+sizeof(CCSP_DBUS_INTERFACE_CR) , "%s%s", g_Subsystem, CCSP_DBUS_INTERFACE_CR);
     }
     else
     {
-        _ansc_sprintf(CrName, "%s", CCSP_DBUS_INTERFACE_CR);
+        _ansc_snprintf(CrName, sizeof(CCSP_DBUS_INTERFACE_CR), "%s", CCSP_DBUS_INTERFACE_CR);
     }
 
     returnStatus = CcspComponentLoadDmXmlList(pStartCfg->DmXmlCfgFileName, &pXmlCfgList);
@@ -262,13 +263,14 @@ ssp_cancel_pnm
 
     if ( g_Subsystem[0] != 0 )
     {
-        _ansc_sprintf(CrName, "%s%s", g_Subsystem, CCSP_DBUS_INTERFACE_CR);
-        _ansc_sprintf(CpName, "%s%s", g_Subsystem, pStartCfg->ComponentName);
+	/* CID 67123 Calling risky function */
+        _ansc_snprintf(CrName, sizeof(g_Subsystem)+sizeof(CCSP_DBUS_INTERFACE_CR), "%s%s", g_Subsystem, CCSP_DBUS_INTERFACE_CR);
+        _ansc_snprintf(CpName, sizeof(g_Subsystem)+sizeof( pStartCfg->ComponentName), "%s%s", g_Subsystem, pStartCfg->ComponentName);
     }
     else
     {
-        _ansc_sprintf(CrName, "%s", CCSP_DBUS_INTERFACE_CR);
-        _ansc_sprintf(CpName, "%s", pStartCfg->ComponentName);
+        _ansc_snprintf(CrName, sizeof(CCSP_DBUS_INTERFACE_CR), "%s", CCSP_DBUS_INTERFACE_CR);
+        _ansc_snprintf(CpName, sizeof( pStartCfg->ComponentName), "%s", pStartCfg->ComponentName);
     }
     /* unregister component */
     nRet = CcspBaseIf_unregisterComponent(bus_handle, CrName, CpName );  

@@ -105,11 +105,19 @@ ssp_PnmMbi_MessageBusEngage
     
     char PsmName[256];
 
-    if ( ! component_id || ! path )
+
+    if (  path  ==  NULL )
     {
-        CcspTraceError((" !!! ssp_PnmMbi_MessageBusEngage: component_id or path is NULL !!!\n"));
+	    /* CID 67630 Dereference after null check fix */
+	    CcspTraceError((" !!! ssp_PnmMbi_MessageBusEngage:  path is NULL !!!\n"));
+	    return ANSC_STATUS_FAILURE;
     }
 
+     if ( component_id  == NULL )
+     {
+	     CcspTraceError((" !!! ssp_PnmMbi_MessageBusEngage: component_id  is NULL !!!\n"));
+             return ANSC_STATUS_FAILURE;
+     }
     /* Connect to message bus */
     returnStatus = 
         CCSP_Message_Bus_Init
@@ -130,7 +138,8 @@ ssp_PnmMbi_MessageBusEngage
 
     if ( g_Subsystem[0] != 0 )
     {
-        _ansc_sprintf(PsmName, "%s%s", g_Subsystem, CCSP_DBUS_PSM);
+	/* CID 59433  Calling risky function fix */
+        _ansc_snprintf(PsmName, sizeof(g_Subsystem)+sizeof(CCSP_DBUS_PSM), "%s%s", g_Subsystem, CCSP_DBUS_PSM);
     }
     else
     {
@@ -961,11 +970,11 @@ ssp_PnmMbi_Initialize
     )
 {
     UNREFERENCED_PARAMETER(user_data);
-    ANSC_STATUS             returnStatus    = ANSC_STATUS_SUCCESS;
     
     printf("In %s()\n", __FUNCTION__);
-    
-    return ( returnStatus == ANSC_STATUS_SUCCESS ) ? 0 : 1;
+   
+    /* CID 61087  Logically dead code fix */ 
+    return ANSC_STATUS_SUCCESS;
 }
 
 int
@@ -975,11 +984,11 @@ ssp_PnmMbi_Finalize
     )
 {
     UNREFERENCED_PARAMETER(user_data);
-    ANSC_STATUS             returnStatus    = ANSC_STATUS_SUCCESS;
 
     printf("In %s()\n", __FUNCTION__);
 
-    return ( returnStatus == ANSC_STATUS_SUCCESS ) ? 0 : 1;
+    /* CID 60617 Logically dead code */
+    return ANSC_STATUS_SUCCESS;
 }
 
 
@@ -1004,10 +1013,10 @@ ssp_PnmMbi_FreeResources
 {
     UNREFERENCED_PARAMETER(user_data);
     UNREFERENCED_PARAMETER(priority);
-    ANSC_STATUS             returnStatus    = ANSC_STATUS_SUCCESS;
 
     printf("In %s()\n", __FUNCTION__);
 
-    return ( returnStatus == ANSC_STATUS_SUCCESS ) ? 0 : 1;
+    /* CID 55217 Logically dead code */
+    return ANSC_STATUS_SUCCESS;
 }
 
