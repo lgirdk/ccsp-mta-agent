@@ -532,31 +532,72 @@ CosaMTAInitializeEthWanProvDhcpOption
      return ANSC_STATUS_SUCCESS;
 }
 
+#define MTA_DHCP_ENABLED 0
+#define MTA_DHCP_DISABLED 1
+#define MAX_TIMEOUT_MTA_DHCP_ENABLED 60
+#define MAX_TIMEOUT_MTA_DHCP_DISABLED 300
+int checkIfDefMtaDhcpOptionEnabled()
+{
+	char ipv4Primary[16] , ipv6Primary[16],ip4Sec[16] , ipv6Sec[16] ; 
+	memset(ipv4Primary,0,sizeof(ipv4Primary));
+	memset(ip4Sec,0,sizeof(ip4Sec));
+	memset(ipv6Primary,0,sizeof(ipv6Primary));
+	memset(ipv6Sec,0,sizeof(ipv6Sec));
+
+    	syscfg_get( NULL, "IPv4PrimaryDhcpServerOptions", ipv4Primary, sizeof(ipv4Primary));
+    	syscfg_get( NULL, "IPv4SecondaryDhcpServerOptions", ip4Sec, sizeof(ip4Sec));
+    	syscfg_get( NULL, "IPv6PrimaryDhcpServerOptions", ipv6Primary, sizeof(ipv6Primary));
+    	syscfg_get( NULL, "IPv6SecondaryDhcpServerOptions", ipv6Sec, sizeof(ipv6Sec));
+
+    	if ( (strcmp(ipv4Primary,"FFFFFFFF") == 0) || (strcmp(ipv4Primary,"0A0A0A0A") == 0) )
+    		return MTA_DHCP_ENABLED;
+    	else if ( (strcmp(ip4Sec,"FFFFFFFF") == 0) || (strcmp(ip4Sec,"0A0A0A0A") == 0) )
+    		return MTA_DHCP_ENABLED;
+    	else if ( (strcmp(ipv6Primary,"FFFFFFFF") == 0) || (strcmp(ipv6Primary,"0A0A0A0A") == 0) )
+    		return MTA_DHCP_ENABLED;
+    	else if ( (strcmp(ipv6Sec,"FFFFFFFF") == 0) || (strcmp(ipv6Sec,"0A0A0A0A") == 0) )
+    		return MTA_DHCP_ENABLED;
+    	else
+		return MTA_DHCP_DISABLED ;
+
+	return MTA_DHCP_DISABLED ;
+}
+int getMaxCount()
+{
+	int maxCount=MAX_TIMEOUT_MTA_DHCP_DISABLED;
+	if ( MTA_DHCP_ENABLED == checkIfDefMtaDhcpOptionEnabled() )
+	{
+		CcspTraceInfo(("%s dhcp_option's enabled in partner defaults,wait for 60sec to receive dhcp options  \n",__FUNCTION__));
+		maxCount=MAX_TIMEOUT_MTA_DHCP_ENABLED ;
+	}
+	return maxCount;
+}
+
 void WaitForDhcpOption()
 {
- char dhcp_option[10] = {0};
- int count=0;
- errno_t rc = -1;
- int ind = -1;
+	char dhcp_option[10] = {0};
+ 	int count=0;
+ 	errno_t rc = -1;
+ 	int ind = -1;
 
-//  wait for 1 min to receive MTA options/Offer , otherwise time out 
- while ( 12 >= count )
- {
-	rc = memset_s(dhcp_option, sizeof(dhcp_option), 0, sizeof(dhcp_option));
-        ERR_CHK(rc);
-	sysevent_get(sysevent_fd, sysevent_token, "dhcp_mta_option", dhcp_option, sizeof(dhcp_option));
-        rc  = strcmp_s((const char*)dhcp_option, sizeof(dhcp_option), "received", &ind);
-        ERR_CHK(rc);
-	if ((ind == 0) && (rc == EOK))
+	int maxCount=getMaxCount() ;
+	//  wait for maxCount sec to receive MTA options/Offer , otherwise time out 
+ 	while ( maxCount >= count )
 	{
-		CcspTraceWarning(("%s dhcp_option's received,breaking the loop  \n",__FUNCTION__));
-		break;
-
-	}
-	sleep(5);
-	count++;
- }
- 
+		rc = memset_s(dhcp_option, sizeof(dhcp_option), 0, sizeof(dhcp_option));
+    		ERR_CHK(rc);
+		sysevent_get(sysevent_fd, sysevent_token, "dhcp_mta_option", dhcp_option, sizeof(dhcp_option));
+    		rc  = strcmp_s((const char*)dhcp_option, sizeof(dhcp_option), "received", &ind);
+    		ERR_CHK(rc);
+		if ((ind == 0) && (rc == EOK))
+		{
+			CcspTraceInfo(("%s dhcp_option's received,breaking the loop  \n",__FUNCTION__));
+			break;
+		}
+		sleep(5);
+		count+=5;
+ 	}
+ 	CcspTraceInfo(("%s Didn't receive dhcp options in %d sec, initializing mta with default values \n",__FUNCTION__,maxCount));
 }
 
 /*Coverity Fix CID 121026 Arg Type MisMatch */
