@@ -81,20 +81,20 @@ extern ULONG g_currentBsUpdate;
 
 #define MAX_LINE_REG 256
 
-#define IS_UPDATE_ALLOWED_IN_DM(paramName, requestorStr) ({                                                                                                  \
-    if ( g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_firmware ||                                                                                     \
-         (g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_rfcUpdate && !AnscEqualString(requestorStr, BS_SOURCE_RFC_STR, TRUE)))                         \
-    {                                                                                                                                             \
+#define IS_UPDATE_ALLOWED_IN_DM(paramName, requestorStr) ({                                                                                        \
+    if ( g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_firmware ||                                                                                      \
+         (g_currentBsUpdate == DSLH_CWMP_BS_UPDATE_rfcUpdate && (strcmp(requestorStr, BS_SOURCE_RFC_STR) != 0)))                                   \
+    {                                                                                                                                              \
        CcspTraceWarning(("Do NOT allow override of param: %s bsUpdate = %lu, requestor = %s\n", paramName, g_currentBsUpdate, requestorStr));      \
-       return FALSE;                                                                                                                              \
-    }                                                                                                                                             \
+       return FALSE;                                                                                                                               \
+    }                                                                                                                                              \
 })
 
 // If the requestor is RFC but the param was previously set by webpa, do not override it.
-#define IS_UPDATE_ALLOWED_IN_JSON(paramName, requestorStr, UpdateSource) ({                                                                                \
-   if (AnscEqualString(requestorStr, BS_SOURCE_RFC_STR, TRUE) && AnscEqualString(UpdateSource, BS_SOURCE_WEBPA_STR, TRUE))                         \
+#define IS_UPDATE_ALLOWED_IN_JSON(paramName, requestorStr, UpdateSource) ({                                                                        \
+   if ((strcmp(requestorStr, BS_SOURCE_RFC_STR) == 0) && (strcmp(UpdateSource, BS_SOURCE_WEBPA_STR) == 0))                                         \
    {                                                                                                                                               \
-      CcspTraceWarning(("Do NOT allow override of param: %s requestor = %lu updateSource = %s\n", paramName, g_currentWriteEntity, UpdateSource));  \
+      CcspTraceWarning(("Do NOT allow override of param: %s requestor = %lu updateSource = %s\n", paramName, g_currentWriteEntity, UpdateSource)); \
       return FALSE;                                                                                                                                \
    }                                                                                                                                               \
 })
@@ -7771,7 +7771,7 @@ BOOL VoiceService_SetParamStringValue(ANSC_HANDLE hInsContext, char* ParamName, 
         char value[8] = {'\0'};
         if((syscfg_get(NULL,"TR104enable", value, sizeof(value)) == 0) && (strcmp(value, "true") == 0))
         {
-            if( AnscEqualString(ParamName, "Data", TRUE) )
+            if (strcmp(ParamName, "Data") == 0)
             {
                 if ( 0 == CosaDmlTR104DataSet(pString,0) )
                 {
