@@ -234,6 +234,7 @@ CosaDmlMTAGetServiceFlow
         if( (*ppCfg = (PCOSA_MTA_SERVICE_FLOW)AnscAllocateMemory(sizeof(MTAMGMT_MTA_SERVICE_FLOW)*(*pulCount))) == NULL )
         {
             AnscTraceWarning(("AllocateMemory error %s, %d\n", __FUNCTION__, __LINE__));
+            free(pInfo);
             return ANSC_STATUS_FAILURE;  
         }
         AnscCopyMemory(*ppCfg, pInfo, sizeof(MTAMGMT_MTA_SERVICE_FLOW)*(*pulCount));
@@ -412,6 +413,7 @@ CosaDmlMTAGetHandsets
         if( (*ppHandsets = AnscAllocateMemory(DECT_MAX_HANDSETS * sizeof(MTAMGMT_MTA_HANDSETS_INFO))) == NULL )
         {
             AnscTraceWarning(("AllocateMemory error %s, %d\n", __FUNCTION__, __LINE__));
+            free(pInfo);
             return ANSC_STATUS_FAILURE;  
         }
         AnscCopyMemory(*ppHandsets, pInfo, sizeof(MTAMGMT_MTA_HANDSETS_INFO)*DECT_MAX_HANDSETS);
@@ -471,6 +473,7 @@ CosaDmlMTAGetCalls
         if( (*ppCfg = (PCOSA_MTA_CALLS)AnscAllocateMemory(sizeof(MTAMGMT_MTA_CALLS)*(*pulCount))) == NULL )
         {
             AnscTraceWarning(("AllocateMemory error %s, %d\n", __FUNCTION__, __LINE__));
+            free(pInfo);
             return ANSC_STATUS_FAILURE;  
         }
         AnscCopyMemory(*ppCfg, pInfo, sizeof(MTAMGMT_MTA_CALLS)*(*pulCount));
