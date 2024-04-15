@@ -7766,8 +7766,7 @@ BOOL VoiceService_SetParamStringValue(ANSC_HANDLE hInsContext, char* ParamName, 
     UNREFERENCED_PARAMETER(hInsContext);
     BOOL ret = FALSE;
 #ifdef MTA_TR104SUPPORT
-    if(CCSP_Msg_IsRbus_enabled())
-    {
+
         char value[8] = {'\0'};
         if((syscfg_get(NULL,"TR104enable", value, sizeof(value)) == 0) && (strcmp(value, "true") == 0))
         {
@@ -7788,11 +7787,7 @@ BOOL VoiceService_SetParamStringValue(ANSC_HANDLE hInsContext, char* ParamName, 
         {
             CcspTraceWarning(("Skipping webconfig parsing as RFC for TR104 is false\n"));
         }
-    }
-    else
-    {
-        CcspTraceWarning(("TR104 works only in rbus mode\n"));
-    }
+
 #else
     UNREFERENCED_PARAMETER(ParamName);
     UNREFERENCED_PARAMETER(pString);
