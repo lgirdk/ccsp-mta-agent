@@ -523,8 +523,7 @@ int main(int argc, char* argv[])
                 if( strcmp(value, "true") == 0 )
                 {
                     CcspTraceInfo(("RFC for TR104 is true\n"));
-                    if ( CCSP_Msg_IsRbus_enabled() )
-                    {
+
                         while(retry1<24)
                         {
                             if( syscfg_get(NULL, "MTA_PROVISION", Provision_status, sizeof(Provision_status)) == 0 && strcmp(Provision_status,"true") == 0 )
@@ -577,11 +576,6 @@ retry:
                             retry1++;
                             sleep(10);
                         }
-                    }
-                    else
-                    {
-                        CcspTraceInfo(("TR104 will be available only in rbus mode\n"));
-                    }
                 }
                 else
                 {
@@ -605,8 +599,7 @@ retry:
                 if( strcmp(value, "true") == 0 )
                 {
                     CcspTraceInfo(("RFC for TR104 is true\n"));
-                    if ( CCSP_Msg_IsRbus_enabled() )
-                    {
+
                         while(retry1<24)
                         {
                             err = TR104_open();
@@ -643,11 +636,6 @@ retry:
                             retry1++;
                             sleep(10);
                         }
-                    }
-                    else
-                    {
-                        CcspTraceInfo(("TR104 will be available only in rbus mode\n"));
-                    }
                 }
                 else
                 {
