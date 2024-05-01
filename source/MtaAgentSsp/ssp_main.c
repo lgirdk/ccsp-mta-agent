@@ -551,17 +551,17 @@ retry:
                                         if (buffer)
                                         {
                                             fread(buffer, 1, length+1, fptr);
-                                            CcspTraceDebug(("buffer=%s\n",buffer));
+                                            CcspTraceInfo(("buffer=%s\n",buffer));
                                             CosaDmlTR104DataSet(buffer,1);
                                             free(buffer);
                                         }
                                         fclose(fptr);
+                                    	break;
                                     }
                                     else
                                     {
                                       CcspTraceInfo(("file not present\n"));
                                     }
-                                    break;
                                 }
                                 else
                                 {
