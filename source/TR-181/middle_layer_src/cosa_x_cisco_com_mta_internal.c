@@ -85,7 +85,6 @@
 
 static int sysevent_fd;
 static token_t sysevent_token;
-
 /**********************************************************************
 
     caller:     owner of the object
@@ -623,23 +622,35 @@ void * Mta_Sysevent_thread_Dhcp_Option( void * hThisObject)
  sysevent_get(sysevent_fd, sysevent_token, "current_wan_state", current_wan_state, sizeof(current_wan_state));
  sysevent_get(sysevent_fd, sysevent_token, "dhcp_mta_option", dhcp_option, sizeof(dhcp_option));
 
+ char ethWanSyscfg[64]={'\0'};
+ bool mtaInEthernetMode = false;
+ if( (0 == syscfg_get( NULL, "eth_wan_enabled", ethWanSyscfg, sizeof(ethWanSyscfg))) && ((ethWanSyscfg[0] != '\0') && (strncmp(ethWanSyscfg, "true", strlen("true")) == 0)))
+ {
+    mtaInEthernetMode = true;
+ }
+
+ CcspTraceError(("%s:%d MTA started in %s mode. \n",__FUNCTION__,__LINE__, mtaInEthernetMode?"Ethernet":"DOCSIS"));
+
  rc = strcmp_s((const char*)current_wan_state, sizeof(current_wan_state), "up", &ind);
  ERR_CHK(rc);
  if((rc == EOK) && (ind == 0))
  {
-     rc = strcmp_s((const char*)dhcp_option, sizeof(dhcp_option), "received", &ind);
-     ERR_CHK(rc);
-     if((rc == EOK) && (ind == 0))
+     if(mtaInEthernetMode)
      {
-           CcspTraceWarning(("%s current_wan_state up, Initializing MTA \n",__FUNCTION__));
-           CosaMTAInitializeEthWanProvDhcpOption(pMyObject);
+         rc = strcmp_s((const char*)dhcp_option, sizeof(dhcp_option), "received", &ind);
+         ERR_CHK(rc);
+         if((rc == EOK) && (ind == 0))
+         {
+             CcspTraceWarning(("%s current_wan_state up, Initializing MTA \n",__FUNCTION__));
+             CosaMTAInitializeEthWanProvDhcpOption(pMyObject);
+         }
+         else if((rc == EOK) && (ind != 0))
+         {
+             CcspTraceWarning(("%s current_wan_state up, but dhcp_option's not received.  \n",__FUNCTION__));
+             WaitForDhcpOption();
+             CosaMTAInitializeEthWanProvDhcpOption(pMyObject);
+         }
      }
-     else if((rc == EOK) && (ind != 0))
-     {
-           CcspTraceWarning(("%s current_wan_state up, but dhcp_option's not received.  \n",__FUNCTION__));
-           WaitForDhcpOption();
-           CosaMTAInitializeEthWanProvDhcpOption(pMyObject);
-      }
  }
 
   while (1)
@@ -662,13 +673,27 @@ void * Mta_Sysevent_thread_Dhcp_Option( void * hThisObject)
         ERR_CHK(rc);
         if((rc == EOK) && (ind == 0))
         {
-             rc = strcmp_s((const char*)val, sizeof(val), "up", &ind);
-             ERR_CHK(rc);
-             if((rc == EOK) && (ind == 0))
-             {
-                   WaitForDhcpOption();
-                   CosaMTAInitializeEthWanProvDhcpOption(pMyObject);
-             }
+            rc = strcmp_s((const char*)val, sizeof(val), "up", &ind);
+            ERR_CHK(rc);
+            if((rc == EOK) && (ind == 0))
+            {
+                bool isEthEnabled = false;
+                if( (0 == syscfg_get( NULL, "eth_wan_enabled", ethWanSyscfg, sizeof(ethWanSyscfg))) && ((ethWanSyscfg[0] != '\0') && (strncmp(ethWanSyscfg, "true", strlen("true")) == 0)))
+                {
+                    isEthEnabled = true;
+                }
+
+                if(mtaInEthernetMode != isEthEnabled)
+                {
+                    CcspTraceError(("%s:%d MTA is in incorrect WAN state. MTA started in %s, but selected WAN mode %s . MTA agent will be restarted.\n",__FUNCTION__,__LINE__, mtaInEthernetMode?"Ethernet":"DOCSIS", isEthEnabled?"Ethernet":"DOCSIS"));
+                    exit(0);
+                }
+                else if(mtaInEthernetMode)
+                {
+                    WaitForDhcpOption();
+                    CosaMTAInitializeEthWanProvDhcpOption(pMyObject);
+                }
+            }
         }
     }
   }
@@ -1183,6 +1208,12 @@ void * Mta_Sysevent_thread(void *  hThisObject)
           int namelen=0, vallen=0;
           errno_t rc = -1;
           int ind = -1;
+        char ethWanSyscfg[64]={'\0'};
+        bool mtaInEthernetMode = false;
+        if( (0 == syscfg_get( NULL, "eth_wan_enabled", ethWanSyscfg, sizeof(ethWanSyscfg))) && ((ethWanSyscfg[0] != '\0') && (strncmp(ethWanSyscfg, "true", strlen("true")) == 0)))
+        {
+            mtaInEthernetMode = true;
+        }
 
 #if defined(INTEL_PUMA7)
          //Intel SDK 7.2 Proposed Bug Fix: Prevent CCSP MTA Crash when erouter is in IPv6 mode
@@ -1196,8 +1227,11 @@ void * Mta_Sysevent_thread(void *  hThisObject)
          ERR_CHK(rc);
          if((rc == EOK) && (ind == 0))
          {
-             CcspTraceWarning(("%s wan-status started, Initializing MTA \n",__FUNCTION__));
-      	     CosaMTAInitializeEthWanProv(pMyObject);
+             if(mtaInEthernetMode)
+             {
+                 CcspTraceWarning(("%s wan-status started, Initializing MTA \n",__FUNCTION__));
+                 CosaMTAInitializeEthWanProv(pMyObject);
+             }
          }
 #else
 
@@ -1211,8 +1245,11 @@ void * Mta_Sysevent_thread(void *  hThisObject)
          ERR_CHK(rc);
          if((rc == EOK) && (ind == 0))
          {
-             CcspTraceWarning(("%s current_wan_state up, Initializing MTA \n",__FUNCTION__));
-      	     CosaMTAInitializeEthWanProv(pMyObject);
+             if(mtaInEthernetMode)
+             {
+                CcspTraceWarning(("%s current_wan_state up, Initializing MTA \n",__FUNCTION__));
+      	        CosaMTAInitializeEthWanProv(pMyObject);
+             }
          }
 #endif
 
@@ -1229,6 +1266,11 @@ void * Mta_Sysevent_thread(void *  hThisObject)
 
                 if (!err)
                 {
+                    bool isEthEnabled = false;
+                    if( (0 == syscfg_get( NULL, "eth_wan_enabled", ethWanSyscfg, sizeof(ethWanSyscfg))) && ((ethWanSyscfg[0] != '\0') && (strncmp(ethWanSyscfg, "true", strlen("true")) == 0)))
+                    {
+                        isEthEnabled = true;
+                    }
 #if defined(INTEL_PUMA7)
                         //Intel SDK 7.2 Proposed Bug Fix: Prevent CCSP MTA Crash when erouter is in IPv6 mode
                         CcspTraceWarning(("%s Recieved notification event  %s, status %s\n",__FUNCTION__,name,val));
@@ -1252,9 +1294,17 @@ void * Mta_Sysevent_thread(void *  hThisObject)
 #endif
                         if((rc == EOK) && (ind == 0))
                         {
+                            if(mtaInEthernetMode != isEthEnabled)
+                            {
+                                CcspTraceError(("%s:%d MTA is in incorrect WAN state. MTA started in %s, but selected WAN mode %s . MTA agent will be restarted.\n",__FUNCTION__,__LINE__, mtaInEthernetMode?"Ethernet":"DOCSIS", isEthEnabled?"Ethernet":"DOCSIS"));
+                                exit(0);
+                            }
+                            else if(mtaInEthernetMode)
+                            {
 
-                                 CcspTraceWarning(("%s Initializing/Reinitializing MTA\n",__FUNCTION__));
-                                 CosaMTAInitializeEthWanProv(pMyObject);
+                                CcspTraceWarning(("%s Initializing/Reinitializing MTA\n",__FUNCTION__));
+                                CosaMTAInitializeEthWanProv(pMyObject);
+                            }
                         }
                 }
         }
@@ -1301,22 +1351,17 @@ CosaMTAInitialize
     /* Initialize middle layer for Device.DeviceInfo.  */
     CosaDmlMTAInit(NULL, (PANSC_HANDLE)pMyObject);
 
-   #ifdef ENABLE_ETH_WAN
-   char isEthEnabled[64]={'\0'};
-   if( (0 == syscfg_get( NULL, "eth_wan_enabled", isEthEnabled, sizeof(isEthEnabled))) && ((isEthEnabled[0] != '\0') && (strncmp(isEthEnabled, "true", strlen("true")) == 0)))
-        {
-        	sysevent_fd = sysevent_open("127.0.0.1", SE_SERVER_WELL_KNOWN_PORT, SE_VERSION, "WAN State", &sysevent_token);
-    		pthread_t MtaInit;
-	 	#if defined (EROUTER_DHCP_OPTION_MTA)
-			pthread_create(&MtaInit, NULL, &Mta_Sysevent_thread_Dhcp_Option, (ANSC_HANDLE) hThisObject);
-		#else
-		 	pthread_create(&MtaInit, NULL, &Mta_Sysevent_thread, (ANSC_HANDLE) hThisObject);
-		#endif
-	}
-   else { 
-             printf("\nEthernet Wan mode is disabled\n");  
-         }
-  //  CosaMTAInitializeEthWanProv(hThisObject);
+    //Starting thread to monitor Wan mode and wan status
+    CcspTraceInfo(("%s %d Starting sysevent thread \n", __FUNCTION__, __LINE__));
+#ifdef ENABLE_ETH_WAN
+    sysevent_fd = sysevent_open("127.0.0.1", SE_SERVER_WELL_KNOWN_PORT, SE_VERSION, "WAN State", &sysevent_token);
+    pthread_t MtaInit;
+#if defined (EROUTER_DHCP_OPTION_MTA)
+    pthread_create(&MtaInit, NULL, &Mta_Sysevent_thread_Dhcp_Option, (ANSC_HANDLE) hThisObject);
+#else
+    pthread_create(&MtaInit, NULL, &Mta_Sysevent_thread, (ANSC_HANDLE) hThisObject);
+#endif
+    //  CosaMTAInitializeEthWanProv(hThisObject);
 
 #endif
     CosaMTALineTableInitialize(hThisObject);
